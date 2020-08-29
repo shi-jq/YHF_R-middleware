@@ -11,6 +11,18 @@ public class RFIDFrame {
         this.mRevFrameList.Initialize();
     }
 
+    public RFIDFrame(RFrame sendFrame) {
+        this.mSendFrame = sendFrame;
+        this.mRevFrameList = new RFrameList();
+        this.mRevFrameList.Initialize();
+    }
+
+    public RFIDFrame(RFrame sendFrame,RFrame recvFrame) {
+        this.mSendFrame = sendFrame;
+        this.mRevFrameList = new RFrameList();
+        this.mRevFrameList.Initialize();
+        mRevFrameList.AddRFrame(recvFrame);
+    }
 
     public RFrame GetSendFrame() {
         return this.mSendFrame;
