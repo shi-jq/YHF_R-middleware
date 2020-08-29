@@ -1,0 +1,64 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.rfid_demo.Frame.MainDetailFragment">
+
+
+    <TextView
+        android:id="@+id/item_sn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:ems="3"
+        android:layout_weight="1"
+        android:text="No." />
+
+    <TextView
+        android:id="@+id/item_cardid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:ems="8"
+        android:layout_weight="1"
+        android:text="Tag" />
+
+    <TextView
+        android:id="@+id/item_readtime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:ems="4"
+        android:layout_weight="1"
+        android:text="Time" />
+
+    <TextView
+        android:id="@+id/item_readcount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:ems="4"
+        android:layout_weight="1"
+        android:text="Count" />
+
+    <TextView
+        android:id="@+id/item_rssi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:ems="3"
+        android:layout_weight="1"
+        android:text="Rssi" />
+
+    <TextView
+        android:id="@+id/item_battery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:ems="4"
+        android:layout_weight="1"
+        android:text="Battery" />
+
+</LinearLayout>

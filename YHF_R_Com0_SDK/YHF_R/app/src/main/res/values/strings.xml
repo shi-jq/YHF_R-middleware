@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Active RFID module</string>
+    <string name="ok">OK</string>
+    <string name="carrier_param">Frequency</string>
+    <string name="recv_power">Power amplifier receiving power</string>
+    <string name="send_power">RF sending power</string>
+    <string name="attenuation_value">Attenuation</string>
+	<string name="high_gain">High gain</string>
+	<string name="lower_gain">Low gain</string>
+	<string name="str_set">Set</string>
+	<string name="str_query">Query</string>
+	<string name="query_succeed">Query success</string>
+	<string name="query_failed">Query failed</string>
+	<string name="set_succeed">Set success</string>
+	<string name="set_failed">Set fail</string>
+	<string name="sn">No.</string>
+	<string name="readcount">Count</string>
+	<string name="cardid">Tag ID</string>
+    <string name="readtime">Read time</string>
+	<string name="tagstate">Tag status</string>
+    <string name="tag_type_normal">Normal tag</string>
+    <string name="count_num">Counts</string>
+	<string name="start_read">Start</string>
+	<string name="stop_read">Stop</string>
+	<string name="clear_list">Clear</string>
+    <string name="sure_quit">Are you sure to quit?</string>
+    <string name="tag_info">Tag info</string>
+    <string name="rssi">RSSI</string>
+    <string name="open_success">Open success！</string>
+	<string name="open_failed">Open failed！</string>
+	<string name="close_success">Close success！</string>
+	<string name="close_failed">Close failed！</string>
+	<string name="readcard_success">Start reading!</string>
+	<string name="readcard_failed">Read card failure！</string>
+	<string name="stop_readcard">Stop reading！</string>
+    <string name="start_mod">Start</string>
+	<string name="read_card">Read Tag</string>	
+	<string name="sys_info">System Conf</string>	
+	<string name="quit_app">Quit</string>
+	<string name="app_vesion">Program</string>
+	<string name="soft_vesion">APP Version </string>
+	<string name="api_vesion">Jar Version</string>
+	<string name="open">Open</string>
+	<string name="close">Close</string>
+    <string name="info_stopRead">Please stop reading!</string>
+    <string name="info_openModule">Please open the module first!</string>
+    <string name="info_stopModule">Please close the module first!</string>
+</resources>

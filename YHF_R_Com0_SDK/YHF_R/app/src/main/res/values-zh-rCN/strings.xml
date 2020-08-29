@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">有源读写模块</string>
+    <string name="ok">确定</string>
+    <string name="carrier_param">频率</string>
+    <string name="recv_power">功放增益</string>
+    <string name="send_power">射频输出功率</string>
+    <string name="attenuation_value">衰减值</string>
+    <string name="high_gain">高增益</string>
+    <string name="lower_gain">低增益</string>
+    <string name="str_set">设置</string>
+    <string name="str_query">查询</string>
+    <string name="query_succeed">查询成功</string>
+    <string name="query_failed">查询失败</string>
+    <string name="set_succeed">设置成功</string>
+    <string name="set_failed">设置失败</string>
+    <string name="sn">序号</string>
+    <string name="readcount">读卡次数</string>
+    <string name="cardid">卡号</string>
+    <string name="readtime">读卡时间</string>
+    <string name="tagstate">标签状态</string>
+    <string name="tag_type_normal">普通标签</string>
+    <string name="count_num">统计</string>
+    <string name="start_read" >开始读卡</string>
+    <string name="stop_read" >停止读卡</string>
+    <string name="clear_list" >清空</string>
+    <string name="sure_quit" >确定退出程序?</string>
+    <string name="tag_info" >标签信息</string>
+    <string name="rssi" >场强</string>
+    <string name="open_success" >打开成功！</string>
+    <string name="open_failed" >打开失败！</string>
+    <string name="close_success" >关闭成功！</string>
+    <string name="close_failed" >关闭失败！</string>
+    <string name="readcard_success" >开始读卡！</string>
+    <string name="readcard_failed" >读卡失败！</string>
+    <string name="stop_readcard" >停止读卡！</string>
+    <string name="start_mod" >启动模块</string>
+    <string name="read_card" >读卡演示</string>
+    <string name="sys_info" >系统配置</string>
+    <string name="quit_app" >退出程序</string>
+    <string name="app_vesion" >程序版本</string>
+    <string name="soft_vesion" >APP版本</string>
+    <string name="api_vesion" >Jar包版本</string>
+    <string name="open">打开</string>
+    <string name="close" >关闭</string>
+    <string name="info_stopRead">请先停止读卡!</string>
+</resources>
