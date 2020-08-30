@@ -1,19 +1,12 @@
 package com.rfid_demo.ctrl;
 
 
-import com.middleware.frame.common.HandleObject;
 import com.middleware.frame.common.INT32U;
 import com.middleware.frame.common.INT8U;
-import com.middleware.frame.ctrl.RfidErro;
 
 public class ApiCtrl {
     public static boolean mIsOpen = false;
     public static boolean mIsReading = false;
-    private static HandleObject mHandleObject = null;
-
-    public static HandleObject GetHandle() {
-        return mHandleObject;
-    }
 
     public static boolean GetIsOpen() {
         return mIsOpen;
@@ -28,11 +21,7 @@ public class ApiCtrl {
         return false;
     }
 
-    public static RfidErro GetErroCode() {
-        return new RfidErro();
-    }
-
-    public static boolean Open() {
+      public static boolean Open() {
         return false;
     }
 

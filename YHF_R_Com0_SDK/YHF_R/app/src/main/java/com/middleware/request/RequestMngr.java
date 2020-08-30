@@ -1,6 +1,5 @@
 package com.middleware.request;
 
-import com.middleware.connect.ConnectConfig;
 import com.middleware.frame.common.BaseThread;
 
 import java.util.LinkedList;
@@ -16,14 +15,14 @@ public class RequestMngr extends BaseThread {
 
     }
 
-    void createRequest(ConnectConfig config)
+    void createRequest()
     {
 
     }
 
 
     @Override
-    public void threadProcess() {
-
+    public boolean threadProcess() {
+        return  false;
     }
 }

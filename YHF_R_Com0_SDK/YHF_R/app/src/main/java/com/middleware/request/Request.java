@@ -19,33 +19,48 @@ import java.util.Observer;
 
 public class Request extends BaseThread implements Observer {
 
-    FrameMsgObervable toAndroid = null;
+    private FrameMsgObervable toAndroid = null;
     private DataProc mProc = new DataProc();
     private RFrameList mRFrameList = new RFrameList();
+    private ConnectBase mConnect = null;
 
-    //是否需要重连
+    //是否需要断线重连
     private boolean mIsNeedReconnect = false;
+    private boolean mIsNeedAddTimeTagFrame = false;
 
-    Request(String name,boolean needReconnect)
+    Request(ConnectBase connect,String name,boolean needReconnect)
     {
         super(name,true);
+        mConnect = connect;
         mIsNeedReconnect = needReconnect;
+
         MsgMngr.AndroidToPcObv.addObserver(this);
         toAndroid = MsgMngr.PcToAndroidObv;
     }
 
-    public boolean isNeedReconnect()
+    public void setNeedTimeTagFrame(boolean need)
     {
-        return false;
+        mIsNeedAddTimeTagFrame = need;
     }
 
-    private ConnectBase connect = null;
-
     @Override
-    public void update(Observable o, Object arg) {
+    public void update(Observable o, Object arg)
+    {
+        //如果已经断开了, 就把数据丢了
+        if (mConnect == null)
+        {
+            return;
+        }
+
+        if ( mConnect.isColsed())
+        {
+            return;
+        }
+
         RFIDFrame rfidFrame = (RFIDFrame) arg;
         assert  (rfidFrame != null);
-        OutputStream ouputStream =  connect.getOutputStream();
+        OutputStream ouputStream =  mConnect.getOutputStream();
+        assert(ouputStream != null);
         try {
 
             byte[] pForSend = new byte[1024];
@@ -62,24 +77,25 @@ public class Request extends BaseThread implements Observer {
     }
 
     private int bsize = 0;
-    private byte[] buffer = new byte[1024];
+    private byte[] buffer = new byte[DataProc.SEND_FRAME_MAXBUFF];
     @Override
     public boolean threadProcess()
     {
-        if (connect == null)
+        if (mConnect == null)
         {
             return false;
         }
 
         //如果链接已经关闭了, 且需要重连,则重连
-        if (connect.isColsed() &&  mIsNeedReconnect)
+        if (mConnect.isColsed() &&  mIsNeedReconnect)
         {
-            connect.reconnect();
+            mConnect.reconnect();
             //重连后,下一个时间片处理
             return false;
         }
 
-        InputStream inputStream =  connect.getInputStream();
+        InputStream inputStream =  mConnect.getInputStream();
+        assert(inputStream != null);
         bsize = 0;
         try {
             bsize = inputStream.read(buffer);

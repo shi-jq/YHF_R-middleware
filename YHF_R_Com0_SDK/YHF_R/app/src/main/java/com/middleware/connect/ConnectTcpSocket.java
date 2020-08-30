@@ -3,7 +3,7 @@ package com.middleware.connect;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class ConnectTcpClient implements ConnectBase{
+public class ConnectTcpSocket implements ConnectBase{
     @Override
     public boolean init() {
         return false;

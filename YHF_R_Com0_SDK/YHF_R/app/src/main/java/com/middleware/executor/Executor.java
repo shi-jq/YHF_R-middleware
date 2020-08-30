@@ -1,6 +1,7 @@
 package com.middleware.executor;
 
 import com.middleware.connect.ConnectBase;
+import com.middleware.frame.common.BaseThread;
 import com.middleware.frame.common.PrintCtrl;
 import com.middleware.frame.ctrl.ReaderState;
 import com.middleware.frame.data.DataProc;
@@ -16,12 +17,9 @@ import java.io.InputStream;
 import java.util.Observable;
 import java.util.Observer;
 
-public class Executor  implements Observer {
+public class Executor  extends BaseThread implements Observer {
 
     private ReaderState readerStatus = ReaderState.READER_STATE_INIT;
-
-    MyRunnable myRunnable = new MyRunnable();
-    private Thread mThead = new Thread(myRunnable);
 
     private DataProc mProc = new DataProc();
     private RFrameList mRecvRFrameList = new RFrameList();
@@ -31,47 +29,39 @@ public class Executor  implements Observer {
     FrameMsgObervable toModel = null;
     Executor()
     {
+        super("Executor",true);
         MsgMngr.PcToAndroidObv.addObserver(this);
         MsgMngr.ModelToAndroidObv.addObserver(this);
 
         toPc = MsgMngr.AndroidToPcObv;
         toModel = MsgMngr.AndroidToModelObv;
 
-        mThead.start();
     }
     @Override
     public void update(Observable o, Object arg)
     {
-
-
         if (o ==  MsgMngr.PcToAndroidObv)
         {
             //处理pc 到android的命令
             RFIDFrame rfidFrame = (RFIDFrame) arg;
             assert  (rfidFrame != null);
+
+            toModel.sendFrame(rfidFrame);
         }
         else  if (o ==  MsgMngr.ModelToAndroidObv)
         {
+            //处理modle 到pc的命令
+            RFIDFrame rfidFrame = (RFIDFrame) arg;
+            assert  (rfidFrame != null);
 
+
+            toPc.sendFrame(rfidFrame);
         }
     }
 
-
-    public class MyRunnable
-            implements Runnable {
-        public void run() {
-
-            while (true)
-            {
-
-                try {
-                    Thread.sleep(500L);
-                    continue;
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    continue;
-                }
-            }
-        }
+    public boolean threadProcess() {
+        return false;
     }
+
+
 }

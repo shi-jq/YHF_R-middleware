@@ -6,7 +6,6 @@ import com.middleware.frame.common.INT32U;
 import com.middleware.frame.common.PrintCtrl;
 import com.middleware.frame.common.RftserW32;
 import com.middleware.frame.ctrl.ReaderState;
-import com.middleware.frame.ctrl.RfidCommand;
 import com.middleware.frame.data.DataProc;
 import com.middleware.frame.data.RFIDFrame;
 import com.middleware.frame.data.RFrame;
@@ -26,12 +25,13 @@ public class Reader extends BaseThread implements Observer   {
 
     private DataProc mProc = new DataProc();
     private RFrameList mRecvRFrameList = new RFrameList();
-    private ConnectBase connect = null;
+    private ConnectBase mConnect = null;
 
     FrameMsgObervable toAndroid = null;
-    Reader()
+    Reader(ConnectBase connect)
     {
         super("Reader",true);
+        mConnect = connect;
         MsgMngr.AndroidToModelObv.addObserver(this);
         toAndroid = MsgMngr.ModelToAndroidObv;
 
@@ -41,7 +41,8 @@ public class Reader extends BaseThread implements Observer   {
     public void update(Observable o, Object arg) {
         RFIDFrame rfidFrame = (RFIDFrame) arg;
         assert  (rfidFrame != null);
-        OutputStream ouputStream =  connect.getOutputStream();
+        OutputStream ouputStream =  mConnect.getOutputStream();
+        assert(ouputStream != null);
         try {
 
             byte[] pForSend = new byte[1024];
@@ -79,17 +80,24 @@ public class Reader extends BaseThread implements Observer   {
 
     private RFrameList temList = new RFrameList();
     private int bsize = 0;
-    private byte[] buffer = new byte[1024];
+    private byte[] buffer = new byte[DataProc.SEND_FRAME_MAXBUFF];
 
     @Override
     public boolean threadProcess() {
 
-        if (connect == null)
+        if (mConnect == null)
         {
             return false;
         }
 
-        InputStream inputStream =  connect.getInputStream();
+        if (mConnect.isColsed())
+        {
+            mConnect.reconnect();
+            return false;
+        }
+
+        InputStream inputStream =  mConnect.getInputStream();
+        assert(inputStream != null);
         bsize = 0;
         try {
             bsize = inputStream.read(buffer);

@@ -10,7 +10,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.uart.R;
-import com.middleware.frame.ctrl.RfidErro;
 import com.rfid_demo.ctrl.ApiCtrl;
 import com.rfid_demo.ctrl.AppCfg;
 import com.rfid_demo.ctrl.Util;
@@ -168,13 +167,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     public void ShowMsg(String msg, boolean isErro) {
 
-        if (isErro) {
-            RfidErro pRfidErro = ApiCtrl.GetErroCode();
-            if (pRfidErro != null) {
-                msg += ":";
-                msg += pRfidErro.erroCode.toString();
-            }
-        }
         showToast(msg);
     }
 
