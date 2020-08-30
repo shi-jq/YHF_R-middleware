@@ -1,14 +1,23 @@
 package com.middleware.main;
 
-public class MiddlewareService {
+import com.middleware.frame.common.BaseThread;
+import com.middleware.frame.common.PrintCtrl;
+import com.middleware.frame.data.RFIDFrame;
+import com.middleware.frame.data.RFrame;
+import com.middleware.request.Request;
 
-    public boolean startServer()
+import java.io.IOException;
+import java.io.InputStream;
+
+public class MiddlewareService extends BaseThread {
+
+    MiddlewareService()
     {
-        return  false;
+        super("MiddlewareService",false);
     }
 
-    public  boolean stopServer()
-    {
-        return  false;
+    @Override
+    public void threadProcess() {
+
     }
 }

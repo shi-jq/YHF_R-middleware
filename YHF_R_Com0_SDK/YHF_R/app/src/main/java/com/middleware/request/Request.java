@@ -1,6 +1,7 @@
 package com.middleware.request;
 
 import com.middleware.connect.ConnectBase;
+import com.middleware.frame.common.BaseThread;
 import com.middleware.frame.common.INT32U;
 import com.middleware.frame.common.PrintCtrl;
 import com.middleware.frame.data.DataProc;
@@ -16,22 +17,18 @@ import java.io.OutputStream;
 import java.util.Observable;
 import java.util.Observer;
 
-public class Request implements Observer {
+public class Request extends BaseThread implements Observer {
 
     FrameMsgObervable toAndroid = null;
-    MyRunnable myRunnable = new MyRunnable();
-    private Thread mThead = new Thread(myRunnable);
-
     private DataProc mProc = new DataProc();
-
     private RFrameList mRFrameList = new RFrameList();
 
     Request()
     {
+        super("Request",true);
         MsgMngr.AndroidToPcObv.addObserver(this);
         toAndroid = MsgMngr.PcToAndroidObv;
 
-        mThead.start();
     }
 
     private ConnectBase connect = null;
@@ -65,47 +62,36 @@ public class Request implements Observer {
         }
     }
 
+    private int bsize = 0;
+    private byte[] buffer = new byte[1024];
+    @Override
+    public void threadProcess()
+    {
+        if (connect == null)
+        {
+            return;
+        }
 
-    public class MyRunnable
-            implements Runnable {
-        public void run() {
+        InputStream inputStream =  connect.getInputStream();
+        bsize = 0;
+        try {
+            bsize = inputStream.read(buffer);
 
-            InputStream inputStream =  connect.getInputStream();
-            int bsize = 0;
-            byte[] buffer = new byte[1024];
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-
-            while (true)
-            {
-                bsize = 0;
-                try {
-                    bsize = inputStream.read(buffer);
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                PrintCtrl.PrintBUffer("数据从PC读取 ", buffer, bsize);
-                if (bsize > 0)
-                {
-                    mProc.UnPackMsg(buffer,bsize);
-                    mProc.GetFrameList(mRFrameList);
-                    for (int i = 0; i < mRFrameList.GetCount(); i++) {
-                        RFrame pRFrame = mRFrameList.GetRFrame(i);
-                        RFIDFrame rfidFrame = new RFIDFrame(pRFrame);
-                        toAndroid.sendFrame(rfidFrame);
-                    }
-                    mRFrameList.ClearAll();
-                }
-
-                try {
-                    Thread.sleep(500L);
-                    continue;
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    continue;
-                }
+        PrintCtrl.PrintBUffer("数据从PC读取 ", buffer, bsize);
+        if (bsize > 0)
+        {
+            mProc.UnPackMsg(buffer,bsize);
+            mProc.GetFrameList(mRFrameList);
+            for (int i = 0; i < mRFrameList.GetCount(); i++) {
+                RFrame pRFrame = mRFrameList.GetRFrame(i);
+                RFIDFrame rfidFrame = new RFIDFrame(pRFrame);
+                toAndroid.sendFrame(rfidFrame);
             }
+            mRFrameList.ClearAll();
         }
     }
 }

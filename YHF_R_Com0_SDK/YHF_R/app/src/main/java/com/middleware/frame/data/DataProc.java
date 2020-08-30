@@ -3,8 +3,6 @@ package com.middleware.frame.data;
 
 import com.middleware.frame.common.INT32U;
 import com.middleware.frame.common.RFIDSystemCfg;
-import com.middleware.frame.common.RfidErrorException;
-import com.middleware.frame.common.RfidStatus;
 import com.middleware.frame.ctrl.RfidCommand;
 
 
@@ -70,15 +68,14 @@ public class DataProc {
     }
 
 
-    public boolean CheckMsg(RfidCommand pSendCommand) throws RfidErrorException {
+    public boolean CheckMsg(RfidCommand pSendCommand)  {
         if (pSendCommand == RfidCommand.COM_SEND_HEART ||
                 pSendCommand == RfidCommand.COM_IO_OP ||
                 pSendCommand == RfidCommand.COM_YSTOP ||
                 pSendCommand == RfidCommand.COM_INPUT_QUERY) {
             return true;
         }
-
-        throw new RfidErrorException(RfidStatus.RFID_ERROR_READING_NOTEXE);
+        return  false;
     }
 
     public void updateFrameCrc(RFrame pRFrame)
