@@ -1,19 +1,14 @@
 package com.middleware.frame.data;
 
-import com.yrfidapi.reader.ctrl.RfidCommand;
+import com.middleware.frame.ctrl.RfidCommand;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class RFrameList {
-    private LinkedList<RFrame> mRFrameList = null;
-    private Lock mLock;
-
-    public void Initialize() {
-        this.mRFrameList = new LinkedList<RFrame>();
-        this.mLock = new ReentrantLock();
-    }
+    private LinkedList<RFrame> mRFrameList =  new LinkedList<RFrame>();
+    private Lock mLock  = new ReentrantLock();
 
     public int GetCount() {
         int count = 0;
@@ -82,8 +77,28 @@ public class RFrameList {
         return pRFrame;
     }
 
+    public RFrame GetRFrame(byte byteCommand, boolean remove) {
+        RFrame pRFrame = null;
+        this.mLock.lock();
 
-    public RFrame GetRFrame(RfidCommand pCommand) {
+        Iterator<RFrame> iter = this.mRFrameList.iterator();
+        while (iter.hasNext()) {
+            RFrame rFrame = iter.next();
+            if (rFrame.GetRfidCommand() == byteCommand) {
+                pRFrame = rFrame;
+                if (remove)
+                {
+                    mRFrameList.remove(rFrame);
+                }
+                break;
+            }
+        }
+        this.mLock.unlock();
+        return pRFrame;
+    }
+
+
+    public RFrame GetRFrame(RfidCommand pCommand, boolean remove) {
         RFrame pRFrame = null;
         this.mLock.lock();
 
@@ -92,7 +107,10 @@ public class RFrameList {
             RFrame rFrame = iter.next();
             if (rFrame.GetRfidCommand() == pCommand.GetValue()) {
                 pRFrame = rFrame;
-
+                if (remove)
+                {
+                    mRFrameList.remove(rFrame);
+                }
                 break;
             }
         }
@@ -102,12 +120,10 @@ public class RFrameList {
 
     public boolean DelRFrame(RfidCommand pCommand) {
         boolean retB = false;
-        RFrame pFrame = GetRFrame(pCommand);
+        RFrame pFrame = GetRFrame(pCommand,true);
         if (pFrame != null) {
 
-            this.mLock.lock();
-            retB = this.mRFrameList.remove(pFrame);
-            this.mLock.unlock();
+            retB = true;
         }
 
         return retB;

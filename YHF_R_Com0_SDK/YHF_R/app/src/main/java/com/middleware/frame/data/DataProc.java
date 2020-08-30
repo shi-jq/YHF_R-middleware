@@ -5,7 +5,7 @@ import com.middleware.frame.common.INT32U;
 import com.middleware.frame.common.RFIDSystemCfg;
 import com.middleware.frame.common.RfidErrorException;
 import com.middleware.frame.common.RfidStatus;
-import com.yrfidapi.reader.ctrl.RfidCommand;
+import com.middleware.frame.ctrl.RfidCommand;
 
 
 
@@ -53,16 +53,10 @@ public class DataProc {
     private int mFramePriority = 0;
     private int mFrameAnswer = 0;
     private RFIDSystemCfg mRfidSystemCfg = null;
-    private RFrameList mWaitFrameList = null;
-    private RFrameList mValidFrameList = null;
+    private RFrameList mWaitFrameList  = new RFrameList();
+    private RFrameList mValidFrameList  = new RFrameList();
 
     public void Initialize(RFIDSystemCfg pCfg) {
-        this.mWaitFrameList = new RFrameList();
-        this.mWaitFrameList.Initialize();
-        this.mValidFrameList = new RFrameList();
-        this.mValidFrameList.Initialize();
-
-
         this.mRfidSystemCfg = pCfg;
     }
 
@@ -87,7 +81,27 @@ public class DataProc {
         throw new RfidErrorException(RfidStatus.RFID_ERROR_READING_NOTEXE);
     }
 
-    public void PackMsg(RfidCommand pSendCommand, byte[] pSendData, int dataLength, byte[] pForSend, INT32U nForSendLen, RFrame pRFrame) {
+    public void updateFrameCrc(RFrame pRFrame)
+    {
+        int CRCValue = 0;
+        CRCValue = GetFrameCrc(pRFrame, pRFrame.GetRealBuffLen());
+        pRFrame.Insert((byte) (CRCValue >>> 8 & 0xFF));
+        pRFrame.Insert((byte) (CRCValue & 0xFF));
+    }
+
+    public void PackMsg(byte[] pForSend, INT32U nForSendLen, RFrame pRFrame)
+    {
+        pForSend[0] = FRAME_HEAD;
+        int index = 1;
+
+        for (int i = 1; i < pRFrame.GetRealBuffLen(); i++) {
+            index = ReplaceByte(pForSend, index, pRFrame.GetByte(i));
+        }
+
+        nForSendLen.SetValue(index);
+    }
+
+        public void PackMsg(RfidCommand pSendCommand, byte[] pSendData, int dataLength, byte[] pForSend, INT32U nForSendLen, RFrame pRFrame) {
 
 
         this.mFrameNum++;

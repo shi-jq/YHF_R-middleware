@@ -1,8 +1,11 @@
-package com.middleware.request;
+package com.middleware.reader;
 
 import com.middleware.connect.ConnectBase;
 import com.middleware.frame.common.INT32U;
 import com.middleware.frame.common.PrintCtrl;
+import com.middleware.frame.common.RftserW32;
+import com.middleware.frame.ctrl.ReaderState;
+import com.middleware.frame.ctrl.RfidCommand;
 import com.middleware.frame.data.DataProc;
 import com.middleware.frame.data.RFIDFrame;
 import com.middleware.frame.data.RFrame;
@@ -16,33 +19,24 @@ import java.io.OutputStream;
 import java.util.Observable;
 import java.util.Observer;
 
-public class Request implements Observer {
+public class Reader implements Observer {
 
-    FrameMsgObervable toAndroid = null;
-    MyRunnable myRunnable = new MyRunnable();
+    private  ReaderState readerStatus = ReaderState.READER_STATE_INIT;
+
+    Reader.MyRunnable myRunnable = new Reader.MyRunnable();
     private Thread mThead = new Thread(myRunnable);
 
     private DataProc mProc = new DataProc();
+    private RFrameList mRecvRFrameList = new RFrameList();
+    private ConnectBase connect = null;
 
-    private RFrameList mRFrameList = new RFrameList();
-
-    Request()
+    FrameMsgObervable toAndroid = null;
+    Reader()
     {
-        MsgMngr.AndroidToPcObv.addObserver(this);
-        toAndroid = MsgMngr.PcToAndroidObv;
+        MsgMngr.AndroidToModelObv.addObserver(this);
+        toAndroid = MsgMngr.ModelToAndroidObv;
 
         mThead.start();
-    }
-
-    private ConnectBase connect = null;
-    public boolean SendFrame(RFrame frame)
-    {
-        return  false;
-    }
-
-    public RFrame ReacvFrame()
-    {
-        return  null;
     }
 
     @Override
@@ -55,15 +49,36 @@ public class Request implements Observer {
             byte[] pForSend = new byte[1024];
             INT32U totalFrameSize = new INT32U(1024);
 
-            mProc.PackMsg(pForSend,totalFrameSize, rfidFrame.GetRevFrame());
-
+            mProc.PackMsg(pForSend,totalFrameSize, rfidFrame.GetSendFrame());
             ouputStream.write(pForSend,0,totalFrameSize.GetValue());
+            PrintCtrl.PrintBUffer("数据发送到模块 ", pForSend, totalFrameSize.GetValue());
 
-            PrintCtrl.PrintBUffer("数据发送到PC ", pForSend, totalFrameSize.GetValue());
+            RFrame pRFrame =  waitRecvFrame(rfidFrame.GetSendFrame(),3000);
+            rfidFrame.AddRevFrame(pRFrame);
+
+            toAndroid.sendFrame(rfidFrame);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+    RFrame waitRecvFrame(RFrame sendFrame, int timeout)
+    {
+        byte btRfidCommand = sendFrame.GetRfidCommand();
+        RFrame pRFrame = null;
+        long cur_ms = RftserW32.Ser32_TickCount();
+        while (!RftserW32.Ser_CheckTimeout(cur_ms, timeout)) {
+
+            pRFrame = mRecvRFrameList.GetRFrame(btRfidCommand,true);
+            if (pRFrame != null) {
+                return pRFrame;
+            }
+        }
+
+        return null;
+    }
+
 
 
     public class MyRunnable
@@ -74,7 +89,7 @@ public class Request implements Observer {
             int bsize = 0;
             byte[] buffer = new byte[1024];
 
-
+            RFrameList temList = new RFrameList();
             while (true)
             {
                 bsize = 0;
@@ -89,13 +104,12 @@ public class Request implements Observer {
                 if (bsize > 0)
                 {
                     mProc.UnPackMsg(buffer,bsize);
-                    mProc.GetFrameList(mRFrameList);
-                    for (int i = 0; i < mRFrameList.GetCount(); i++) {
-                        RFrame pRFrame = mRFrameList.GetRFrame(i);
-                        RFIDFrame rfidFrame = new RFIDFrame(pRFrame);
-                        toAndroid.sendFrame(rfidFrame);
+                    mProc.GetFrameList(temList);
+                    for (int i = 0; i < temList.GetCount(); i++) {
+                        RFrame pRFrame = temList.GetRFrame(i);
+                        mRecvRFrameList.AddRFrame(pRFrame);
                     }
-                    mRFrameList.ClearAll();
+                    temList.ClearAll();
                 }
 
                 try {

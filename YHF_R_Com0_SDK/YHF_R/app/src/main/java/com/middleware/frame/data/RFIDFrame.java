@@ -3,24 +3,18 @@ package com.middleware.frame.data;
 
 public class RFIDFrame {
     private RFrame mSendFrame = null;
-    private RFrameList mRevFrameList = null;
+    private RFrameList mRevFrameList = new RFrameList();
 
     public RFIDFrame() {
         this.mSendFrame = new RFrame();
-        this.mRevFrameList = new RFrameList();
-        this.mRevFrameList.Initialize();
     }
 
     public RFIDFrame(RFrame sendFrame) {
         this.mSendFrame = sendFrame;
-        this.mRevFrameList = new RFrameList();
-        this.mRevFrameList.Initialize();
     }
 
     public RFIDFrame(RFrame sendFrame,RFrame recvFrame) {
         this.mSendFrame = sendFrame;
-        this.mRevFrameList = new RFrameList();
-        this.mRevFrameList.Initialize();
         mRevFrameList.AddRFrame(recvFrame);
     }
 

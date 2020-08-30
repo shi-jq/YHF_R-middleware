@@ -1,4 +1,4 @@
-package com.yrfidapi.reader.ctrl;
+package com.middleware.frame.ctrl;
 
 public enum RfidCommand {
     COM_SYS_CFG(0),

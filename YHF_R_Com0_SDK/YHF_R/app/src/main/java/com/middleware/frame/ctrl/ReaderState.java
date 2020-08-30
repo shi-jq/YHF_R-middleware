@@ -1,11 +1,10 @@
 package com.middleware.frame.ctrl;
 
 public enum ReaderState {
-    READER_STATE_INIT,
-    READER_STATE_OPEN,
-    READER_STATE_BUSY,
-    READER_STATE_READING,
-    READER_STATE_CLOSE
+    READER_STATE_INIT,//未连接
+    READER_STATE_OPEN,//连接
+    READER_STATE_ERRO,//错误
+    READER_STATE_READING//读卡中
 }
 
 
