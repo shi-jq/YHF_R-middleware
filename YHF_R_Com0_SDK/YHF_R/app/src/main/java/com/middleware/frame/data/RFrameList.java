@@ -77,14 +77,15 @@ public class RFrameList {
         return pRFrame;
     }
 
-    public RFrame GetRFrame(byte byteCommand, boolean remove) {
+    public RFrame GetRFrame(byte byteCommand,byte busaddr, boolean remove) {
         RFrame pRFrame = null;
         this.mLock.lock();
 
         Iterator<RFrame> iter = this.mRFrameList.iterator();
         while (iter.hasNext()) {
             RFrame rFrame = iter.next();
-            if (rFrame.GetRfidCommand() == byteCommand) {
+            if (rFrame.GetRfidCommand() == byteCommand
+                    && rFrame.GetBusAddr() == busaddr) {
                 pRFrame = rFrame;
                 if (remove)
                 {

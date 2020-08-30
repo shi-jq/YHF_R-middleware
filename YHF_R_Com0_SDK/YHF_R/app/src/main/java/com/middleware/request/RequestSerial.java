@@ -1,6 +1,9 @@
 package com.middleware.request;
 
+import com.middleware.config.ConfigMngr;
 import com.middleware.connect.ConnectBase;
+import com.middleware.connect.ConnectSerial;
+import com.middleware.connect.SerialConfig;
 import com.middleware.frame.common.BaseThread;
 import com.middleware.frame.common.INT32U;
 import com.middleware.frame.common.PrintCtrl;
@@ -17,25 +20,29 @@ import java.io.OutputStream;
 import java.util.Observable;
 import java.util.Observer;
 
-public class Request extends BaseThread implements Observer {
+
+public class RequestSerial extends BaseThread implements Observer {
 
     private FrameMsgObervable toAndroid = null;
     private DataProc mProc = new DataProc();
     private RFrameList mRFrameList = new RFrameList();
     private ConnectBase mConnect = null;
 
-
     //是否需要断线重连
     private boolean mIsNeedAddTimeTagFrame = false;
     private boolean mAutoSendHeath = false;//自动发送心跳
 
-    Request(ConnectBase connect )
+    public RequestSerial()
     {
-        super(connect.getConnectName(),true);
-        mConnect = connect;
+        super("RequestSerial",true);
 
-        MsgMngr.AndroidToPcObv.addObserver(this);
-        toAndroid = MsgMngr.PcToAndroidObv;
+        SerialConfig config  = new SerialConfig();
+        config.baudrate = ConfigMngr.pcSerial.baudrate;
+        config.comNum = ConfigMngr.pcSerial.comNum;
+        mConnect = new ConnectSerial(config);
+
+        MsgMngr.AndroidToPcTagObv.addObserver(this);
+        toAndroid = MsgMngr.PcToAndroidMsgObv;
     }
 
     public void setNeedTimeTagFrame(boolean need)
@@ -73,8 +80,6 @@ public class Request extends BaseThread implements Observer {
         }
 
         this.stop();
-
-        MsgMngr.AndroidToPcObv.deleteObserver(this);
         return true;
     }
 
@@ -92,17 +97,46 @@ public class Request extends BaseThread implements Observer {
             return;
         }
 
-        RFIDFrame rfidFrame = (RFIDFrame) arg;
+        if ( MsgMngr.AndroidToPcTagObv == o)
+        {
+            RFrame frame = (RFrame) arg;
+            assert  (frame != null);
+            OutputStream ouputStream =  mConnect.getOutputStream();
+            assert(ouputStream != null);
+            try {
+
+                byte[] pForSend = new byte[DataProc.SEND_FRAME_MAXBUFF];
+                INT32U totalFrameSize = new INT32U(DataProc.SEND_FRAME_MAXBUFF);
+
+                mProc.PackMsg(pForSend,totalFrameSize, frame);
+
+                ouputStream.write(pForSend,0,totalFrameSize.GetValue());
+
+                PrintCtrl.PrintBUffer("标签数据发送到PC ", pForSend, totalFrameSize.GetValue());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    private void sendResultToPc(RFIDFrame rfidFrame)
+    {
         assert  (rfidFrame != null);
         OutputStream ouputStream =  mConnect.getOutputStream();
         assert(ouputStream != null);
         try {
+            RFrame recvFrame = rfidFrame.GetRevFrame();
+            if (recvFrame == null)
+            {
+                //有可能没有应答, 没有应答则不做处理,因为本身已经超时了
+                return;
+            }
 
             byte[] pForSend = new byte[DataProc.SEND_FRAME_MAXBUFF];
             INT32U totalFrameSize = new INT32U(DataProc.SEND_FRAME_MAXBUFF);
 
-            mProc.PackMsg(pForSend,totalFrameSize, rfidFrame.GetRevFrame());
-
+            mProc.PackMsg(pForSend,totalFrameSize, recvFrame);
             ouputStream.write(pForSend,0,totalFrameSize.GetValue());
 
             PrintCtrl.PrintBUffer("数据发送到PC ", pForSend, totalFrameSize.GetValue());
@@ -144,7 +178,8 @@ public class Request extends BaseThread implements Observer {
             for (int i = 0; i < mRFrameList.GetCount(); i++) {
                 RFrame pRFrame = mRFrameList.GetRFrame(i);
                 RFIDFrame rfidFrame = new RFIDFrame(pRFrame);
-                toAndroid.sendFrame(rfidFrame);
+                toAndroid.dealFrame(rfidFrame);
+                sendResultToPc(rfidFrame);
             }
             mRFrameList.ClearAll();
             return  true;

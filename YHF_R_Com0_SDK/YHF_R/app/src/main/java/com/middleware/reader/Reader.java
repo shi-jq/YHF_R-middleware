@@ -14,6 +14,7 @@ import com.middleware.frame.data.RFIDFrame;
 import com.middleware.frame.data.RFrame;
 import com.middleware.frame.data.RFrameList;
 import com.middleware.frame.main.FrameMsgObervable;
+import com.middleware.frame.main.FrameTagObervable;
 import com.middleware.frame.main.MsgMngr;
 
 import java.io.IOException;
@@ -30,7 +31,7 @@ public class Reader extends BaseThread implements Observer   {
     private RFrameList mRecvRFrameList = new RFrameList();
     private ConnectBase mConnect = null;
 
-    FrameMsgObervable toAndroid = null;
+    FrameTagObervable toAndroidTag = null;
     public Reader()
     {
         super("Reader",true);
@@ -41,8 +42,8 @@ public class Reader extends BaseThread implements Observer   {
         mConnect = new ConnectSerialForModel(config);
         mConnect.init();
 
-        MsgMngr.AndroidToModelObv.addObserver(this);
-        toAndroid = MsgMngr.ModelToAndroidObv;
+        MsgMngr.AndroidToModelMsgObv.addObserver(this);
+        toAndroidTag = MsgMngr.ModelToAndroidTagObv;
 
         this.resume();
     }
@@ -66,12 +67,12 @@ public class Reader extends BaseThread implements Observer   {
             RFrame pRFrame =  waitRecvFrame(rfidFrame.GetSendFrame(),3000);
             rfidFrame.AddRevFrame(pRFrame);
 
-            toAndroid.sendFrame(rfidFrame);
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+
 
     RFrame waitRecvFrame(RFrame sendFrame, int timeout)
     {
@@ -80,8 +81,10 @@ public class Reader extends BaseThread implements Observer   {
         long cur_ms = RftserW32.Ser32_TickCount();
         while (!RftserW32.Ser_CheckTimeout(cur_ms, timeout)) {
 
-            pRFrame = mRecvRFrameList.GetRFrame(btRfidCommand,true);
-            if (pRFrame != null) {
+            pRFrame = mRecvRFrameList.GetRFrame(btRfidCommand,
+                    sendFrame.GetBusAddr(),true);
+            if (pRFrame != null)
+            {
                 return pRFrame;
             }
         }
@@ -124,7 +127,14 @@ public class Reader extends BaseThread implements Observer   {
             mProc.GetFrameList(temList);
             for (int i = 0; i < temList.GetCount(); i++) {
                 RFrame pRFrame = temList.GetRFrame(i);
-                mRecvRFrameList.AddRFrame(pRFrame);
+                byte byteCommand = pRFrame.GetRfidCommand();
+                if (!mProc.isReportCommand(byteCommand))
+                {
+                    toAndroidTag.sendTag(pRFrame);
+                }
+                else{
+                    mRecvRFrameList.AddRFrame(pRFrame);
+                }
             }
             temList.ClearAll();
             return  true;

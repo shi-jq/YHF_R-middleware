@@ -52,6 +52,11 @@ public class RFrame {
         }
     }
 
+    public byte GetBusAddr()
+    {
+        return this.bHead[3];
+    }
+
 
     public byte GetByte(int index) {
         if (index < 5) {

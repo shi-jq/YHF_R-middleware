@@ -13,11 +13,8 @@ import java.util.LinkedList;
 
 public class RequestMngr extends BaseThread {
     //通过串口连接的
-    private Request mSerialRequest = null;
-    //通过tcp udp客户端连接的
-    private LinkedList<Request> mClientRequestList = new LinkedList<Request>();
-    //通过tcpserver udpserver 连接进来的
-    private LinkedList<Request> mServerRequestList = new LinkedList<Request>();
+    private RequestSerial mSerialRequest = null;
+
 
     public RequestMngr()
     {
@@ -29,17 +26,7 @@ public class RequestMngr extends BaseThread {
     //重新创建串口, 串口波特率改变的时候 需要去调整
     private  void recreateSerialRequest()
     {
-        if (mSerialRequest != null)
-        {
-            mSerialRequest.Quit();
-            mSerialRequest = null;
-        }
 
-        SerialConfig config  = new SerialConfig();
-        config.baudrate = ConfigMngr.pcSerial.baudrate;
-        config.comNum = ConfigMngr.pcSerial.comNum;
-        ConnectSerial connect = new ConnectSerial(config);
-        mSerialRequest = new Request(connect);
     }
 
     //重新设定转发的客户端
@@ -51,12 +38,12 @@ public class RequestMngr extends BaseThread {
 
     private void clearAllClient()
     {
-        Iterator<Request> it = mClientRequestList.iterator();
-        while(it.hasNext()){
-            Request request = it.next();
-            request.Quit();
-        }
-        mClientRequestList.clear();
+//        Iterator<Request> it = mClientRequestList.iterator();
+//        while(it.hasNext()){
+//            Request request = it.next();
+//            request.Quit();
+//        }
+//        mClientRequestList.clear();
     }
 
     private void createAllClient()
@@ -82,27 +69,27 @@ public class RequestMngr extends BaseThread {
 
     public void createOneTcpClint(ConfigClient configF)
     {
-        TcpClientConfig config  = new TcpClientConfig();
-
-        config.ipAddr = configF.ipAddr;
-        config.port = configF.port;
-
-        ConnectTcpClient connect = new ConnectTcpClient(config);
-        Request request = new Request(connect);
-        mClientRequestList.add(request);
+//        TcpClientConfig config  = new TcpClientConfig();
+//
+//        config.ipAddr = configF.ipAddr;
+//        config.port = configF.port;
+//
+//        ConnectTcpClient connect = new ConnectTcpClient(config);
+//        Request request = new Request(connect);
+//        mClientRequestList.add(request);
     }
 
     private boolean checkClientRequest()
     {
-        Iterator<Request> it = mClientRequestList.iterator();
-        while(it.hasNext()){
-            Request request = it.next();
-            //客户端就一直尝试连接
-            if (request.isColsed())
-            {
-                request.reconnect();
-            }
-        }
+//        Iterator<Request> it = mClientRequestList.iterator();
+//        while(it.hasNext()){
+//            Request request = it.next();
+//            //客户端就一直尝试连接
+//            if (request.isColsed())
+//            {
+//                request.reconnect();
+//            }
+//        }
 
         return  true;
     }
@@ -110,15 +97,15 @@ public class RequestMngr extends BaseThread {
     private boolean checkServerRequest()
     {
         //由服务端连接进来的 则断开后就断开了, 直接关闭了
-        Iterator<Request> it = mServerRequestList.iterator();
-        while(it.hasNext()){
-            Request request = it.next();
-            if (request.isColsed())
-            {
-                request.Quit();
-                it.remove();
-            }
-        }
+//        Iterator<Request> it = mServerRequestList.iterator();
+//        while(it.hasNext()){
+//            Request request = it.next();
+//            if (request.isColsed())
+//            {
+//                request.Quit();
+//                it.remove();
+//            }
+//        }
 
         return  true;
     }

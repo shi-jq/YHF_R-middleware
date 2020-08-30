@@ -2,18 +2,15 @@ package com.middleware.executor;
 
 import com.middleware.connect.ConnectBase;
 import com.middleware.frame.common.BaseThread;
-import com.middleware.frame.common.PrintCtrl;
 import com.middleware.frame.ctrl.ReaderState;
 import com.middleware.frame.data.DataProc;
 import com.middleware.frame.data.RFIDFrame;
 import com.middleware.frame.data.RFrame;
 import com.middleware.frame.data.RFrameList;
 import com.middleware.frame.main.FrameMsgObervable;
+import com.middleware.frame.main.FrameTagObervable;
 import com.middleware.frame.main.MsgMngr;
-import com.middleware.reader.Reader;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -27,34 +24,33 @@ public class Executor  extends BaseThread implements Observer {
 
     FrameMsgObervable toPc = null;
     FrameMsgObervable toModel = null;
+    FrameTagObervable toPcTag = null;
     public Executor()
     {
         super("Executor",true);
-        MsgMngr.PcToAndroidObv.addObserver(this);
-        MsgMngr.ModelToAndroidObv.addObserver(this);
+        MsgMngr.PcToAndroidMsgObv.addObserver(this);
 
-        toPc = MsgMngr.AndroidToPcObv;
-        toModel = MsgMngr.AndroidToModelObv;
+        MsgMngr.ModelToAndroidTagObv.addObserver(this);
+
+        toModel = MsgMngr.AndroidToModelMsgObv;
+        toPcTag = MsgMngr.AndroidToPcTagObv;
     }
 
     @Override
     public void update(Observable o, Object arg)
     {
-        if (o ==  MsgMngr.PcToAndroidObv)
+        if (o ==  MsgMngr.PcToAndroidMsgObv)
         {
             //处理pc 到android的命令
             RFIDFrame rfidFrame = (RFIDFrame) arg;
             assert  (rfidFrame != null);
-
-            toModel.sendFrame(rfidFrame);
+            toModel.dealFrame(rfidFrame);
         }
-        else  if (o ==  MsgMngr.ModelToAndroidObv)
+        else  if (o ==  MsgMngr.ModelToAndroidTagObv)
         {
-            //处理modle 到pc的命令
-            RFIDFrame rfidFrame = (RFIDFrame) arg;
+            RFrame rfidFrame = (RFrame) arg;
             assert  (rfidFrame != null);
-
-            toPc.sendFrame(rfidFrame);
+            toPcTag.sendTag(rfidFrame);
         }
     }
 

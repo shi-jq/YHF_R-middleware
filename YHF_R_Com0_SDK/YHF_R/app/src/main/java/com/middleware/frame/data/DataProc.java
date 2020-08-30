@@ -66,16 +66,28 @@ public class DataProc {
     {
         return  pSendCommand == RfidCommand.COM_SEND_HEART;
     }
-    //停止读卡命令
-    public boolean isStopRead(RfidCommand pSendCommand)
+
+    public boolean isReportCommand(byte pSendCommand)
     {
-        return  pSendCommand == RfidCommand.COM_YSTOP;
+        if(pSendCommand == RfidCommand.COM_SEND_HEART.GetValue()  ||
+                pSendCommand == RfidCommand.COM_YMAKE_TAGUPLOAD.GetValue()
+        )
+        {
+            return true;
+        }
+
+        return  false;
+    }
+    //停止读卡命令
+    public boolean isStopRead(byte pSendCommand)
+    {
+        return  pSendCommand == RfidCommand.COM_YSTOP.GetValue();
     }
 
     //开始读卡命令
-    public boolean isStartRead(RfidCommand pSendCommand)
+    public boolean isStartRead(byte pSendCommand)
     {
-        return  pSendCommand == RfidCommand.COM_YMAKE_TAGUPLOAD;
+        return  pSendCommand == RfidCommand.COM_YMAKE_TAGUPLOAD.GetValue();
     }
 
     public void updateFrameCrc(RFrame pRFrame)

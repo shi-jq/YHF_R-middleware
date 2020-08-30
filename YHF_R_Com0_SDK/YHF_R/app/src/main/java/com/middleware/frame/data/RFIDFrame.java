@@ -1,6 +1,4 @@
 package com.middleware.frame.data;
-
-
 public class RFIDFrame {
     private RFrame mSendFrame = null;
     private RFrameList mRevFrameList = new RFrameList();
@@ -21,7 +19,6 @@ public class RFIDFrame {
     public RFrame GetSendFrame() {
         return this.mSendFrame;
     }
-
 
     public void AddRevFrame(RFrame pRFrame) {
         this.mRevFrameList.AddRFrame(pRFrame);
