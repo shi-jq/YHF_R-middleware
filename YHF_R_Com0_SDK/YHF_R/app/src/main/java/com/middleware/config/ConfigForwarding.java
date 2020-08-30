@@ -9,8 +9,8 @@ public class ConfigForwarding
         TCP
     }
 
-    public static ForwardType type = ForwardType.NONE;
-    public static boolean isEnable = false;
-    public static String ipAddr = "127.0.0.1";
-    public static int port = 60001;
+    public static ForwardType type = ForwardType.NONE;//转发类型
+    public static String ipAddr = "127.0.0.1";//转发的ip
+    public static int port = 60001;//转发的端口
+    public static boolean isAddTime = true;//是否加上时间戳
 }

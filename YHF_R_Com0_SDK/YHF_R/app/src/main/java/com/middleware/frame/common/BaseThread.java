@@ -34,8 +34,10 @@ public abstract class BaseThread implements Runnable {
                         wait();
                     }
                 }
-                Thread.sleep(SUSPEND_TIME_MILLISECONDS);
-                threadProcess();
+                if (!threadProcess())
+                {
+                    Thread.sleep(SUSPEND_TIME_MILLISECONDS);
+                }
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -45,9 +47,9 @@ public abstract class BaseThread implements Runnable {
     }
 
     /**
-     * 线程处理接口。
+     * 线程处理接口。返回true则不等待, false则会等待
      */
-    public abstract void threadProcess();
+    public abstract boolean threadProcess();
 
     /**
      * 线程暂停

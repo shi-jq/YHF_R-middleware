@@ -82,11 +82,11 @@ public class Reader extends BaseThread implements Observer   {
     private byte[] buffer = new byte[1024];
 
     @Override
-    public void threadProcess() {
+    public boolean threadProcess() {
 
         if (connect == null)
         {
-            return;
+            return false;
         }
 
         InputStream inputStream =  connect.getInputStream();
@@ -108,7 +108,9 @@ public class Reader extends BaseThread implements Observer   {
                 mRecvRFrameList.AddRFrame(pRFrame);
             }
             temList.ClearAll();
+            return  true;
         }
 
+        return false;
     }
 }

@@ -25,6 +25,11 @@ public class ConnectSerial implements ConnectBase{
     }
 
     @Override
+    public boolean isColsed() {
+        return false;
+    }
+
+    @Override
     public InputStream getInputStream() {
         return null;
     }

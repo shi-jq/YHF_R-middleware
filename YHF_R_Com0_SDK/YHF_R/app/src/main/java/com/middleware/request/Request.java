@@ -23,24 +23,23 @@ public class Request extends BaseThread implements Observer {
     private DataProc mProc = new DataProc();
     private RFrameList mRFrameList = new RFrameList();
 
-    Request()
+    //是否需要重连
+    private boolean mIsNeedReconnect = false;
+
+    Request(String name,boolean needReconnect)
     {
-        super("Request",true);
+        super(name,true);
+        mIsNeedReconnect = needReconnect;
         MsgMngr.AndroidToPcObv.addObserver(this);
         toAndroid = MsgMngr.PcToAndroidObv;
+    }
 
+    public boolean isNeedReconnect()
+    {
+        return false;
     }
 
     private ConnectBase connect = null;
-    public boolean SendFrame(RFrame frame)
-    {
-        return  false;
-    }
-
-    public RFrame ReacvFrame()
-    {
-        return  null;
-    }
 
     @Override
     public void update(Observable o, Object arg) {
@@ -65,11 +64,19 @@ public class Request extends BaseThread implements Observer {
     private int bsize = 0;
     private byte[] buffer = new byte[1024];
     @Override
-    public void threadProcess()
+    public boolean threadProcess()
     {
         if (connect == null)
         {
-            return;
+            return false;
+        }
+
+        //如果链接已经关闭了, 且需要重连,则重连
+        if (connect.isColsed() &&  mIsNeedReconnect)
+        {
+            connect.reconnect();
+            //重连后,下一个时间片处理
+            return false;
         }
 
         InputStream inputStream =  connect.getInputStream();
@@ -92,6 +99,9 @@ public class Request extends BaseThread implements Observer {
                 toAndroid.sendFrame(rfidFrame);
             }
             mRFrameList.ClearAll();
+            return  true;
         }
+
+        return  false;
     }
 }

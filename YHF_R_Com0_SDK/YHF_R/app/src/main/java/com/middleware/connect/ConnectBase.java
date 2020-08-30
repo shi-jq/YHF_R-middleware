@@ -9,6 +9,8 @@ public interface ConnectBase
     boolean open();
     boolean close();
     boolean quit();
+    boolean isColsed();
+    boolean reconnect();
 
     InputStream getInputStream();
     OutputStream getOutputStream();

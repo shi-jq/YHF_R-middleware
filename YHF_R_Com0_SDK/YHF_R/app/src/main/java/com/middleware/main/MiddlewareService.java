@@ -17,7 +17,7 @@ public class MiddlewareService extends BaseThread {
     }
 
     @Override
-    public void threadProcess() {
-
+    public boolean threadProcess() {
+        return  false;
     }
 }
