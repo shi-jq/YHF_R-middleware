@@ -4,6 +4,18 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class ConnectTcpClient implements ConnectBase{
+
+    private  TcpClientConfig mSysConfig;
+    public ConnectTcpClient(TcpClientConfig config)
+    {
+        this.mSysConfig = config;
+    }
+
+    @Override
+    public String getConnectName() {
+        return mSysConfig.ipAddr+":" + mSysConfig.port;
+    }
+
     @Override
     public boolean init() {
         return false;

@@ -4,6 +4,18 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class ConnectTcpSocket implements ConnectBase{
+
+    private  TcpSocketConfig mSysConfig;
+    public ConnectTcpSocket(TcpSocketConfig config)
+    {
+        this.mSysConfig = config;
+    }
+
+    @Override
+    public String getConnectName() {
+        return mSysConfig.ipAddr+":"+mSysConfig.port+":"+mSysConfig.socket;
+    }
+
     @Override
     public boolean init() {
         return false;
@@ -33,6 +45,7 @@ public class ConnectTcpSocket implements ConnectBase{
     public boolean reconnect() {
         return false;
     }
+
 
     @Override
     public InputStream getInputStream() {

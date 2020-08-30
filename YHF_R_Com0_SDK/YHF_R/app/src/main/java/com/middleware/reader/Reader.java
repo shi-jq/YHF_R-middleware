@@ -34,8 +34,9 @@ public class Reader extends BaseThread implements Observer   {
         mConnect = connect;
         MsgMngr.AndroidToModelObv.addObserver(this);
         toAndroid = MsgMngr.ModelToAndroidObv;
-
     }
+
+
 
     @Override
     public void update(Observable o, Object arg) {

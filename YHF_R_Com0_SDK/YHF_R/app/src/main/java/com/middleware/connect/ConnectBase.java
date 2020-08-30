@@ -5,6 +5,7 @@ import java.io.OutputStream;
 
 public interface ConnectBase
 {
+    String getConnectName();
     boolean init();
     boolean open();
     boolean close();

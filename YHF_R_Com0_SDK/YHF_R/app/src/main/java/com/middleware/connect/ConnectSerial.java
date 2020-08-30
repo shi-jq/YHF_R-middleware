@@ -8,20 +8,17 @@ import cn.pda.serialport.SerialPort;
 
 public class ConnectSerial implements ConnectBase{
 
-    public class SerialConfig
-    {
-        public int comNum = 0;
-        public int baudrate = 115200;
-    }
+    protected SerialPort mSerialPort = null;
+    protected SerialConfig mSysConfig = null;
 
-    private SerialPort mSerialPort = null;
-    private SerialConfig mSysConfig = null;
-
-    void ConnectSerial(SerialConfig config)
-    {
+    public ConnectSerial(SerialConfig config) {
         mSysConfig = config;
     }
 
+    @Override
+    public String getConnectName() {
+        return "COM"+mSysConfig.comNum+":" + mSysConfig.baudrate;
+    }
 
     @Override
     public boolean init() {
@@ -43,6 +40,12 @@ public class ConnectSerial implements ConnectBase{
 
     @Override
     public boolean close() {
+        return true;
+    }
+
+    @Override
+    public boolean quit() {
+
         try {
             mSerialPort.getInputStream().close();
             mSerialPort.getOutputStream().close();
@@ -51,11 +54,6 @@ public class ConnectSerial implements ConnectBase{
         }
 
         mSerialPort.close(mSysConfig.comNum);
-        return true;
-    }
-
-    @Override
-    public boolean quit() {
         return true;
     }
 

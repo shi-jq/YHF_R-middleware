@@ -24,13 +24,15 @@ public class Request extends BaseThread implements Observer {
     private RFrameList mRFrameList = new RFrameList();
     private ConnectBase mConnect = null;
 
+
     //是否需要断线重连
     private boolean mIsNeedReconnect = false;
     private boolean mIsNeedAddTimeTagFrame = false;
+    private boolean mAutoSendHeath = false;//自动发送心跳
 
-    Request(ConnectBase connect,String name,boolean needReconnect)
+    Request(ConnectBase connect,boolean needReconnect)
     {
-        super(name,true);
+        super(connect.getConnectName(),true);
         mConnect = connect;
         mIsNeedReconnect = needReconnect;
 
@@ -41,6 +43,31 @@ public class Request extends BaseThread implements Observer {
     public void setNeedTimeTagFrame(boolean need)
     {
         mIsNeedAddTimeTagFrame = need;
+    }
+
+    public boolean isNeedQuit()
+    {
+        //连接已经关闭,且不需要重连的,则需要退出
+        if (mConnect.isColsed()  && !mIsNeedReconnect)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean Quit()
+    {
+        if (mConnect != null)
+        {
+            mConnect.close();
+            mConnect.quit();
+            mConnect = null;
+        }
+
+        this.stop();
+
+        MsgMngr.AndroidToPcObv.deleteObserver(this);
+        return true;
     }
 
     @Override
@@ -63,8 +90,8 @@ public class Request extends BaseThread implements Observer {
         assert(ouputStream != null);
         try {
 
-            byte[] pForSend = new byte[1024];
-            INT32U totalFrameSize = new INT32U(1024);
+            byte[] pForSend = new byte[DataProc.SEND_FRAME_MAXBUFF];
+            INT32U totalFrameSize = new INT32U(DataProc.SEND_FRAME_MAXBUFF);
 
             mProc.PackMsg(pForSend,totalFrameSize, rfidFrame.GetRevFrame());
 
