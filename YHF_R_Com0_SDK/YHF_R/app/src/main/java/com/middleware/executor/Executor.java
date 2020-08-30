@@ -27,7 +27,7 @@ public class Executor  extends BaseThread implements Observer {
 
     FrameMsgObervable toPc = null;
     FrameMsgObervable toModel = null;
-    Executor()
+    public Executor()
     {
         super("Executor",true);
         MsgMngr.PcToAndroidObv.addObserver(this);
@@ -35,8 +35,8 @@ public class Executor  extends BaseThread implements Observer {
 
         toPc = MsgMngr.AndroidToPcObv;
         toModel = MsgMngr.AndroidToModelObv;
-
     }
+
     @Override
     public void update(Observable o, Object arg)
     {
@@ -54,7 +54,6 @@ public class Executor  extends BaseThread implements Observer {
             RFIDFrame rfidFrame = (RFIDFrame) arg;
             assert  (rfidFrame != null);
 
-
             toPc.sendFrame(rfidFrame);
         }
     }
@@ -62,6 +61,5 @@ public class Executor  extends BaseThread implements Observer {
     public boolean threadProcess() {
         return false;
     }
-
 
 }

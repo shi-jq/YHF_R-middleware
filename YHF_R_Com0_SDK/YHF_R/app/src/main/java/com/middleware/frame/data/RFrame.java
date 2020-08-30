@@ -5,7 +5,7 @@ public class RFrame {
     public static final int HEAD_LEN = 5;
     public static final int COMMAND_LEN = 1;
     public static final int ANSWER_LEN = 1;
-    public static final int CMD_DATA_BUFFER = 256;
+    public static final int CMD_DATA_BUFFER = DataProc.SEND_FRAME_MAXBUFF-HEAD_LEN;
     private byte[] bHead = new byte[5];
     private byte[] bData = new byte[CMD_DATA_BUFFER];
 
@@ -75,9 +75,3 @@ public class RFrame {
         this.mRealDataLen = datalen;
     }
 }
-
-
-/* Location:              C:\Users\shi_j\Desktop\yrfid_api.jar!\com\yrfidapi\reader\data\RFrame.class
- * Java compiler version: 6 (50.0)
- * JD-Core Version:       1.1.2
- */

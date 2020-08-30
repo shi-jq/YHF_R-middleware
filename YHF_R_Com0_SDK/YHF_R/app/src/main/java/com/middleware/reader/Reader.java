@@ -1,6 +1,9 @@
 package com.middleware.reader;
 
+import com.middleware.config.ConfigMngr;
 import com.middleware.connect.ConnectBase;
+import com.middleware.connect.ConnectSerialForModel;
+import com.middleware.connect.SerialConfig;
 import com.middleware.frame.common.BaseThread;
 import com.middleware.frame.common.INT32U;
 import com.middleware.frame.common.PrintCtrl;
@@ -28,16 +31,23 @@ public class Reader extends BaseThread implements Observer   {
     private ConnectBase mConnect = null;
 
     FrameMsgObervable toAndroid = null;
-    Reader(ConnectBase connect)
+    public Reader()
     {
         super("Reader",true);
-        mConnect = connect;
+
+        SerialConfig config = new SerialConfig();
+        config.comNum = ConfigMngr.readerConfig.comNum;
+        config.baudrate = ConfigMngr.readerConfig.baudrate;
+        mConnect = new ConnectSerialForModel(config);
+        mConnect.init();
+
         MsgMngr.AndroidToModelObv.addObserver(this);
         toAndroid = MsgMngr.ModelToAndroidObv;
+
+        this.resume();
     }
 
-
-
+    //普通命令是
     @Override
     public void update(Observable o, Object arg) {
         RFIDFrame rfidFrame = (RFIDFrame) arg;

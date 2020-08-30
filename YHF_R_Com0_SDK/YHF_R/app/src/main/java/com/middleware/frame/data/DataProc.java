@@ -2,7 +2,6 @@ package com.middleware.frame.data;
 
 
 import com.middleware.frame.common.INT32U;
-import com.middleware.frame.common.RFIDSystemCfg;
 import com.middleware.frame.ctrl.RfidCommand;
 
 
@@ -50,14 +49,9 @@ public class DataProc {
     private int mFrameBuzzer = 0;
     private int mFramePriority = 0;
     private int mFrameAnswer = 0;
-    private RFIDSystemCfg mRfidSystemCfg = null;
+    private byte mBusAddr = 0;
     private RFrameList mWaitFrameList  = new RFrameList();
     private RFrameList mValidFrameList  = new RFrameList();
-
-    public void Initialize(RFIDSystemCfg pCfg) {
-        this.mRfidSystemCfg = pCfg;
-    }
-
 
     public void ResetFrame() {
         this.mFrameLed = 0;
@@ -67,15 +61,21 @@ public class DataProc {
         this.mFrameNum = 0;
     }
 
+    //心跳包特点,一问一答
+    public boolean isHeardCommand(RfidCommand pSendCommand)
+    {
+        return  pSendCommand == RfidCommand.COM_SEND_HEART;
+    }
+    //停止读卡命令
+    public boolean isStopRead(RfidCommand pSendCommand)
+    {
+        return  pSendCommand == RfidCommand.COM_YSTOP;
+    }
 
-    public boolean CheckMsg(RfidCommand pSendCommand)  {
-        if (pSendCommand == RfidCommand.COM_SEND_HEART ||
-                pSendCommand == RfidCommand.COM_IO_OP ||
-                pSendCommand == RfidCommand.COM_YSTOP ||
-                pSendCommand == RfidCommand.COM_INPUT_QUERY) {
-            return true;
-        }
-        return  false;
+    //开始读卡命令
+    public boolean isStartRead(RfidCommand pSendCommand)
+    {
+        return  pSendCommand == RfidCommand.COM_YMAKE_TAGUPLOAD;
     }
 
     public void updateFrameCrc(RFrame pRFrame)
@@ -113,7 +113,7 @@ public class DataProc {
 
         pRFrame.Insert(
                 (byte) (this.mFrameLed + this.mFrameBuzzer + this.mFramePriority + this.mFrameAnswer + this.mFrameNum));
-        pRFrame.Insert(this.mRfidSystemCfg.nBusAddr);
+        pRFrame.Insert(this.mBusAddr);
         pRFrame.Insert((byte) (dataLength + 1));
         pRFrame.Insert(pSendCommand.GetValue());
         pRFrame.InitData(pSendData, dataLength);

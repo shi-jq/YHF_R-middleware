@@ -4,30 +4,37 @@ import java.util.LinkedList;
 
 public class ConfigMngr
 {
+    //读写器相关的配置
     public static ConfigReader readerConfig;
-    public static LinkedList<ConfigForwarding> rowardList  = new LinkedList<ConfigForwarding>();
+    //与PC端连接的串口的配置
+    public static ConfigPcSerial pcSerial;
+    //监听的端口
+    public static LinkedList<ConfigServer> serverList  = new LinkedList<ConfigServer>();
+    //请求的端口
+    public static LinkedList<ConfigClient> clinetList  = new LinkedList<ConfigClient>();
 
-    void loadLocalConfig()
+    public void  loadLocalConfig()
     {
 
     }
 
     //只需要一个
-    void setConfigForwarding(ConfigForwarding foward)
+    public void setClient(ConfigClient foward)
     {
-        rowardList.clear();
-        rowardList.add(foward);
+        clinetList.clear();
+        clinetList.add(foward);
         saveToLocal();
     }
 
     //添加多个
-    void addConfigForwarding(ConfigForwarding foward)
+    public void addClient(ConfigClient foward)
     {
-        rowardList.add(foward);
+        clinetList.add(foward);
         saveToLocal();
     }
 
-    void saveToLocal()
+    //保存到本地
+    public  void saveToLocal()
     {
 
     }

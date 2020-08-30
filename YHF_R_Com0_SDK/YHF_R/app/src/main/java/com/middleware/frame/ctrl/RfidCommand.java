@@ -1,16 +1,21 @@
 package com.middleware.frame.ctrl;
 
 public enum RfidCommand {
-    COM_SYS_CFG(0),
-    COM_SYS_QUERY(1),
+    COM_SYS_CFG(0x00),
+    COM_SYS_QUERY(0x01),
+
+    /*
     COM_WORKMOD_CFG(2),
     COM_WORKMOD_QUERY(3),
     COM_TEST_CONTROL(10),
     COM_PARA_OP(16),
-    COM_ANTENNA_SET(17),
-    COM_ANTENNA_QUERY(18),
-    COM_CARRYWAVE_SET(19),
-    COM_CARRYWAVE_QUERY(20),
+    */
+
+    COM_ANTENNA_SET(0x11),
+    COM_ANTENNA_QUERY(0x12),
+    COM_CARRYWAVE_SET(0x13),
+    COM_CARRYWAVE_QUERY(0x14),
+/*
     COM_COMMUNI_SET(21),
     COM_COMMUNI_QUERY(22),
     COM_NETPARA_SET(23),
@@ -22,26 +27,35 @@ public enum RfidCommand {
     COM_CARRY_OP(32),
     COM_IO_OP(33),
     COM_INPUT_QUERY(34),
+    */
+
     COM_BUZZER_SET(35),
     COM_BUZZER_QUERY(36),
     COM_READER_REBOOT(42),
+    /*
     COM_OPEN_CONN(80),
     COM_CLOSE_CONN(81),
     COM_STOP_READ(83),
-    COM_SEND_HEART(88),
+    */
+    COM_SEND_HEART(0x58),
+    /*
     COM_SELECTTAG_SET(96),
     COM_YSEND_READID(97),
-    COM_YMAKE_TAGUPLOAD(98),
-    COM_YCHK_EID(99),
-    COM_YREAD_USRDATA(100),
-    COM_YWRITE_USRDATA(101),
+    */
+    COM_YMAKE_TAGUPLOAD(0x62),
+    /*
+    COM_YCHK_EID(0x63),
+    COM_YREAD_USRDATA(0x64),
+    COM_YWRITE_USRDATA(0x65),
     COM_YSET_ACCESSPWD(104),
     COM_YSET_CFGPWD(105),
     COM_YDATA_LOG(106),
     COM_YEAS_SET(107),
     COM_YQUERY_EASFLAG(108),
     COM_YEAS_MON(109),
-    COM_YSTOP(111),
+    */
+    COM_YSTOP(0x6F);
+    /*
     COM_YTAGCFG_SET(113),
     COM_YTAGCFG_QUERY(114),
     COM_YTAGWORKMODE_SET(115),
@@ -91,6 +105,7 @@ public enum RfidCommand {
     COM_RECV_TRANS(198),
     COM_MODULE_REBOOT(199),
     COM_DEVICE_REBOOT(42);
+     */
 
     private final int value;
 

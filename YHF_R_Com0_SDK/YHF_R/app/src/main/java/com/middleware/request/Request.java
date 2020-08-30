@@ -26,15 +26,13 @@ public class Request extends BaseThread implements Observer {
 
 
     //是否需要断线重连
-    private boolean mIsNeedReconnect = false;
     private boolean mIsNeedAddTimeTagFrame = false;
     private boolean mAutoSendHeath = false;//自动发送心跳
 
-    Request(ConnectBase connect,boolean needReconnect)
+    Request(ConnectBase connect )
     {
         super(connect.getConnectName(),true);
         mConnect = connect;
-        mIsNeedReconnect = needReconnect;
 
         MsgMngr.AndroidToPcObv.addObserver(this);
         toAndroid = MsgMngr.PcToAndroidObv;
@@ -45,14 +43,24 @@ public class Request extends BaseThread implements Observer {
         mIsNeedAddTimeTagFrame = need;
     }
 
-    public boolean isNeedQuit()
+    public boolean isColsed()
     {
         //连接已经关闭,且不需要重连的,则需要退出
-        if (mConnect.isColsed()  && !mIsNeedReconnect)
+        if (mConnect.isColsed())
         {
             return true;
         }
         return false;
+    }
+
+    public boolean reconnect()
+    {
+        if (mConnect != null)
+        {
+            mConnect.reconnect();
+        }
+
+        return true;
     }
 
     public boolean Quit()
@@ -113,11 +121,8 @@ public class Request extends BaseThread implements Observer {
             return false;
         }
 
-        //如果链接已经关闭了, 且需要重连,则重连
-        if (mConnect.isColsed() &&  mIsNeedReconnect)
+        if (mConnect.isColsed())
         {
-            mConnect.reconnect();
-            //重连后,下一个时间片处理
             return false;
         }
 
