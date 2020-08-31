@@ -5,15 +5,15 @@ import java.util.LinkedList;
 public class ConfigMngr
 {
     //读写器相关的配置
-    public static ConfigReader readerConfig;
+    public static ConfigReaderSerial readerSerial = new ConfigReaderSerial();
     //与PC端连接的串口的配置
-    public static ConfigPcSerial pcSerial;
+    public static ConfigPcSerial pcSerial = new ConfigPcSerial();
     //监听的端口
     public static LinkedList<ConfigServer> serverList  = new LinkedList<ConfigServer>();
     //请求的端口
     public static LinkedList<ConfigClient> clinetList  = new LinkedList<ConfigClient>();
 
-    public void  loadLocalConfig()
+    public void reloadConfig()
     {
 
     }

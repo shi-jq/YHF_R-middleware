@@ -1,6 +1,5 @@
 package com.middleware.executor;
 
-import com.middleware.connect.ConnectBase;
 import com.middleware.frame.common.BaseThread;
 import com.middleware.frame.ctrl.ReaderState;
 import com.middleware.frame.data.DataProc;
@@ -20,7 +19,6 @@ public class Executor  extends BaseThread implements Observer {
 
     private DataProc mProc = new DataProc();
     private RFrameList mRecvRFrameList = new RFrameList();
-    private ConnectBase connect = null;
 
     FrameMsgObervable toPc = null;
     FrameMsgObervable toModel = null;

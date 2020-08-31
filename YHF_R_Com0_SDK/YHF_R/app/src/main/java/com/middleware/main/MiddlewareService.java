@@ -1,15 +1,12 @@
 package com.middleware.main;
 
 import com.middleware.config.ConfigMngr;
-import com.middleware.connect.ConnectSerialForModel;
-import com.middleware.connect.SerialConfig;
 import com.middleware.executor.Executor;
 import com.middleware.frame.common.BaseThread;
 import com.middleware.reader.Reader;
 import com.middleware.request.RequestMngr;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 public class MiddlewareService extends BaseThread {
 
@@ -19,12 +16,12 @@ public class MiddlewareService extends BaseThread {
     private Executor executor = new Executor();
 
 
-    MiddlewareService()
-    {
+    MiddlewareService() throws IOException {
         super("MiddlewareService",false);
 
 
     }
+
 
     @Override
     public boolean threadProcess()

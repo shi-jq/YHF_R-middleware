@@ -1,9 +1,7 @@
 package com.middleware.reader;
 
 import com.middleware.config.ConfigMngr;
-import com.middleware.connect.ConnectBase;
-import com.middleware.connect.ConnectSerialForModel;
-import com.middleware.connect.SerialConfig;
+import com.middleware.config.ConfigReaderSerial;
 import com.middleware.frame.common.BaseThread;
 import com.middleware.frame.common.INT32U;
 import com.middleware.frame.common.PrintCtrl;
@@ -13,7 +11,6 @@ import com.middleware.frame.data.DataProc;
 import com.middleware.frame.data.RFIDFrame;
 import com.middleware.frame.data.RFrame;
 import com.middleware.frame.data.RFrameList;
-import com.middleware.frame.main.FrameMsgObervable;
 import com.middleware.frame.main.FrameTagObervable;
 import com.middleware.frame.main.MsgMngr;
 
@@ -23,24 +20,37 @@ import java.io.OutputStream;
 import java.util.Observable;
 import java.util.Observer;
 
+import cn.pda.serialport.SerialPort;
+
 public class Reader extends BaseThread implements Observer   {
 
     private  ReaderState readerStatus = ReaderState.READER_STATE_INIT;
 
     private DataProc mProc = new DataProc();
     private RFrameList mRecvRFrameList = new RFrameList();
-    private ConnectBase mConnect = null;
-
+    private SerialPort mSerialPort = null;
+    ConfigReaderSerial config = null;
     FrameTagObervable toAndroidTag = null;
-    public Reader()
-    {
+
+    public Reader() throws IOException {
         super("Reader",true);
 
-        SerialConfig config = new SerialConfig();
-        config.comNum = ConfigMngr.readerConfig.comNum;
-        config.baudrate = ConfigMngr.readerConfig.baudrate;
-        mConnect = new ConnectSerialForModel(config);
-        mConnect.init();
+        config = ConfigMngr.readerSerial;
+
+        try {
+            //读写器模块启动需要先上电
+            mSerialPort.rfid_poweron();
+            mSerialPort.scanerpoweron();
+
+            this.mSerialPort = new SerialPort(config.comNum, config.baudrate, 0);
+        } catch (IOException e) {
+
+            mSerialPort.setGPIOlow(89);
+            mSerialPort.scaner_poweroff();
+            mSerialPort.rfid_poweroff();
+            this.mSerialPort = null;
+            throw  e;
+        }
 
         MsgMngr.AndroidToModelMsgObv.addObserver(this);
         toAndroidTag = MsgMngr.ModelToAndroidTagObv;
@@ -48,24 +58,42 @@ public class Reader extends BaseThread implements Observer   {
         this.resume();
     }
 
+    @Override
+    public void onDestory() {
+        mSerialPort.setGPIOlow(89);
+        mSerialPort.scaner_poweroff();
+        mSerialPort.rfid_poweroff();
+
+        super.onDestory();
+    }
+
     //普通命令是
     @Override
     public void update(Observable o, Object arg) {
         RFIDFrame rfidFrame = (RFIDFrame) arg;
         assert  (rfidFrame != null);
-        OutputStream ouputStream =  mConnect.getOutputStream();
+        OutputStream ouputStream =  mSerialPort.getOutputStream();
         assert(ouputStream != null);
         try {
 
             byte[] pForSend = new byte[1024];
             INT32U totalFrameSize = new INT32U(1024);
-
-            mProc.PackMsg(pForSend,totalFrameSize, rfidFrame.GetSendFrame());
+            RFrame sendFrame =  rfidFrame.GetSendFrame();
+            mProc.PackMsg(pForSend,totalFrameSize, sendFrame);
             ouputStream.write(pForSend,0,totalFrameSize.GetValue());
             PrintCtrl.PrintBUffer("数据发送到模块 ", pForSend, totalFrameSize.GetValue());
 
-            RFrame pRFrame =  waitRecvFrame(rfidFrame.GetSendFrame(),3000);
-            rfidFrame.AddRevFrame(pRFrame);
+            if (mProc.isStartRead(sendFrame.GetRfidCommand()))
+            {
+                   //开始读卡命令,则不作处理
+            }
+            else{
+                //会等待超时
+                RFrame pRFrame =  waitRecvFrame(rfidFrame.GetSendFrame(),3000);
+                rfidFrame.AddRevFrame(pRFrame);
+            }
+
+
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -99,21 +127,16 @@ public class Reader extends BaseThread implements Observer   {
     @Override
     public boolean threadProcess() {
 
-        if (mConnect == null)
+        if (mSerialPort == null)
         {
             return false;
         }
 
-        if (mConnect.isColsed())
-        {
-            mConnect.reconnect();
-            return false;
-        }
-
-        InputStream inputStream =  mConnect.getInputStream();
+        InputStream inputStream =  mSerialPort.getInputStream();
         assert(inputStream != null);
         bsize = 0;
         try {
+
             bsize = inputStream.read(buffer);
 
         } catch (IOException e) {

@@ -1,9 +1,7 @@
 package com.middleware.request;
 
 import com.middleware.config.ConfigMngr;
-import com.middleware.connect.ConnectBase;
-import com.middleware.connect.ConnectSerial;
-import com.middleware.connect.SerialConfig;
+import com.middleware.config.ConfigPcSerial;
 import com.middleware.frame.common.BaseThread;
 import com.middleware.frame.common.INT32U;
 import com.middleware.frame.common.PrintCtrl;
@@ -20,26 +18,31 @@ import java.io.OutputStream;
 import java.util.Observable;
 import java.util.Observer;
 
+import cn.pda.serialport.SerialPort;
+
 
 public class RequestSerial extends BaseThread implements Observer {
 
     private FrameMsgObervable toAndroid = null;
     private DataProc mProc = new DataProc();
     private RFrameList mRFrameList = new RFrameList();
-    private ConnectBase mConnect = null;
-
+    private SerialPort mSerialPort = null;
+    ConfigPcSerial config  = null;
     //是否需要断线重连
     private boolean mIsNeedAddTimeTagFrame = false;
     private boolean mAutoSendHeath = false;//自动发送心跳
 
-    public RequestSerial()
-    {
+    public RequestSerial() throws IOException {
         super("RequestSerial",true);
 
-        SerialConfig config  = new SerialConfig();
-        config.baudrate = ConfigMngr.pcSerial.baudrate;
-        config.comNum = ConfigMngr.pcSerial.comNum;
-        mConnect = new ConnectSerial(config);
+        config = ConfigMngr.pcSerial;
+
+        try {
+            this.mSerialPort = new SerialPort(config.comNum, config.baudrate, 0);
+        } catch (IOException e) {
+            this.mSerialPort = null;
+            throw  e;
+        }
 
         MsgMngr.AndroidToPcTagObv.addObserver(this);
         toAndroid = MsgMngr.PcToAndroidMsgObv;
@@ -50,34 +53,16 @@ public class RequestSerial extends BaseThread implements Observer {
         mIsNeedAddTimeTagFrame = need;
     }
 
-    public boolean isColsed()
-    {
-        //连接已经关闭,且不需要重连的,则需要退出
-        if (mConnect.isColsed())
-        {
-            return true;
-        }
-        return false;
-    }
-
-    public boolean reconnect()
-    {
-        if (mConnect != null)
-        {
-            mConnect.reconnect();
-        }
-
-        return true;
-    }
-
     public boolean Quit()
     {
-        if (mConnect != null)
-        {
-            mConnect.close();
-            mConnect.quit();
-            mConnect = null;
+        try {
+            mSerialPort.getInputStream().close();
+            mSerialPort.getOutputStream().close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
+        mSerialPort.close(config.comNum);
 
         this.stop();
         return true;
@@ -87,12 +72,7 @@ public class RequestSerial extends BaseThread implements Observer {
     public void update(Observable o, Object arg)
     {
         //如果已经断开了, 就把数据丢了
-        if (mConnect == null)
-        {
-            return;
-        }
-
-        if ( mConnect.isColsed())
+        if (mSerialPort == null)
         {
             return;
         }
@@ -101,7 +81,7 @@ public class RequestSerial extends BaseThread implements Observer {
         {
             RFrame frame = (RFrame) arg;
             assert  (frame != null);
-            OutputStream ouputStream =  mConnect.getOutputStream();
+            OutputStream ouputStream =  mSerialPort.getOutputStream();
             assert(ouputStream != null);
             try {
 
@@ -123,7 +103,7 @@ public class RequestSerial extends BaseThread implements Observer {
     private void sendResultToPc(RFIDFrame rfidFrame)
     {
         assert  (rfidFrame != null);
-        OutputStream ouputStream =  mConnect.getOutputStream();
+        OutputStream ouputStream =  mSerialPort.getOutputStream();
         assert(ouputStream != null);
         try {
             RFrame recvFrame = rfidFrame.GetRevFrame();
@@ -150,17 +130,12 @@ public class RequestSerial extends BaseThread implements Observer {
     @Override
     public boolean threadProcess()
     {
-        if (mConnect == null)
+        if (mSerialPort == null)
         {
             return false;
         }
 
-        if (mConnect.isColsed())
-        {
-            return false;
-        }
-
-        InputStream inputStream =  mConnect.getInputStream();
+        InputStream inputStream =  mSerialPort.getInputStream();
         assert(inputStream != null);
         bsize = 0;
         try {
