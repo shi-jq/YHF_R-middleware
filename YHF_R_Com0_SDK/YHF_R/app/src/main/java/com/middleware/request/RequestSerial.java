@@ -23,7 +23,7 @@ import cn.pda.serialport.SerialPort;
 
 public class RequestSerial extends BaseThread implements Observer {
 
-    private FrameMsgObervable toAndroid = null;
+    private FrameMsgObervable toAndroid = MsgMngr.PcToAndroidMsgObv;
     private DataProc mProc = new DataProc();
     private RFrameList mRFrameList = new RFrameList();
     private SerialPort mSerialPort = null;
@@ -45,7 +45,6 @@ public class RequestSerial extends BaseThread implements Observer {
         }
 
         MsgMngr.AndroidToPcTagObv.addObserver(this);
-        toAndroid = MsgMngr.PcToAndroidMsgObv;
     }
 
     public void setNeedTimeTagFrame(boolean need)

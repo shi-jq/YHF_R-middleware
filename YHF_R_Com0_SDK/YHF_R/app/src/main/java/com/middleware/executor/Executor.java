@@ -21,8 +21,8 @@ public class Executor  extends BaseThread implements Observer {
     private RFrameList mRecvRFrameList = new RFrameList();
 
     FrameMsgObervable toPc = null;
-    FrameMsgObervable toModel = null;
-    FrameTagObervable toPcTag = null;
+    FrameMsgObervable toModel = MsgMngr.AndroidToModelMsgObv;
+    FrameTagObervable toPcTag = MsgMngr.AndroidToPcTagObv;
     public Executor()
     {
         super("Executor",true);
@@ -30,8 +30,6 @@ public class Executor  extends BaseThread implements Observer {
 
         MsgMngr.ModelToAndroidTagObv.addObserver(this);
 
-        toModel = MsgMngr.AndroidToModelMsgObv;
-        toPcTag = MsgMngr.AndroidToPcTagObv;
     }
 
     @Override
@@ -42,12 +40,14 @@ public class Executor  extends BaseThread implements Observer {
             //处理pc 到android的命令
             RFIDFrame rfidFrame = (RFIDFrame) arg;
             assert  (rfidFrame != null);
+            //这个地方可以对pc端发来的命令进行过滤处理
             toModel.dealFrame(rfidFrame);
         }
         else  if (o ==  MsgMngr.ModelToAndroidTagObv)
         {
             RFrame rfidFrame = (RFrame) arg;
             assert  (rfidFrame != null);
+            //这里可以对读到的卡做处理
             toPcTag.sendTag(rfidFrame);
         }
     }

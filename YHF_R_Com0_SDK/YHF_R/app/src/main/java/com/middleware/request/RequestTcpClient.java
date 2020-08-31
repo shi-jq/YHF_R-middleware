@@ -28,7 +28,7 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
 
     private DataProc mProc = new DataProc();
     private RFrameList mRFrameList = new RFrameList();
-    private FrameMsgObervable toAndroid = null;
+    private FrameMsgObervable toAndroid  = MsgMngr.PcToAndroidMsgObv;
 
     public RequestTcpClient(String ipAddr, int port) {
         connector = new NioSocketConnector();
@@ -39,7 +39,6 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
         System.out.println("TCP 客户端启动");
 
         MsgMngr.AndroidToPcTagObv.addObserver(this);
-        toAndroid = MsgMngr.PcToAndroidMsgObv;
     }
 
     @Override

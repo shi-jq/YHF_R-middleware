@@ -30,7 +30,7 @@ public class Reader extends BaseThread implements Observer   {
     private RFrameList mRecvRFrameList = new RFrameList();
     private SerialPort mSerialPort = null;
     ConfigReaderSerial config = null;
-    FrameTagObervable toAndroidTag = null;
+    FrameTagObervable toAndroidTag = MsgMngr.ModelToAndroidTagObv;
 
     public Reader() throws IOException {
         super("Reader",true);
@@ -53,7 +53,6 @@ public class Reader extends BaseThread implements Observer   {
         }
 
         MsgMngr.AndroidToModelMsgObv.addObserver(this);
-        toAndroidTag = MsgMngr.ModelToAndroidTagObv;
 
         this.resume();
     }

@@ -25,7 +25,7 @@ public class RequestTcpServer extends IoHandlerAdapter  implements Observer
 
     private DataProc mProc = new DataProc();
     private RFrameList mRFrameList = new RFrameList();
-    private FrameMsgObervable toAndroid = null;
+    private FrameMsgObervable toAndroid  = MsgMngr.PcToAndroidMsgObv;
     private static IoSession readTagSession = null;
 
     public RequestTcpServer(int port) throws IOException {
@@ -35,7 +35,6 @@ public class RequestTcpServer extends IoHandlerAdapter  implements Observer
         System.out.println("TCP服务启动，端口：" + port);
 
         MsgMngr.AndroidToPcTagObv.addObserver(this);
-        toAndroid = MsgMngr.PcToAndroidMsgObv;
     }
 
     @Override
