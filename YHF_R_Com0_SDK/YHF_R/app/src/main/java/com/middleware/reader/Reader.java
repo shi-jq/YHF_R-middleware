@@ -76,8 +76,8 @@ public class Reader extends BaseThread implements Observer   {
         assert(ouputStream != null);
         try {
 
-            byte[] pForSend = new byte[1024];
-            INT32U totalFrameSize = new INT32U(1024);
+            byte[] pForSend = new byte[DataProc.SEND_FRAME_MAXBUFF];
+            INT32U totalFrameSize = new INT32U(DataProc.SEND_FRAME_MAXBUFF);
             RFrame sendFrame =  rfidFrame.GetSendFrame();
             mProc.PackMsg(pForSend,totalFrameSize, sendFrame);
             ouputStream.write(pForSend,0,totalFrameSize.GetValue());
