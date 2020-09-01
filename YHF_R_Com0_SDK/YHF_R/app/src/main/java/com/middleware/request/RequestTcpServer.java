@@ -101,6 +101,7 @@ public class RequestTcpServer extends IoHandlerAdapter  implements Observer
         {
             this.readTagSession = null;
         }
+
     }
     @Override
     public void exceptionCaught(IoSession session, Throwable cause)

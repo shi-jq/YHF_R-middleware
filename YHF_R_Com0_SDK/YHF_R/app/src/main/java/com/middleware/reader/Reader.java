@@ -29,13 +29,11 @@ public class Reader extends BaseThread implements Observer   {
     private DataProc mProc = new DataProc();
     private RFrameList mRecvRFrameList = new RFrameList();
     private SerialPort mSerialPort = null;
-    ConfigReaderSerial config = null;
+    ConfigReaderSerial config  = ConfigMngr.readerSerial;
     FrameTagObervable toAndroidTag = MsgMngr.ModelToAndroidTagObv;
 
     public Reader() throws IOException {
         super("Reader",true);
-
-        config = ConfigMngr.readerSerial;
 
         try {
             //读写器模块启动需要先上电

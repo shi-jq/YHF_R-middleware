@@ -1,5 +1,6 @@
 package com.middleware.config;
 
+//客户端转发的配置 连接配置
 public class ConfigClient
 {
     public enum ClientType
