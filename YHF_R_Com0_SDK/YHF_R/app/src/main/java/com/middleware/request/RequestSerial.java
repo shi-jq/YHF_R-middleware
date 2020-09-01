@@ -20,7 +20,9 @@ import java.util.Observer;
 
 import cn.pda.serialport.SerialPort;
 
-
+/**
+ * 串口连接的请求者
+ */
 public class RequestSerial extends BaseThread implements Observer {
 
     private FrameMsgObervable toAndroid = MsgMngr.PcToAndroidMsgObv;

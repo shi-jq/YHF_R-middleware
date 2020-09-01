@@ -52,6 +52,7 @@ public class Executor  extends BaseThread implements Observer {
         }
     }
 
+    //如果无法即使处理的命令,则放在线程中执行
     public boolean threadProcess() {
         return false;
     }

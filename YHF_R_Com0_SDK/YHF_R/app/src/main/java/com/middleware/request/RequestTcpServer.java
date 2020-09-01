@@ -20,6 +20,10 @@ import java.net.InetSocketAddress;
 import java.util.Observable;
 import java.util.Observer;
 
+/**
+ * tcp服务端,用来接收客户端的连接, 不需要支持多用户, 只要单用户即可 ,如果一个连接, 踢掉其他的即可
+ *
+ */
 public class RequestTcpServer extends IoHandlerAdapter  implements Observer
 {
 
