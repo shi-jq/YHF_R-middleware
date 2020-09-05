@@ -12,20 +12,34 @@ public class MiddlewareService extends BaseThread {
 
     private ConfigMngr config = new ConfigMngr();
     private RequestMngr requesstMngr = new RequestMngr();
-    private Reader reader = new Reader();
+    private Reader reader = null;
     private Executor executor = new Executor();
 
 
-    MiddlewareService() throws IOException {
+    public MiddlewareService() {
         super("MiddlewareService",false);
 
 
     }
 
 
+
+
     @Override
     public boolean threadProcess()
     {
+        /*
+        if (reader == null)
+        {
+            try {
+                reader = new Reader();
+            } catch (IOException e) {
+                e.printStackTrace();
+                reader = null;
+            }
+        }
+
+         //*/
         return  false;
     }
 }

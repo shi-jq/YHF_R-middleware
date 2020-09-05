@@ -14,13 +14,14 @@ import com.middleware.frame.data.RFrameList;
 import com.middleware.frame.main.FrameTagObervable;
 import com.middleware.frame.main.MsgMngr;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Observable;
 import java.util.Observer;
 
-import cn.pda.serialport.SerialPort;
+import android_serialport_api.SerialPort;
 
 public class Reader extends BaseThread implements Observer   {
 
@@ -32,20 +33,18 @@ public class Reader extends BaseThread implements Observer   {
     ConfigReaderSerial config  = ConfigMngr.readerSerial;
     FrameTagObervable toAndroidTag = MsgMngr.ModelToAndroidTagObv;
 
+    String path = new String("/dev/ttyS1");
+
     public Reader() throws IOException {
         super("Reader",true);
 
         try {
             //读写器模块启动需要先上电
-            mSerialPort.rfid_poweron();
-            mSerialPort.scanerpoweron();
 
-            this.mSerialPort = new SerialPort(config.comNum, config.baudrate, 0);
+            this.mSerialPort = new android_serialport_api.SerialPort(new File(path),config.baudrate, 0);
+
         } catch (IOException e) {
 
-            mSerialPort.setGPIOlow(89);
-            mSerialPort.scaner_poweroff();
-            mSerialPort.rfid_poweroff();
             this.mSerialPort = null;
             throw  e;
         }
@@ -57,10 +56,7 @@ public class Reader extends BaseThread implements Observer   {
 
     @Override
     public void onDestory() {
-        mSerialPort.setGPIOlow(89);
-        mSerialPort.scaner_poweroff();
-        mSerialPort.rfid_poweroff();
-
+        mSerialPort.close();
         super.onDestory();
     }
 

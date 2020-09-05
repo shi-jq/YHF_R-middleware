@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.uart.R;
+import com.middleware.main.MiddlewareService;
 import com.rfid_demo.ctrl.ApiCtrl;
 import com.rfid_demo.ctrl.AppCfg;
 
@@ -31,6 +32,7 @@ public class FrameOpen extends Fragment {
 
     }
 
+    MiddlewareService mServer = new MiddlewareService();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -54,6 +56,10 @@ public class FrameOpen extends Fragment {
             mStartBtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+
+
+
 
                     if (ApiCtrl.Initialize() && ApiCtrl.Open()) {
                         AppCfg.ShowMsg(R.string.open_success, false);

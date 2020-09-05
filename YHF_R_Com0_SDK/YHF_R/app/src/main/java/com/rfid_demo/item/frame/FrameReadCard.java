@@ -22,6 +22,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.example.uart.R;
+import com.middleware.main.MiddlewareService;
 import com.rfid_demo.ctrl.ApiCtrl;
 import com.rfid_demo.ctrl.AppCfg;
 import com.rfid_demo.ctrl.ReadCardCtrl;
@@ -49,6 +50,8 @@ public class FrameReadCard extends Fragment {
     private CheckBox mBuzzerCkb = null;
     private Button mStartBtn = null;
     private Button mStopBtn = null;
+
+    private MiddlewareService mServer = null;
     /*
      * 消息响应操作
      */
@@ -216,6 +219,14 @@ public class FrameReadCard extends Fragment {
                 @Override
                 public void onClick(View v) {
 
+                    try {
+                        if (mServer == null) {
+                            mServer = new MiddlewareService();
+                        }
+                    } catch (Exception e) {
+
+                    }
+
                     if (ApiCtrl.Initialize() && ApiCtrl.Open()) {
                         AppCfg.ShowMsg(R.string.open_success, false);
                         mStartBtn.setEnabled(false);
@@ -229,6 +240,11 @@ public class FrameReadCard extends Fragment {
             mStopBtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+                    if (mServer != null)
+                    {
+                        mServer = null;
+                    }
 
                     if (ApiCtrl.mIsReading) {
                         AppCfg.ShowMsg(R.string.info_stopRead,true);

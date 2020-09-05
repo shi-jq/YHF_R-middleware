@@ -12,13 +12,15 @@ import com.middleware.frame.data.RFrameList;
 import com.middleware.frame.main.FrameMsgObervable;
 import com.middleware.frame.main.MsgMngr;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Observable;
 import java.util.Observer;
 
-import cn.pda.serialport.SerialPort;
+import android_serialport_api.SerialPort;
+
 
 /**
  * 串口连接的请求者
@@ -34,13 +36,15 @@ public class RequestSerial extends BaseThread implements Observer {
     private boolean mIsNeedAddTimeTagFrame = false;
     private boolean mAutoSendHeath = false;//自动发送心跳
 
+    String path = new String("/dev/ttyS0");
+
     public RequestSerial() throws IOException {
         super("RequestSerial",true);
 
         config = ConfigMngr.pcSerial;
 
         try {
-            this.mSerialPort = new SerialPort(config.comNum, config.baudrate, 0);
+            this.mSerialPort = new SerialPort(new File(path), config.baudrate, 0);
         } catch (IOException e) {
             this.mSerialPort = null;
             throw  e;
@@ -63,7 +67,7 @@ public class RequestSerial extends BaseThread implements Observer {
             e.printStackTrace();
         }
 
-        mSerialPort.close(config.comNum);
+        mSerialPort.close();
 
         this.stop();
         return true;

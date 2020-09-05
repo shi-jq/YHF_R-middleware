@@ -4,8 +4,8 @@ import android.util.Log;
 
 
 public class PrintCtrl {
-    private static boolean EnablePrint = false;
-    private static boolean EnablePrintBUff = false;
+    private static boolean EnablePrint = true;
+    private static boolean EnablePrintBUff = true;
 
     public static void PrintBuffer(byte[] buffer, int offeset, int count) {
         PrintBuffer("", buffer, 0, count);
