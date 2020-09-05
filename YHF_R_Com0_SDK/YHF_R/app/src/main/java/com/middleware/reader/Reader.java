@@ -21,7 +21,7 @@ import java.io.OutputStream;
 import java.util.Observable;
 import java.util.Observer;
 
-import android_serialport_api.SerialPort;
+import cn.pda.serialport.SerialPort;
 
 
 public class Reader extends BaseThread implements Observer   {
