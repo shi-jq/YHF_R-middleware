@@ -23,6 +23,7 @@ import java.util.Observer;
 
 import android_serialport_api.SerialPort;
 
+
 public class Reader extends BaseThread implements Observer   {
 
     private  ReaderState readerStatus = ReaderState.READER_STATE_INIT;
@@ -41,7 +42,7 @@ public class Reader extends BaseThread implements Observer   {
         try {
             //读写器模块启动需要先上电
 
-            this.mSerialPort = new android_serialport_api.SerialPort(new File(path),config.baudrate, 0);
+            this.mSerialPort = new SerialPort(new File(path),config.baudrate, 0);
 
         } catch (IOException e) {
 

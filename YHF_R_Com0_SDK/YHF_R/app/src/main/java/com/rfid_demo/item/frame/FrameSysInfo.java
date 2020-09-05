@@ -1,7 +1,6 @@
 package com.rfid_demo.item.frame;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -10,6 +9,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+
+import androidx.fragment.app.Fragment;
 
 import com.example.uart.R;
 import com.middleware.frame.common.INT8U;

@@ -28,7 +28,7 @@ public class MiddlewareService extends BaseThread {
     @Override
     public boolean threadProcess()
     {
-        /*
+        //*
         if (reader == null)
         {
             try {

@@ -1,13 +1,14 @@
 package com.rfid_demo.main;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.uart.R;
 import com.middleware.main.MiddlewareService;
@@ -39,6 +40,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private TextView textView_f3;
     //private TextView textView_f4;
     private TextView textView_f5;
+
     private Fragment mFragmentCurrent;
     private Toast mToast;
 
