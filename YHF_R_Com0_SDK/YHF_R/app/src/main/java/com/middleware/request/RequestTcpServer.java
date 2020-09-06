@@ -152,12 +152,11 @@ public class RequestTcpServer extends IoHandlerAdapter  implements Observer
 
             mProc.PackMsg(pForSend,totalFrameSize, frame);
 
-            IoBuffer buffer = IoBuffer.allocate(10);
-            buffer.put(pForSend,0,totalFrameSize.GetValue());
-            buffer.flip();
-
             if (readTagSession != null)
             {
+                IoBuffer buffer = IoBuffer.allocate(10);
+                buffer.put(pForSend,0,totalFrameSize.GetValue());
+                buffer.flip();
                 readTagSession.write(buffer);
                 PrintCtrl.PrintBUffer("标签数据发送到PC -TCP-Server ", pForSend, totalFrameSize.GetValue());
             }
