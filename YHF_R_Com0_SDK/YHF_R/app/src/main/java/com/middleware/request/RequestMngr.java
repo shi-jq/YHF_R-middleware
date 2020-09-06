@@ -34,8 +34,7 @@ public class RequestMngr extends BaseThread {
 
 
     @Override
-    public boolean threadProcess()
-    {
+    public boolean threadProcess() throws InterruptedException {
 ///*
         if (mTcpServer == null)
         {
@@ -46,6 +45,8 @@ public class RequestMngr extends BaseThread {
                 e.printStackTrace();
             }
         }
+
+        Thread.sleep(SUSPEND_TIME_MILLISECONDS);
 /*
         if (mTcpClient == null)
         {

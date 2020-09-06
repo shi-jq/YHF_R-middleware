@@ -165,8 +165,24 @@ public class DataProc {
         return insertIndex;
     }
 
+    //如果修改了帧数据格式, 那么就需要重置下crc码
+    public static void ResetFrameCrc(RFrame pRFrame)
+    {
+        short crc = GetFrameCrc(pRFrame);
+        pRFrame.SetCrc(crc);
+    }
 
-    private int GetFrameCrc(RFrame pRFrame, int checkLen) {
+    private static short GetFrameCrc(RFrame pRFrame)
+    {
+        int realLen = pRFrame.GetRealBuffLen();
+        if (realLen < 5)
+        {
+            return (short) 0xFFFF;
+        }
+        return (short) GetFrameCrc(pRFrame,realLen-2);
+    }
+
+    private static int GetFrameCrc(RFrame pRFrame, int checkLen) {
         int CRCValue = 0xffff;
 
         for (int i = 1; i < checkLen; i++) {
@@ -200,7 +216,7 @@ public class DataProc {
 //    }
 
 
-    private int CountCRC16(byte dataMsg, int crc) {
+    private static int CountCRC16(byte dataMsg, int crc) {
         int nCrc = 0;
         try {
             int nIndex = 0xFF & (0xFF & crc >>> 8 ^ dataMsg);

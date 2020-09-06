@@ -65,6 +65,27 @@ public class RFrame {
         return this.bData[index - 5];
     }
 
+    public void SetByte(int index ,byte b)
+    {
+        if (index < 5) {
+            this.bHead[index] = b;
+        }
+        else {
+                this.bData[index - 5] = b;
+        }
+
+    }
+
+    public void SetCrc(short crc)
+    {
+        if (this.mRealDataLen < 2) {
+            return ;
+        }
+
+        this.bData[this.mRealDataLen - 1] = (byte) ((crc>>>8) & 0xff);
+        this.bData[this.mRealDataLen - 2] = (byte) (crc & 0xFF);
+    }
+
 
     public int GetCrc() {
         if (this.mRealDataLen < 2) {

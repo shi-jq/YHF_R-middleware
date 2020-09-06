@@ -49,7 +49,7 @@ public abstract class BaseThread implements Runnable {
     /**
      * 线程处理接口。返回true则不等待, false则会等待
      */
-    public abstract boolean threadProcess();
+    public abstract boolean threadProcess() throws InterruptedException;
 
     /**
      * 线程暂停

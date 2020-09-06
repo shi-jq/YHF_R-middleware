@@ -146,6 +146,8 @@ public class Reader extends BaseThread implements Observer   {
                 byte byteCommand = pRFrame.GetRfidCommand();
                 if (mProc.isReportCommand(byteCommand))
                 {
+                    //pRFrame.SetByte(6, (byte) 0x01);
+                    //mProc.ResetFrameCrc(pRFrame);
                     toAndroidTag.sendTag(pRFrame);
                 }
                 else{
