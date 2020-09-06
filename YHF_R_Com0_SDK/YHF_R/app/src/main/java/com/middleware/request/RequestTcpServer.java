@@ -88,6 +88,7 @@ public class RequestTcpServer extends IoHandlerAdapter  implements Observer
         mProc.PackMsg(pForSend,totalFrameSize, recvFrame);
 
         IoBuffer buffer = IoBuffer.allocate(10);
+        buffer.setAutoExpand(true);
         buffer.put(pForSend,0,totalFrameSize.GetValue());
         buffer.flip();
         iosession.write(buffer);
@@ -155,6 +156,7 @@ public class RequestTcpServer extends IoHandlerAdapter  implements Observer
             if (readTagSession != null)
             {
                 IoBuffer buffer = IoBuffer.allocate(10);
+                buffer.setAutoExpand(true);
                 buffer.put(pForSend,0,totalFrameSize.GetValue());
                 buffer.flip();
                 readTagSession.write(buffer);
