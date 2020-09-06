@@ -150,7 +150,7 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
             buffer.flip();
             session.write(buffer);
 
-            PrintCtrl.PrintBUffer("标签数据发送到PC ", pForSend, totalFrameSize.GetValue());
+            PrintCtrl.PrintBUffer("标签数据发送到PC TCP-Client:", pForSend, totalFrameSize.GetValue());
         }
     }
 }

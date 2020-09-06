@@ -1,11 +1,9 @@
 package com.middleware.request;
 
 import com.middleware.config.ConfigClient;
-import com.middleware.config.ConfigMngr;
 import com.middleware.frame.common.BaseThread;
 
 import java.io.IOException;
-import java.util.Iterator;
 
 public class RequestMngr extends BaseThread {
     //通过串口连接的
@@ -48,10 +46,17 @@ public class RequestMngr extends BaseThread {
                 e.printStackTrace();
             }
         }
-
+/*
         if (mTcpClient == null)
         {
-            mTcpClient = new RequestTcpClient("127.0.0.1",60001);
+            try {
+                mTcpClient = new RequestTcpClient("192.168.1.102",60002);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+
         }
 //*/
         return  false;

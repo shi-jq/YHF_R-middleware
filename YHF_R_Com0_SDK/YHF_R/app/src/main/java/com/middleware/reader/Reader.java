@@ -137,7 +137,7 @@ public class Reader extends BaseThread implements Observer   {
             e.printStackTrace();
         }
 
-        PrintCtrl.PrintBUffer("数据从PC读取 ", buffer, bsize);
+        PrintCtrl.PrintBUffer("数据从模块读取 ", buffer, bsize);
         if (bsize > 0)
         {
             mProc.UnPackMsg(buffer,bsize);

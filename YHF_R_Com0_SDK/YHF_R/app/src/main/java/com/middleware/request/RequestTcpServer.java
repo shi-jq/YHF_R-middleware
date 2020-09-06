@@ -117,11 +117,14 @@ public class RequestTcpServer extends IoHandlerAdapter  implements Observer
     public void messageSent(IoSession iosession, Object obj) throws Exception {
         System.out.println("服务端消息发送");
         super.messageSent(iosession, obj);
+        System.out.println("服务端消息发送:"+obj.toString());
     }
     @Override
     public void sessionCreated(IoSession iosession) throws Exception {
         System.out.println("会话创建");
         super.sessionCreated(iosession);
+
+        this.readTagSession = iosession;
     }
     @Override
     public void sessionIdle(IoSession iosession, IdleStatus idlestatus)
@@ -133,6 +136,8 @@ public class RequestTcpServer extends IoHandlerAdapter  implements Observer
     public void sessionOpened(IoSession iosession) throws Exception {
         System.out.println("会话打开");
         super.sessionOpened(iosession);
+
+        this.readTagSession = iosession;
     }
 
     @Override
@@ -154,9 +159,8 @@ public class RequestTcpServer extends IoHandlerAdapter  implements Observer
             if (readTagSession != null)
             {
                 readTagSession.write(buffer);
+                PrintCtrl.PrintBUffer("标签数据发送到PC -TCP-Server ", pForSend, totalFrameSize.GetValue());
             }
-
-            PrintCtrl.PrintBUffer("标签数据发送到PC ", pForSend, totalFrameSize.GetValue());
         }
     }
 }

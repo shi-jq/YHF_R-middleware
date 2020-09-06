@@ -2,6 +2,8 @@ package com.middleware.frame.common;
 
 import android.util.Log;
 
+import com.middleware.frame.data.Tools;
+
 
 public class PrintCtrl {
     private static boolean EnablePrint = true;
@@ -28,11 +30,16 @@ public class PrintCtrl {
             tmp = "len: ";
             tmp = tmp + count;
             tmp = tmp + ";  ";
-            for (int i = offeset; i < count; i++) {
-                tmp = tmp + " ";
-                tmp = tmp + Integer.toHexString(buffer[i] & 0xFF);
-            }
+            tmp = tmp + Tools.Bytes2HexString(buffer,offeset,count);
             tmp = tmp + "\n";
+//            tmp = "len: ";
+//            tmp = tmp + count;
+//            tmp = tmp + ";  ";
+//            for (int i = offeset; i < count; i++) {
+//                tmp = tmp + " ";
+//                tmp = tmp + Integer.toHexString(buffer[i] & 0xFF);
+//            }
+//            tmp = tmp + "\n";
 
             PrintStr(title, tmp);
         }
