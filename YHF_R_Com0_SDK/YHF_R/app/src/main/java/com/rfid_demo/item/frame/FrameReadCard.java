@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -271,9 +270,9 @@ public class FrameReadCard extends Fragment {
         }
 
 
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("android.rfid.FUN_KEY");
-        getActivity().registerReceiver(keyReceiver, filter);
+        //IntentFilter filter = new IntentFilter();
+        //filter.addAction("android.rfid.FUN_KEY");
+        //getActivity().registerReceiver(keyReceiver, filter);
 
         return rootView;
     }

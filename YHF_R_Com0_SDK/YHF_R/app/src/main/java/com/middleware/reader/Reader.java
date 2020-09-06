@@ -79,7 +79,6 @@ public class Reader extends BaseThread implements Observer   {
 
             if (mProc.isStartRead(sendFrame.GetRfidCommand()))
             {
-                   //开始读卡命令,则不作处理
             }
             else{
                 //会等待超时
@@ -145,7 +144,7 @@ public class Reader extends BaseThread implements Observer   {
             for (int i = 0; i < temList.GetCount(); i++) {
                 RFrame pRFrame = temList.GetRFrame(i);
                 byte byteCommand = pRFrame.GetRfidCommand();
-                if (!mProc.isReportCommand(byteCommand))
+                if (mProc.isReportCommand(byteCommand))
                 {
                     toAndroidTag.sendTag(pRFrame);
                 }
