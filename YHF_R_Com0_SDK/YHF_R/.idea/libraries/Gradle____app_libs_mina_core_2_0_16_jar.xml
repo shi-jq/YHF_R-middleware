@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="Gradle: __local_aars__:E./code/YHF_R-middleware/YHF_R_Com0_SDK/YHF_R/app/libs/mina-core-2.0.16.jar:unspecified@jar">
+  <library name="Gradle: ./app/libs/mina-core-2.0.16.jar">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/app/libs/mina-core-2.0.16.jar!/" />
     </CLASSES>

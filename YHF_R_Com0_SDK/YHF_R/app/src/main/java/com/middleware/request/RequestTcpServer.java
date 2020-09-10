@@ -1,5 +1,7 @@
 package com.middleware.request;
 
+import android.util.Log;
+
 import com.middleware.frame.common.INT32U;
 import com.middleware.frame.common.PrintCtrl;
 import com.middleware.frame.data.DataProc;
@@ -36,7 +38,7 @@ public class RequestTcpServer extends IoHandlerAdapter  implements Observer
         NioSocketAcceptor acceptor = new NioSocketAcceptor();
         acceptor.setHandler(this);
         acceptor.bind(new InetSocketAddress(port));
-        System.out.println("TCP服务启动，端口：" + port);
+        Log.v("TCPSERVER", "TCP服务启动，端口：" + port);
 
         MsgMngr.AndroidToPcTagObv.addObserver(this);
     }

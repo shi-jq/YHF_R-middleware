@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/YHF_R.iml" filepath="$PROJECT_DIR$/YHF_R.iml" group="YHF_R" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/YHF_R-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/YHF_R-app.iml" group="YHF_R/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/YHF_R_Com0_SDK-YHF_R.iml" filepath="$PROJECT_DIR$/.idea/modules/YHF_R_Com0_SDK-YHF_R.iml" group="YHF_R" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="YHF_R/app" />
     </modules>
   </component>

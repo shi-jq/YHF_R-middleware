@@ -1,6 +1,7 @@
 package com.rfid_demo.main;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,7 +57,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         Util.initSoundPool(this);//Init sound pool
 
-
+       String a = (String)Util.dtGet(this,"haa", "0");
+        Log.i("haa",a);
     }
 
     private void initView() {
