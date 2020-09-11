@@ -13,7 +13,6 @@ public class BootReceiver extends BroadcastReceiver
     {
         if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED))
         {
-            Util.dtSave(context,"haa","1");
             Intent newIntent = new Intent(context, MainActivity.class);
             newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(newIntent);

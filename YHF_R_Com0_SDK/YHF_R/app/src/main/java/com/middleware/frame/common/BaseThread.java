@@ -3,7 +3,7 @@ package com.middleware.frame.common;
 import android.util.Log;
 
 public abstract class BaseThread implements Runnable {
-    public static final int SUSPEND_TIME_MILLISECONDS = 500;
+    public static final int SUSPEND_TIME_MILLISECONDS = 50;
 
     private String name;
     private Thread mThread;
