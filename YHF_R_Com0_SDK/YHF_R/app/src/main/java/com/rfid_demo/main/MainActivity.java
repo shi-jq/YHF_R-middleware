@@ -62,7 +62,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         Log.i("haa",a);
 
         //保活
-        Cactus.getInstance().isDebug(false).setCrashRestartUIEnabled(true);
+//        Cactus.getInstance().isDebug(false).setCrashRestartUIEnabled(true);
     }
 
     private void initView() {
