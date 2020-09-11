@@ -19,6 +19,7 @@ import com.rfid_demo.ctrl.Util;
 import com.rfid_demo.item.frame.FrameQuit;
 import com.rfid_demo.item.frame.FrameReadCard;
 import com.rfid_demo.item.frame.FrameSysInfo;
+import com.gyf.cactus.Cactus;
 
 
 public class MainActivity extends FragmentActivity implements View.OnClickListener {
@@ -59,6 +60,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
        String a = (String)Util.dtGet(this,"haa", "0");
         Log.i("haa",a);
+
+        //保活
+        Cactus.getInstance().isDebug(false).setCrashRestartUIEnabled(true);
     }
 
     private void initView() {

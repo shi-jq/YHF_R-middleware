@@ -8,14 +8,15 @@ import com.rfid_demo.main.MainActivity;
 
 public class BootReceiver extends BroadcastReceiver
 {
+    private  static boolean isBoot = false;
     @Override
     public void onReceive(Context context, Intent intent)
     {
-        if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED))
-        {
+        if (!isBoot){
             Intent newIntent = new Intent(context, MainActivity.class);
             newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(newIntent);
+            isBoot = true;
         }
     }
 }
