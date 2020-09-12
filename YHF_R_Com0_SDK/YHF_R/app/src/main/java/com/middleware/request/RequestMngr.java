@@ -1,7 +1,11 @@
 package com.middleware.request;
 
+import android.util.Log;
+
 import com.middleware.config.ConfigClient;
 import com.middleware.frame.common.BaseThread;
+import com.middleware.frame.data.RFIDFrame;
+import com.middleware.frame.data.RFrame;
 
 import java.io.IOException;
 
@@ -10,55 +14,73 @@ public class RequestMngr extends BaseThread {
     private RequestSerial mSerialRequest = null;
     private RequestTcpServer mTcpServer = null;
     private RequestTcpClient mTcpClient = null;
+    private static RequestMngr requestMngr = null;
 
-
-    public RequestMngr()
-    {
-        super("RequestMngr",false);
-
-        recreateSerialRequest();
-
+    public static RequestMngr getInstance() {
+        if (null == requestMngr) {
+            synchronized (RequestMngr.class) {
+                if (null == requestMngr) {
+                    requestMngr = new RequestMngr();
+                }
+            }
+        }
+        return requestMngr;
     }
 
-    //重新创建串口, 串口波特率改变的时候 需要去调整
-    private  void recreateSerialRequest()
-    {
-
+    public RequestMngr() {
+        super("RequestMngr", false);
     }
 
+    public void sendToPC(RFIDFrame rfidFrame) {
+        try {
+            if (mTcpClient != null) {
+                mTcpClient.sendToPC(rfidFrame);
+            }
 
-    public void createOneTcpClint(ConfigClient configF)
-    {
-
+            if (mSerialRequest != null) {
+                mSerialRequest.sendToPC(rfidFrame);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
+    public void sendToPC(RFrame rFrame) {
+        RFIDFrame rfidFrame = new RFIDFrame(rFrame);
+        this.sendToPC(rfidFrame);
+    }
 
     @Override
     public boolean threadProcess() throws InterruptedException {
-        if (mTcpServer == null)
-        {
+        if (mTcpServer == null) {
             try {
-                int lisenPort  = 60001;
+                int lisenPort = 60001;
                 mTcpServer = new RequestTcpServer(60001);
             } catch (IOException e) {
+                Log.i("Req Manager","TCP Sever invaild");
                 e.printStackTrace();
             }
         }
 
-        Thread.sleep(SUSPEND_TIME_MILLISECONDS);
-
-        if (mTcpClient == null)
-        {
+        if (mTcpClient == null) {
             try {
-                mTcpClient = new RequestTcpClient("127.0.0.1",60002);
-            }
-            catch (Exception e)
-            {
+                mTcpClient = new RequestTcpClient("127.0.0.1", 60001);
+            } catch (Exception e) {
+                Log.i("Req Manager","TCP Sever invaild");
                 e.printStackTrace();
             }
 
         }
 
-        return  false;
+        if (mTcpClient == null) {
+            try {
+                mSerialRequest = new RequestSerial();
+            } catch (Exception e) {
+                Log.i("Req Manager","RequestSerial invaild");
+                e.printStackTrace();
+            }
+        }
+
+        return true;
     }
 }

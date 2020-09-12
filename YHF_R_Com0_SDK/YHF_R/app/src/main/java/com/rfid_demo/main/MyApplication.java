@@ -1,11 +1,12 @@
 package com.rfid_demo.main;
 
 import android.app.Application;
+import android.content.Context;
+import com.rfid_demo.ctrl.Util;
 
 import java.util.Vector;
 
 public class MyApplication extends Application {
-
     public static final String READER_UHF = "READER_UHF";
     public static final String READER_NFC = "READER_NFC";
     public String ReaderType = READER_NFC;
@@ -17,8 +18,8 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
         para = new ParaSave(this);
+        Util.dtContext =   getApplicationContext();
         return;
     }
 

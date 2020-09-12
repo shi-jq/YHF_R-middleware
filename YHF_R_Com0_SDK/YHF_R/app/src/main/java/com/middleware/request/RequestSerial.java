@@ -41,7 +41,7 @@ public class RequestSerial extends BaseThread implements Observer {
     public RequestSerial() throws IOException {
         super("RequestSerial",true);
 
-        config = ConfigMngr.pcSerial;
+        config = ConfigMngr.getInstance().pcSerial;
 
         try {
             this.mSerialPort = new SerialPort(new File(path), config.baudrate, 0);
@@ -128,6 +128,11 @@ public class RequestSerial extends BaseThread implements Observer {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void sendToPC(RFIDFrame rfidFrame)
+    {
+         sendResultToPc(rfidFrame);
     }
 
     private int bsize = 0;

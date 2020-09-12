@@ -12,8 +12,8 @@ import java.io.IOException;
 
 public class MiddlewareService extends BaseThread {
 
-    private ConfigMngr config = new ConfigMngr();
-    private RequestMngr requesstMngr = new RequestMngr();
+    private ConfigMngr config =  ConfigMngr.getInstance();
+    private RequestMngr requesstMngr = RequestMngr.getInstance();
     private Reader reader = null;
     private Executor executor = new Executor();
 

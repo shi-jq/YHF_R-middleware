@@ -11,12 +11,13 @@ import com.example.uart.R;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class Util {
     private static final String DATA_FILE_NAME = "YHF_R";
     public static SoundPool sp ;
     public static Map<Integer, Integer> suondMap;
     public static Context context;
+    public static Context dtContext;
+
 
     //
     public static void initSoundPool(Context context){
@@ -54,8 +55,8 @@ public class Util {
         sp.pause(0);
     }
 
-    public static void dtSave(Context context, String key, Object obj) {
-        SharedPreferences sp = context.getSharedPreferences(DATA_FILE_NAME, context.MODE_PRIVATE);
+    public static void dtSave(String key, Object obj) {
+        SharedPreferences sp = dtContext.getSharedPreferences(DATA_FILE_NAME, dtContext.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         if (obj instanceof Boolean) {
             editor.putBoolean(key, (Boolean) obj);
@@ -71,8 +72,8 @@ public class Util {
         editor.commit();
     }
 
-    public static Object dtGet(Context context, String key, Object defaultObj) {
-        SharedPreferences sp = context.getSharedPreferences(DATA_FILE_NAME, context.MODE_PRIVATE);
+    public static Object dtGet( String key, Object defaultObj) {
+        SharedPreferences sp = dtContext.getSharedPreferences(DATA_FILE_NAME, dtContext.MODE_PRIVATE);
         if (defaultObj instanceof Boolean) {
             return sp.getBoolean(key, (Boolean) defaultObj);
         } else if (defaultObj instanceof Float) {
@@ -88,5 +89,8 @@ public class Util {
     }
 
 
+    public static Object dtGet( String key) {
+      return dtGet(key,null);
+    }
 
 }

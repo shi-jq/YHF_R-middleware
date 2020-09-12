@@ -1,5 +1,7 @@
 package com.middleware.request;
 
+import android.util.Log;
+
 import com.middleware.frame.common.INT32U;
 import com.middleware.frame.common.PrintCtrl;
 import com.middleware.frame.data.DataProc;
@@ -24,7 +26,7 @@ import java.util.Observer;
 public class RequestTcpClient extends IoHandlerAdapter implements Observer
 {
     private IoConnector connector;
-    private static IoSession session;
+    private IoSession session;
 
     private DataProc mProc = new DataProc();
     private RFrameList mRFrameList = new RFrameList();
@@ -96,6 +98,18 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
         buffer.flip();
         iosession.write(buffer);
         PrintCtrl.PrintBUffer("数据发送到PC ", pForSend, totalFrameSize.GetValue());
+    }
+
+    public void sendToPC(RFIDFrame rfidFrame)
+    {
+
+        if (this.session == null || this.session.isClosing())
+        {
+            Log.i("sendResultToPc","Iosession invaild");
+            return;
+        }
+
+        sendResultToPc(this.session,rfidFrame);
     }
 
     @Override

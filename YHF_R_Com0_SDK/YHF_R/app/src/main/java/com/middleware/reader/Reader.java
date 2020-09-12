@@ -13,6 +13,7 @@ import com.middleware.frame.data.RFrame;
 import com.middleware.frame.data.RFrameList;
 import com.middleware.frame.main.FrameTagObervable;
 import com.middleware.frame.main.MsgMngr;
+import com.middleware.request.RequestMngr;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +32,7 @@ public class Reader extends BaseThread implements Observer   {
     private DataProc mProc = new DataProc();
     private RFrameList mRecvRFrameList = new RFrameList();
     private SerialPort mSerialPort = null;
-    ConfigReaderSerial config  = ConfigMngr.readerSerial;
+    ConfigReaderSerial config  = ConfigMngr.getInstance().readerSerial;
     FrameTagObervable toAndroidTag = MsgMngr.ModelToAndroidTagObv;
 
     String path = new String("/dev/ttyS1");
@@ -87,9 +88,6 @@ public class Reader extends BaseThread implements Observer   {
                 RFrame pRFrame =  waitRecvFrame(rfidFrame.GetSendFrame(),3000);
                 rfidFrame.AddRevFrame(pRFrame);
             }
-
-
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -151,6 +149,7 @@ public class Reader extends BaseThread implements Observer   {
                     //pRFrame.SetByte(6, (byte) 0x01);
                     //mProc.ResetFrameCrc(pRFrame);
                     toAndroidTag.sendTag(pRFrame);
+                    RequestMngr.getInstance().sendToPC(pRFrame);
                 }
                 else{
                     mRecvRFrameList.AddRFrame(pRFrame);

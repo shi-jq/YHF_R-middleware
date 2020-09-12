@@ -58,9 +58,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         Util.initSoundPool(this);//Init sound pool
 
-       String a = (String)Util.dtGet(this,"haa", "0");
+       String a = (String)Util.dtGet("haa", "0");
         Log.i("haa",a);
-
         //保活
         Cactus.getInstance().isDebug(false).setCrashRestartUIEnabled(true);
     }

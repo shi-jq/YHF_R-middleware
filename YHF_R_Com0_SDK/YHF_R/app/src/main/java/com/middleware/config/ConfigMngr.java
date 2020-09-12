@@ -1,41 +1,38 @@
 package com.middleware.config;
 
-import java.util.LinkedList;
+
+import com.rfid_demo.ctrl.Util;
 
 public class ConfigMngr
 {
-    //读写器相关的配置
-    public static ConfigReaderSerial readerSerial = new ConfigReaderSerial();
-    //与PC端连接的串口的配置
-    public static ConfigPcSerial pcSerial = new ConfigPcSerial();
-    //监听的端口
-    public static LinkedList<ConfigServer> serverList  = new LinkedList<ConfigServer>();
-    //请求的端口
-    public static LinkedList<ConfigClient> clinetList  = new LinkedList<ConfigClient>();
+    private static ConfigMngr configMngr = null;
 
-    public void reloadConfig()
-    {
+   public ConfigClient client = null;
+   public ConfigPcSerial pcSerial = null;
+   public ConfigReaderSerial readerSerial = null;
+   public ConfigServer server = null;
 
+    public static ConfigMngr getInstance() {
+        if (null == configMngr) {
+            synchronized (ConfigMngr.class) {
+                if (null == configMngr) {
+                    configMngr = new ConfigMngr();
+                }
+            }
+        }
+        return configMngr;
     }
 
-    //只需要一个
-    public void setClient(ConfigClient foward)
+    private ConfigMngr()
     {
-        clinetList.clear();
-        clinetList.add(foward);
-        saveToLocal();
+        this.client = new ConfigClient();
+        this.pcSerial = new ConfigPcSerial();
+        this.readerSerial = new ConfigReaderSerial();
+        this.server = new ConfigServer();
     }
 
-    //添加多个
-    public void addClient(ConfigClient foward)
+    public static void saveVal(String saveKey,Object obj)
     {
-        clinetList.add(foward);
-        saveToLocal();
-    }
-
-    //保存到本地
-    public  void saveToLocal()
-    {
-
+        Util.dtSave(saveKey,obj);
     }
 }
