@@ -31,12 +31,17 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
     private FrameMsgObervable toAndroid  = MsgMngr.PcToAndroidMsgObv;
 
     public RequestTcpClient(String ipAddr, int port) {
-        connector = new NioSocketConnector();
-        connector.setHandler(this);
-        ConnectFuture connFuture = connector.connect(new InetSocketAddress(ipAddr, port));
-        connFuture.awaitUninterruptibly();
-        session = connFuture.getSession();
-        System.out.println("TCP 客户端启动");
+        try {
+            connector = new NioSocketConnector();
+            connector.setHandler(this);
+            ConnectFuture connFuture = connector.connect(new InetSocketAddress(ipAddr, port));
+            connFuture.awaitUninterruptibly();
+            session = connFuture.getSession();
+            System.out.println("TCP 客户端启动");
+        }catch (Exception e){
+            connector.dispose();
+            throw e;
+        }
 
         MsgMngr.AndroidToPcTagObv.addObserver(this);
     }

@@ -35,7 +35,6 @@ public class RequestMngr extends BaseThread {
 
     @Override
     public boolean threadProcess() throws InterruptedException {
-///*
         if (mTcpServer == null)
         {
             try {
@@ -47,11 +46,11 @@ public class RequestMngr extends BaseThread {
         }
 
         Thread.sleep(SUSPEND_TIME_MILLISECONDS);
-/*
+
         if (mTcpClient == null)
         {
             try {
-                mTcpClient = new RequestTcpClient("192.168.1.102",60002);
+                mTcpClient = new RequestTcpClient("127.0.0.1",60002);
             }
             catch (Exception e)
             {
@@ -59,7 +58,7 @@ public class RequestMngr extends BaseThread {
             }
 
         }
-//*/
+
         return  false;
     }
 }
