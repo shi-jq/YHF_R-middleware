@@ -5,8 +5,8 @@ import com.rfid_demo.ctrl.Util;
 //用来存储与读写器 相关的配置
 public class ConfigReaderSerial {
 
-    private static final String COM_NUM_KEY = "ConfigReaderSerial_COM_NUM_KEY";
-    private static final String BAUD_RATE_KEY = "ConfigReaderSerial_BAUD_RATE_KEY";
+    public static final String COM_NUM_KEY = "ConfigReaderSerial_COM_NUM_KEY";
+    public static final String BAUD_RATE_KEY = "ConfigReaderSerial_BAUD_RATE_KEY";
 
     public int comNum = 1;
     public int baudrate = 115200;

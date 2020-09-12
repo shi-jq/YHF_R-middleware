@@ -5,10 +5,10 @@ import com.rfid_demo.ctrl.Util;
 //客户端转发的配置 连接配置
 public class ConfigClient
 {
-    private static final String PORT_KEY = "ConfigClient_PORT_KEY";
-    private static final String IP_KEY = "ConfigClient_IP_KEY";
-    private static final String ADD_TIME_KEY = "ConfigClient_ADD_TIME_KEY";
-    private static final String CLIENT_TYPE_KEY = "ConfigClient_CLIENT_TYPE_KEY";
+    public static final String PORT_KEY = "ConfigClient_PORT_KEY";
+    public static final String IP_KEY = "ConfigClient_IP_KEY";
+    public static final String ADD_TIME_KEY = "ConfigClient_ADD_TIME_KEY";
+    public static final String CLIENT_TYPE_KEY = "ConfigClient_CLIENT_TYPE_KEY";
 
     public enum ClientType
     {

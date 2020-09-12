@@ -10,8 +10,8 @@ public class ConfigServer {
         UDP,
         TCP
     }
-    private static final String PORT_KEY = "ConfigServer_PORT_KEY";
-    private static final String CLIENT_TYPE_KEY = "ConfigServer_CLIENT_TYPE_KEY";
+    public static final String PORT_KEY = "ConfigServer_PORT_KEY";
+    public static final String CLIENT_TYPE_KEY = "ConfigServer_CLIENT_TYPE_KEY";
 
     public ServerType type = ServerType.NONE;//服务端监听的类型
     public int port = 60001;//监听的端口
