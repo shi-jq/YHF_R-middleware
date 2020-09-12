@@ -39,6 +39,10 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
             session = connFuture.getSession();
             System.out.println("TCP 客户端启动");
         }catch (Exception e){
+            if (session.isConnected()){
+                session.closeNow();
+                session.getCloseFuture().awaitUninterruptibly();
+            }
             connector.dispose();
             throw e;
         }
