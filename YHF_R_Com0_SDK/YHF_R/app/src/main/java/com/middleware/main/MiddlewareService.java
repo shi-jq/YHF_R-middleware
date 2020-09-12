@@ -1,5 +1,7 @@
 package com.middleware.main;
 
+import android.util.Log;
+
 import com.middleware.config.ConfigMngr;
 import com.middleware.executor.Executor;
 import com.middleware.frame.common.BaseThread;
@@ -16,7 +18,7 @@ public class MiddlewareService extends BaseThread {
     private Executor executor = new Executor();
 
 
-    public MiddlewareService() {
+    public  MiddlewareService() {
         super("MiddlewareService",false);
     }
 
@@ -34,6 +36,7 @@ public class MiddlewareService extends BaseThread {
             }
         }
 
+        Log.i("haha","threadProcess");
          //*/
         return  false;
     }

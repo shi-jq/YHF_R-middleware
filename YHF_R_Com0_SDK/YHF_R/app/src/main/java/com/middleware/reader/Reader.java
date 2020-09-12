@@ -42,16 +42,18 @@ public class Reader extends BaseThread implements Observer   {
         try {
             //读写器模块启动需要先上电
 
-            this.mSerialPort = new SerialPort(new File(path),config.baudrate, 0);
+            File file = new File(path);
+            this.mSerialPort = new SerialPort(file,config.baudrate, 0);
 
         } catch (IOException e) {
 
             this.mSerialPort = null;
+            this.isNeedStop = true;
+            this.resume();
             throw  e;
         }
 
         MsgMngr.AndroidToModelMsgObv.addObserver(this);
-
         this.resume();
     }
 

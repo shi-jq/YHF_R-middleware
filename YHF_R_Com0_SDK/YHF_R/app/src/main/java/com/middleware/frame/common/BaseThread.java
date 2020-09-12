@@ -5,6 +5,7 @@ import android.util.Log;
 public abstract class BaseThread implements Runnable {
     public static final int SUSPEND_TIME_MILLISECONDS = 50;
 
+    public boolean isNeedStop = false;
     private String name;
     private Thread mThread;
 
@@ -14,7 +15,8 @@ public abstract class BaseThread implements Runnable {
 
     /**
      * 构造函数
-     * @param name 线程名称。
+     *
+     * @param name    线程名称。
      * @param suspend 初始化是否暂停。
      */
     public BaseThread(String name, boolean suspend) {
@@ -27,16 +29,15 @@ public abstract class BaseThread implements Runnable {
 
     public void run() {
         try {
-            while (true) {
-                // System.out.println(name + ": " + i++);
-                synchronized (this) {
+            synchronized (this) {
+                while (!isNeedStop) {
+                    // System.out.println(name + ": " + i++);
                     while (suspendFlag) {
                         wait();
                     }
-                }
-                if (!threadProcess())
-                {
-                    Thread.sleep(SUSPEND_TIME_MILLISECONDS);
+                    if (!isNeedStop && !threadProcess()) {
+                        Thread.sleep(SUSPEND_TIME_MILLISECONDS);
+                    }
                 }
             }
         } catch (InterruptedException e) {
@@ -88,7 +89,7 @@ public abstract class BaseThread implements Runnable {
      * 停止线程运行。
      */
     public void stop() {
-        if (mThread != null){
+        if (mThread != null) {
 
             mThread.interrupt();
             mThread = null;
@@ -98,8 +99,7 @@ public abstract class BaseThread implements Runnable {
     /**
      * 线程处理接口。
      */
-    public void onDestory()
-    {
+    public void onDestory() {
         Log.i(TAG, name + " destory!");
     }
 

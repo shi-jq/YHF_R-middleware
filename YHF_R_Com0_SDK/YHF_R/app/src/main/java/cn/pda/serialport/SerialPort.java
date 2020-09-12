@@ -11,27 +11,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public class SerialPort
 {
     private static final String TAG = "SerialPort";
