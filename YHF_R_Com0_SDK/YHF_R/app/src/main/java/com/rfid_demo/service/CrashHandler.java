@@ -4,7 +4,6 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.util.Log;
 
-import com.jakewharton.processphoenix.ProcessPhoenix;
 import com.middleware.config.ConfigMngr;
 import com.middleware.request.RequestMngr;
 import com.rfid_demo.main.MainActivity;
