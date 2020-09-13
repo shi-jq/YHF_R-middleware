@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.uart.R;
+import com.middleware.config.ConfigMngr;
 import com.middleware.main.MiddlewareService;
 import com.rfid_demo.ctrl.ApiCtrl;
 import com.rfid_demo.ctrl.AppCfg;
@@ -20,7 +21,7 @@ import com.rfid_demo.item.frame.FrameQuit;
 import com.rfid_demo.item.frame.FrameReadCard;
 import com.rfid_demo.item.frame.FrameSysInfo;
 import com.gyf.cactus.Cactus;
-
+import com.jakewharton.processphoenix.ProcessPhoenix;
 
 public class MainActivity extends FragmentActivity implements View.OnClickListener {
 
@@ -58,10 +59,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         Util.initSoundPool(this);//Init sound pool
 
-       String a = (String)Util.dtGet("haa", "0");
+        String a = (String)Util.dtGet("haa", "0");
         Log.i("haa",a);
+
         //保活
-        Cactus.getInstance().isDebug(false).setCrashRestartUIEnabled(true);
+        Cactus.getInstance().isDebug(true).setCrashRestartUIEnabled(true);
     }
 
     private void initView() {

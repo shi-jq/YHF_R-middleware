@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.util.Log;
 
 import com.example.uart.R;
 
@@ -93,4 +94,22 @@ public class Util {
       return dtGet(key,null);
     }
 
+    //通过崩溃重启app
+    public static void  restartApp()
+    {
+
+        new Thread(new Runnable() {
+            public void run() {
+                //sleep设置的是时长
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                Object o = 1;
+                Log.i((String) o , (String)o);
+            }
+        }).start();
+    }
 }
