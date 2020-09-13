@@ -12,6 +12,7 @@ public class ConfigMngr
    public ConfigReaderSerial readerSerial = null;
    public ConfigServer server = null;
 
+
     public static ConfigMngr getInstance() {
         if (null == configMngr) {
             synchronized (ConfigMngr.class) {
