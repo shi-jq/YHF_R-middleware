@@ -3,6 +3,7 @@ package com.middleware.request;
 import android.util.Log;
 
 import com.middleware.config.ConfigClient;
+import com.middleware.config.ConfigMngr;
 import com.middleware.frame.common.BaseThread;
 import com.middleware.frame.data.RFIDFrame;
 import com.middleware.frame.data.RFrame;
@@ -54,8 +55,7 @@ public class RequestMngr extends BaseThread {
     public boolean threadProcess() throws InterruptedException {
         if (mTcpServer == null) {
             try {
-                int lisenPort = 60001;
-                mTcpServer = new RequestTcpServer(60001);
+                mTcpServer = new RequestTcpServer(ConfigMngr.getInstance().server.port);
             } catch (IOException e) {
                 Log.i("Req Manager","TCP Sever invaild");
                 e.printStackTrace();
@@ -64,7 +64,7 @@ public class RequestMngr extends BaseThread {
 
         if (mTcpClient == null) {
             try {
-                mTcpClient = new RequestTcpClient("127.0.0.1", 60001);
+                mTcpClient = new RequestTcpClient(ConfigMngr.getInstance().client.ipAddr, ConfigMngr.getInstance().client.port);
             } catch (Exception e) {
                 Log.i("Req Manager","TCP Sever invaild");
                 e.printStackTrace();
@@ -72,7 +72,7 @@ public class RequestMngr extends BaseThread {
 
         }
 
-        if (mTcpClient == null) {
+        if (mSerialRequest == null) {
             try {
                 mSerialRequest = new RequestSerial();
             } catch (Exception e) {
