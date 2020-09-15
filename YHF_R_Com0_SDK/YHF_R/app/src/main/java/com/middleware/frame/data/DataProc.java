@@ -289,6 +289,38 @@ public class DataProc {
         }
     }
 
+    public RFrame createRecvRFrame(byte RfidCommand, byte status)
+    {
+        byte[] recvData = new byte[0];
+        return createRecvRFrame(RfidCommand,status,recvData,0);
+    }
+
+    public RFrame createRecvRFrame(RFrame pSendRFrame, byte status,byte[] recvData, int recvLen)
+    {
+        return createRecvRFrame(pSendRFrame.GetRfidCommand(),status,recvData,recvLen);
+    }
+
+    public RFrame createRecvRFrame(byte RfidCommand, byte status,byte[] recvData, int recvLen)
+    {
+        RFrame pRFrame = new RFrame();
+        pRFrame.Insert(FRAME_HEAD);
+
+        pRFrame.Insert(
+                (byte) (this.mFrameLed + this.mFrameBuzzer + this.mFramePriority + this.mFrameAnswer + this.mFrameNum));
+        pRFrame.Insert(this.mBusAddr);
+        pRFrame.Insert((byte) (recvLen + 1));
+        pRFrame.Insert(RfidCommand);
+        pRFrame.Insert(status);
+        pRFrame.InitData(1,recvData, recvLen);
+
+        int CRCValue = 0;
+        CRCValue = GetFrameCrc(pRFrame, pRFrame.GetRealBuffLen());
+        pRFrame.Insert((byte) (CRCValue >>> 8 & 0xFF));
+        pRFrame.Insert((byte) (CRCValue & 0xFF));
+
+        return pRFrame;
+    }
+
 
     private boolean CheckRFrame(RFrame pRFrame) {
         int buffRealLen = pRFrame.GetRealBuffLen();
