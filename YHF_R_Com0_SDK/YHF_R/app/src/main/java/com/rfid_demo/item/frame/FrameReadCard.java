@@ -237,6 +237,14 @@ public class FrameReadCard extends Fragment {
                 }
             });
 
+            try {
+                if (mServer == null) {
+                    mServer = new MiddlewareService();
+                }
+            } catch (Exception e) {
+
+            }
+
             mStopBtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {

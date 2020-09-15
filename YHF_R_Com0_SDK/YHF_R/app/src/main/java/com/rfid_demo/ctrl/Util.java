@@ -1,13 +1,19 @@
 package com.rfid_demo.ctrl;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.os.Process;
 import android.util.Log;
 
 import com.example.uart.R;
+import com.rfid_demo.main.MainActivity;
+import com.rfid_demo.main.MyApplication;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -74,19 +80,19 @@ public class Util {
     }
 
     public static Object dtGet( String key, Object defaultObj) {
-        SharedPreferences sp = dtContext.getSharedPreferences(DATA_FILE_NAME, dtContext.MODE_PRIVATE);
-        if (defaultObj instanceof Boolean) {
-            return sp.getBoolean(key, (Boolean) defaultObj);
-        } else if (defaultObj instanceof Float) {
-            return sp.getFloat(key, (Float) defaultObj);
-        } else if (defaultObj instanceof Integer) {
-            return sp.getInt(key, (Integer) defaultObj);
-        } else if (defaultObj instanceof Long) {
-            return sp.getLong(key, (Long) defaultObj);
-        } else if (defaultObj instanceof String) {
-            return sp.getString(key, (String) defaultObj);
-        }
-        return null;
+//        SharedPreferences sp = dtContext.getSharedPreferences(DATA_FILE_NAME, dtContext.MODE_PRIVATE);
+//        if (defaultObj instanceof Boolean) {
+//            return sp.getBoolean(key, (Boolean) defaultObj);
+//        } else if (defaultObj instanceof Float) {
+//            return sp.getFloat(key, (Float) defaultObj);
+//        } else if (defaultObj instanceof Integer) {
+//            return sp.getInt(key, (Integer) defaultObj);
+//        } else if (defaultObj instanceof Long) {
+//            return sp.getLong(key, (Long) defaultObj);
+//        } else if (defaultObj instanceof String) {
+//            return sp.getString(key, (String) defaultObj);
+//        }
+        return defaultObj;
     }
 
 
@@ -98,18 +104,16 @@ public class Util {
     public static void  restartApp()
     {
 
-        new Thread(new Runnable() {
-            public void run() {
-                //sleep设置的是时长
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+        Intent intent = new Intent();
+        Context context = MyApplication.contxt;
+        intent.setClass(context, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context,0,intent,PendingIntent.FLAG_ONE_SHOT);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC,System.currentTimeMillis() + 1000,pendingIntent);
 
-                Object o = 1;
-                Log.i((String) o , (String)o);
-            }
-        }).start();
+        Process.killProcess(Process.myPid());
+        System.exit(0);
     }
 }

@@ -2,6 +2,8 @@ package com.middleware.frame.data;
 
 
 public class RFrame {
+    public static final int SuccessHandler = 0;
+    public static final int FailHandler = -1;
     public static final int HEAD_LEN = 5;
     public static final int COMMAND_LEN = 1;
     public static final int ANSWER_LEN = 1;
@@ -72,6 +74,23 @@ public class RFrame {
         return this.bData[index - 5];
     }
 
+    public byte[] GetBytes(int start,int end) {
+        end = end + 1;
+        int count = end - start;
+        if (count <= 0)
+        {
+            return  new byte[0];
+        }
+
+        byte[] bytes = new byte[count];
+        for (int i = 0; i < count && (i + start) < GetRealBuffLen(); i++)
+        {
+            bytes[i] = GetByte(start+i);
+        }
+
+        return bytes;
+    }
+
     public void SetByte(int index ,byte b)
     {
         if (index < 5) {
@@ -80,7 +99,6 @@ public class RFrame {
         else {
                 this.bData[index - 5] = b;
         }
-
     }
 
     public void SetCrc(short crc)

@@ -23,7 +23,7 @@ public class MyApplication extends Application {
         para = new ParaSave(this);
         Util.dtContext =   getApplicationContext();
         contxt = getApplicationContext();
-        Thread.setDefaultUncaughtExceptionHandler(new CrashHandler());
+//        Thread.setDefaultUncaughtExceptionHandler(new CrashHandler());
     }
 
     public ParaSave getParaSave() {
