@@ -9,10 +9,8 @@ import com.middleware.frame.data.DataProc;
 import com.middleware.frame.data.RFIDFrame;
 import com.middleware.frame.data.RFrame;
 import com.middleware.frame.data.RFrameList;
-import com.middleware.frame.data.Tools;
 import com.middleware.frame.main.FrameMsgObervable;
 import com.middleware.frame.main.MsgMngr;
-import com.rfid_demo.ctrl.Util;
 
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.service.IoHandlerAdapter;
@@ -66,24 +64,26 @@ public class RequestTcpServer extends IoHandlerAdapter  implements Observer
             for (int i = 0; i < mRFrameList.GetCount(); i++) {
                 RFrame pRFrame = mRFrameList.GetRFrame(i);
                 RFIDFrame rfidFrame = new RFIDFrame(pRFrame);
-                toAndroid.dealFrame(rfidFrame);
-                if (mProc.isStartRead( pRFrame.GetRfidCommand()))
-                {
-                    this.readTagSession = session;
-                }
-
                 if (ConfigMngr.isConfigRFrame(pRFrame) == RFrame.SuccessHandler){
 
                     try {
 
-                        pRFrame =  mProc.createRecvRFrame(pRFrame.GetRfidCommand(), (byte) 0x00);
-                        RFIDFrame rfid = new RFIDFrame(pRFrame,pRFrame);
-                        sendResultToPc(session, rfid);
+                        RFrame pRecvRFrame =  mProc.createRecvRFrame(pRFrame.GetRfidCommand(), (byte) 0x00);
+                        rfidFrame.AddRevFrame(pRecvRFrame);
                     }catch (Exception e){
                         e.printStackTrace();
                     }
 
                 }
+                else{
+                    toAndroid.dealFrame(rfidFrame);
+                    if (mProc.isStartRead( pRFrame.GetRfidCommand()))
+                    {
+                        this.readTagSession = session;
+                    }
+                }
+
+                sendResultToPc(session, rfidFrame);
 
             }
             mRFrameList.ClearAll();
