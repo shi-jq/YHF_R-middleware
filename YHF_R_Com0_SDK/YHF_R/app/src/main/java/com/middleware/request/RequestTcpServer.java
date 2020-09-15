@@ -77,7 +77,7 @@ public class RequestTcpServer extends IoHandlerAdapter  implements Observer
                     try {
 
                         RFIDFrame rfid = new RFIDFrame(pRFrame,pRFrame);
-                        pRFrame.SetByte(6, (byte) 0x01);
+                        mProc.createRecvRFrame();
                         mProc.ResetFrameCrc(pRFrame);
                         sendResultToPc(session, rfid);
                     }catch (Exception e){

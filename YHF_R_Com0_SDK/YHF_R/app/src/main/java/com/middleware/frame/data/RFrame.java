@@ -118,4 +118,8 @@ public class RFrame {
         System.arraycopy(data, 0, this.bData, 0, datalen);
         this.mRealDataLen = datalen;
     }
+    public void InitData(int start ,byte[] data, int datalen) {
+        System.arraycopy(data, 0, this.bData, start, datalen);
+        this.mRealDataLen = start+datalen;
+    }
 }
