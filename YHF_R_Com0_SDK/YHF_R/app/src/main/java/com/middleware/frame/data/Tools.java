@@ -55,7 +55,20 @@ public class Tools {
         addr |= ((bytes[2] << 16) & 0xFF0000);
         addr |= ((bytes[3] << 25) & 0xFF000000);
         return addr;
+    }
 
+    public static String HexBytes2TenStr(byte[] hexBytes, String split){
+        String hexStr =   Bytes2HexString(hexBytes,0,hexBytes.length);
+        String ret = "";
+        String[] strs = hexStr.trim().split(" ");
+        for (int i = 0; i < strs.length; i++) {
+            String hex = String.valueOf(Integer.parseInt(strs[i], 16));
+            ret += hex;
+            if (i != strs.length -1){
+                ret+= split;
+            }
+        }
+        return ret;
     }
 
     /* Int转byte[] */

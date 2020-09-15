@@ -2,14 +2,17 @@ package com.middleware.request;
 
 import android.util.Log;
 
+import com.middleware.config.ConfigMngr;
 import com.middleware.frame.common.INT32U;
 import com.middleware.frame.common.PrintCtrl;
 import com.middleware.frame.data.DataProc;
 import com.middleware.frame.data.RFIDFrame;
 import com.middleware.frame.data.RFrame;
 import com.middleware.frame.data.RFrameList;
+import com.middleware.frame.data.Tools;
 import com.middleware.frame.main.FrameMsgObervable;
 import com.middleware.frame.main.MsgMngr;
+import com.rfid_demo.ctrl.Util;
 
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.service.IoHandlerAdapter;
@@ -38,6 +41,8 @@ public class RequestTcpServer extends IoHandlerAdapter  implements Observer
         NioSocketAcceptor acceptor = new NioSocketAcceptor();
         acceptor.setHandler(this);
         acceptor.bind(new InetSocketAddress(port));
+        acceptor.getSessionConfig().setKeepAlive(true);
+
         Log.v("TCPSERVER", "TCP服务启动，端口：" + port);
 
         MsgMngr.AndroidToPcTagObv.addObserver(this);
@@ -66,7 +71,21 @@ public class RequestTcpServer extends IoHandlerAdapter  implements Observer
                 {
                     this.readTagSession = session;
                 }
-                sendResultToPc(session,rfidFrame);
+
+                if (ConfigMngr.isConfigRFrame(pRFrame) == RFrame.SuccessHandler){
+
+                    try {
+
+                        RFIDFrame rfid = new RFIDFrame(pRFrame,pRFrame);
+                        pRFrame.SetByte(6, (byte) 0x01);
+                        mProc.ResetFrameCrc(pRFrame);
+                        sendResultToPc(session, rfid);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                }
+
             }
             mRFrameList.ClearAll();
         }
@@ -110,6 +129,7 @@ public class RequestTcpServer extends IoHandlerAdapter  implements Observer
     public void exceptionCaught(IoSession session, Throwable cause)
             throws Exception {
         System.out.println("会话异常");
+        cause.printStackTrace();
         super.exceptionCaught(session, cause);
         if (this.readTagSession == session )
         {

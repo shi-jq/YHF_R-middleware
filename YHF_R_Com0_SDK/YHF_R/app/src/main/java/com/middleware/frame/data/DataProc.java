@@ -78,6 +78,7 @@ public class DataProc {
 
         return  false;
     }
+
     //停止读卡命令
     public boolean isStopRead(byte pSendCommand)
     {
@@ -326,6 +327,26 @@ public class DataProc {
         }
         return index;
     }
+
+    //重启命令
+    public static boolean isRestartApp(byte pSendCommand)
+    {
+        return  pSendCommand == RfidCommand.COM_DEVICE_REBOOT.GetValue();
+    }
+
+    //配置网口相关
+    public static boolean isConfingNetwork(byte pSendCommand)
+    {
+        return  pSendCommand == RfidCommand.COM_NETPARA_SET.GetValue();
+    }
+
+    //配置上传相关
+    public static boolean isConfingUpload(byte pSendCommand)
+    {
+        return  pSendCommand == RfidCommand.COM_UPLOAD_PARA_SET.GetValue();
+    }
+
+
 }
 
 

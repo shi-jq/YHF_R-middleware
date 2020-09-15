@@ -17,6 +17,15 @@ public class RequestMngr extends BaseThread {
     private RequestTcpClient mTcpClient = null;
     private static RequestMngr requestMngr = null;
 
+    @Override
+    public void onDestory() {
+        mSerialRequest = null;
+        mTcpServer = null;
+        mTcpClient = null;
+        requestMngr = null;
+        super.onDestory();
+    }
+
     public static RequestMngr getInstance() {
         if (null == requestMngr) {
             synchronized (RequestMngr.class) {
@@ -62,15 +71,15 @@ public class RequestMngr extends BaseThread {
             }
         }
 
-        if (mTcpClient == null) {
-            try {
-                mTcpClient = new RequestTcpClient(ConfigMngr.getInstance().client.ipAddr, ConfigMngr.getInstance().client.port);
-            } catch (Exception e) {
-                Log.i("Req Manager","TCP Sever invaild");
-                e.printStackTrace();
-            }
-
-        }
+//        if (mTcpClient == null) {
+//            try {
+//                mTcpClient = new RequestTcpClient(ConfigMngr.getInstance().client.ipAddr, ConfigMngr.getInstance().client.port);
+//            } catch (Exception e) {
+//                Log.i("Req Manager","TCP Sever invaild");
+//                e.printStackTrace();
+//            }
+//
+//        }
 
         if (mSerialRequest == null) {
             try {

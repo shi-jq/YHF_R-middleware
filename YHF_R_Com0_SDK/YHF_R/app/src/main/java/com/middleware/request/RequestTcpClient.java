@@ -8,6 +8,7 @@ import com.middleware.frame.data.DataProc;
 import com.middleware.frame.data.RFIDFrame;
 import com.middleware.frame.data.RFrame;
 import com.middleware.frame.data.RFrameList;
+import com.middleware.frame.data.Tools;
 import com.middleware.frame.main.FrameMsgObervable;
 import com.middleware.frame.main.MsgMngr;
 
@@ -64,6 +65,7 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
 
         if (bsize > 0)
         {
+
             mProc.UnPackMsg(buffer,bsize);
             mProc.GetFrameList(mRFrameList);
             for (int i = 0; i < mRFrameList.GetCount(); i++) {
@@ -126,6 +128,7 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
     @Override
     public void sessionClosed(IoSession iosession) throws Exception {
         System.out.println("客户端会话关闭");
+        session.closeNow();
         super.sessionClosed(iosession);
     }
     @Override
@@ -144,6 +147,7 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
         System.out.println("客户端会话打开");
         super.sessionOpened(iosession);
     }
+
 
     @Override
     public void update(Observable o, Object arg) {

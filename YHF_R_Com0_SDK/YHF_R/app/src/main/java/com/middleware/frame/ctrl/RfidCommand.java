@@ -11,14 +11,16 @@ public enum RfidCommand {
     COM_PARA_OP(16),
     */
 
+    COM_UPLOAD_PARA_SET(0x10),
     COM_ANTENNA_SET(0x11),
     COM_ANTENNA_QUERY(0x12),
     COM_CARRYWAVE_SET(0x13),
     COM_CARRYWAVE_QUERY(0x14),
+    COM_NETPARA_SET(0X17),
+
 /*
     COM_COMMUNI_SET(21),
     COM_COMMUNI_QUERY(22),
-    COM_NETPARA_SET(23),
     COM_NETPARA_QUERY(24),
     COM_TAG_SET(25),
     COM_TAG_QUERY(26),
@@ -54,7 +56,7 @@ public enum RfidCommand {
     COM_YQUERY_EASFLAG(108),
     COM_YEAS_MON(109),
     */
-    COM_YSTOP(0x6F);
+    COM_YSTOP(0x6F),
     /*
     COM_YTAGCFG_SET(113),
     COM_YTAGCFG_QUERY(114),
@@ -104,8 +106,9 @@ public enum RfidCommand {
     COM_SEND_TRANS(197),
     COM_RECV_TRANS(198),
     COM_MODULE_REBOOT(199),
-    COM_DEVICE_REBOOT(42);
      */
+    COM_DEVICE_REBOOT(0x2A);
+
 
     private final int value;
 

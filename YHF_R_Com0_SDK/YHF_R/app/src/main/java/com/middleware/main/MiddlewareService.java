@@ -36,8 +36,6 @@ public class MiddlewareService extends BaseThread {
             }
         }
 
-        Log.i("haha","threadProcess");
-         //*/
         return  false;
     }
 }
