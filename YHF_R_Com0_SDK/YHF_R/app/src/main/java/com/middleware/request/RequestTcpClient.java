@@ -8,7 +8,6 @@ import com.middleware.frame.data.DataProc;
 import com.middleware.frame.data.RFIDFrame;
 import com.middleware.frame.data.RFrame;
 import com.middleware.frame.data.RFrameList;
-import com.middleware.frame.data.Tools;
 import com.middleware.frame.main.FrameMsgObervable;
 import com.middleware.frame.main.MsgMngr;
 
@@ -61,7 +60,7 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
         int bsize = bbuf.limit();
         bbuf.get(buffer, bbuf.position(), bsize);
 
-        PrintCtrl.PrintBUffer("数据从PC读取 ", buffer, bsize);
+        PrintCtrl.PrintBUffer("数据从PC读取  -TCP-Client  ", buffer, bsize);
 
         if (bsize > 0)
         {
@@ -99,7 +98,7 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
         buffer.put(pForSend,0,totalFrameSize.GetValue());
         buffer.flip();
         iosession.write(buffer);
-        PrintCtrl.PrintBUffer("数据发送到PC ", pForSend, totalFrameSize.GetValue());
+        PrintCtrl.PrintBUffer("数据发送到PC  -TCP-Client  ", pForSend, totalFrameSize.GetValue());
     }
 
     public void sendToPC(RFIDFrame rfidFrame)

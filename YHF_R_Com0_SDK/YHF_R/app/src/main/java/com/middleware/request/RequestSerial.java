@@ -97,7 +97,7 @@ public class RequestSerial extends BaseThread implements Observer {
 
                 ouputStream.write(pForSend,0,totalFrameSize.GetValue());
 
-                PrintCtrl.PrintBUffer("标签数据发送到PC ", pForSend, totalFrameSize.GetValue());
+                PrintCtrl.PrintBUffer("标签数据发送到PC -Serial  ", pForSend, totalFrameSize.GetValue());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -124,7 +124,7 @@ public class RequestSerial extends BaseThread implements Observer {
             mProc.PackMsg(pForSend,totalFrameSize, recvFrame);
             ouputStream.write(pForSend,0,totalFrameSize.GetValue());
 
-            PrintCtrl.PrintBUffer("数据发送到PC ", pForSend, totalFrameSize.GetValue());
+            PrintCtrl.PrintBUffer("数据发送到PC -Serial ", pForSend, totalFrameSize.GetValue());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -155,7 +155,7 @@ public class RequestSerial extends BaseThread implements Observer {
             e.printStackTrace();
         }
 
-        PrintCtrl.PrintBUffer("数据从PC读取 ", buffer, bsize);
+        PrintCtrl.PrintBUffer("数据从PC读取  -Serial  ", buffer, bsize);
         if (bsize > 0)
         {
             mProc.UnPackMsg(buffer,bsize);

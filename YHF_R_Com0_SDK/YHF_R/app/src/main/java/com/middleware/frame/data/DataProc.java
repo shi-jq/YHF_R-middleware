@@ -236,12 +236,8 @@ public class DataProc {
         if (revLength == 0) {
             return false;
         }
-
         AnalysisBuff(revData, revLength);
-
-
         CheckRFrame();
-
         return true;
     }
 
@@ -278,36 +274,34 @@ public class DataProc {
 
             if (CheckRFrame(pRFrame)) {
                 this.mValidFrameList.AddRFrame(pRFrame);
+                this.mWaitFrameList.RemoveRFrame();
             }
-
-
-            if (pRFrame.GetLength() != pRFrame.GetRealBuffLen() &&
-                    this.mWaitFrameList.GetCount() == 1) {
-                break;
-            }
-
-            this.mWaitFrameList.RemoveRFrame();
         }
     }
 
     public RFrame createRecvRFrame(byte RfidCommand, byte status)
     {
         byte[] recvData = new byte[0];
-        return createRecvRFrame(RfidCommand,status,recvData,0);
+        return createRecvRFrame(RfidCommand, (byte) 0,status,recvData,0);
+    }
+
+    public RFrame createRecvRFrame(RFrame pSendRFrame, byte status)
+    {
+        byte[] recvData = new byte[0];
+        return createRecvRFrame(pSendRFrame.GetRfidCommand(),pSendRFrame.GetByte(1),status,recvData,0);
     }
 
     public RFrame createRecvRFrame(RFrame pSendRFrame, byte status,byte[] recvData, int recvLen)
     {
-        return createRecvRFrame(pSendRFrame.GetRfidCommand(),status,recvData,recvLen);
+        return createRecvRFrame(pSendRFrame.GetRfidCommand(),pSendRFrame.GetByte(1),status,recvData,recvLen);
     }
 
-    public RFrame createRecvRFrame(byte RfidCommand, byte status,byte[] recvData, int recvLen)
+    public RFrame createRecvRFrame(byte RfidCommand,byte mFrameNum, byte status,byte[] recvData, int recvLen)
     {
         RFrame pRFrame = new RFrame();
         pRFrame.Insert(FRAME_HEAD);
 
-        pRFrame.Insert(
-                (byte) (this.mFrameLed + this.mFrameBuzzer + this.mFramePriority + this.mFrameAnswer + this.mFrameNum));
+        pRFrame.Insert(mFrameNum);
         pRFrame.Insert(this.mBusAddr);
         pRFrame.Insert((byte) (recvLen + 1));
         pRFrame.Insert(RfidCommand);

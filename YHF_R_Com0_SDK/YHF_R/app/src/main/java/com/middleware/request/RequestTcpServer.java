@@ -55,7 +55,7 @@ public class RequestTcpServer extends IoHandlerAdapter  implements Observer
         int bsize = bbuf.limit();
         bbuf.get(buffer, bbuf.position(), bsize);
 
-        PrintCtrl.PrintBUffer("数据从PC读取 ", buffer, bsize);
+        PrintCtrl.PrintBUffer("数据从PC读取  -TCP-Server ", buffer, bsize);
 
         if (bsize > 0)
         {
@@ -68,7 +68,7 @@ public class RequestTcpServer extends IoHandlerAdapter  implements Observer
 
                     try {
 
-                        RFrame pRecvRFrame =  mProc.createRecvRFrame(pRFrame.GetRfidCommand(), (byte) 0x00);
+                        RFrame pRecvRFrame =  mProc.createRecvRFrame(pRFrame, (byte) 0x00);
                         rfidFrame.AddRevFrame(pRecvRFrame);
                     }catch (Exception e){
                         e.printStackTrace();
@@ -112,7 +112,7 @@ public class RequestTcpServer extends IoHandlerAdapter  implements Observer
         buffer.put(pForSend,0,totalFrameSize.GetValue());
         buffer.flip();
         iosession.write(buffer);
-        PrintCtrl.PrintBUffer("数据发送到PC ", pForSend, totalFrameSize.GetValue());
+        PrintCtrl.PrintBUffer("数据发送到PC   -TCP-Server ", pForSend, totalFrameSize.GetValue());
     }
 
     @Override
