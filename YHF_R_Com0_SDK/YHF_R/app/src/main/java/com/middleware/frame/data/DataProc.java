@@ -311,7 +311,7 @@ public class DataProc {
         pRFrame.Insert((byte) (recvLen + 1));
         pRFrame.Insert(RfidCommand);
         pRFrame.Insert(status);
-        pRFrame.InitData(1,recvData, recvLen);
+        pRFrame.Insert(recvData, recvLen);
 
         int CRCValue = 0;
         CRCValue = GetFrameCrc(pRFrame, pRFrame.GetRealBuffLen());

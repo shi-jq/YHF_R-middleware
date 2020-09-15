@@ -52,6 +52,13 @@ public class RFrame {
         }
     }
 
+    public void Insert(byte[] data, int len)
+    {
+        for (int i = 0; i < len; i++) {
+            Insert(data[i]);
+        }
+    }
+
     public byte GetBusAddr()
     {
         return this.bHead[2];
@@ -99,9 +106,5 @@ public class RFrame {
     public void InitData(byte[] data, int datalen) {
         System.arraycopy(data, 0, this.bData, 0, datalen);
         this.mRealDataLen = datalen;
-    }
-    public void InitData(int start ,byte[] data, int datalen) {
-        System.arraycopy(data, 0, this.bData, start, datalen);
-        this.mRealDataLen = start+datalen;
     }
 }
