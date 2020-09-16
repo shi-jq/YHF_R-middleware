@@ -303,7 +303,7 @@ public class DataProc {
 
         pRFrame.Insert(mFrameNum);
         pRFrame.Insert(this.mBusAddr);
-        pRFrame.Insert((byte) (recvLen + 1));
+        pRFrame.Insert((byte) (recvLen + 2));
         pRFrame.Insert(RfidCommand);
         pRFrame.Insert(status);
         pRFrame.Insert(recvData, recvLen);
