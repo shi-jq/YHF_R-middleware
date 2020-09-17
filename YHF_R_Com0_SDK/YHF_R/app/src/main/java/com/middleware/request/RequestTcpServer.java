@@ -65,7 +65,6 @@ public class RequestTcpServer extends IoHandlerAdapter  implements Observer
                 RFrame pRFrame = mRFrameList.GetRFrame(i);
                 RFIDFrame rfidFrame = new RFIDFrame(pRFrame);
                 if (ConfigMngr.isConfigRFrame(pRFrame) == RFrame.SuccessHandler){
-
                     try {
 
                         RFrame pRecvRFrame =  mProc.createRecvRFrame(pRFrame, (byte) 0x00);
@@ -73,7 +72,6 @@ public class RequestTcpServer extends IoHandlerAdapter  implements Observer
                     }catch (Exception e){
                         e.printStackTrace();
                     }
-
                 }
                 else{
                     toAndroid.dealFrame(rfidFrame);

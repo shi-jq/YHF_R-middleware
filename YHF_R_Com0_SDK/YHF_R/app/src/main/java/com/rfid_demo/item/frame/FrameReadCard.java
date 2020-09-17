@@ -218,14 +218,7 @@ public class FrameReadCard extends Fragment {
             mStartBtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    try {
-                        if (mServer == null) {
-                            mServer = new MiddlewareService();
-                        }
-                    } catch (Exception e) {
-
-                    }
+                    startOpenAll();
 
                     if (ApiCtrl.Initialize() && ApiCtrl.Open()) {
                         AppCfg.ShowMsg(R.string.open_success, false);
@@ -236,23 +229,13 @@ public class FrameReadCard extends Fragment {
                     }
                 }
             });
-
-            try {
-                if (mServer == null) {
-                    mServer = new MiddlewareService();
-                }
-            } catch (Exception e) {
-
-            }
+            startOpenAll();
 
             mStopBtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    if (mServer != null)
-                    {
-                        mServer = null;
-                    }
+                    stopOpenAll();
 
                     if (ApiCtrl.mIsReading) {
                         AppCfg.ShowMsg(R.string.info_stopRead,true);
@@ -283,6 +266,27 @@ public class FrameReadCard extends Fragment {
         //getActivity().registerReceiver(keyReceiver, filter);
 
         return rootView;
+    }
+
+    public void startOpenAll(){
+        try {
+            if (mServer == null) {
+                mServer = new MiddlewareService();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+     }
+
+    public void stopOpenAll(){
+        try {
+            if (mServer != null)
+            {
+                mServer = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void UptadeTable() {

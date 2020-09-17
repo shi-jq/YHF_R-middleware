@@ -71,6 +71,12 @@ public class Tools {
         return ret;
     }
 
+    public static String HexBytesStr(byte[] hexBytes){
+        String hexStr =   Bytes2HexString(hexBytes,0,hexBytes.length);
+        String ret = hexStr.trim().replace(" ", "");
+        return ret;
+    }
+
     /* Int转byte[] */
     public static byte[] intToByte(int i) {
         byte[] abyte0 = new byte[4];
