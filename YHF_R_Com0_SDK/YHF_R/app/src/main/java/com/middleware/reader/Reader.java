@@ -128,9 +128,7 @@ public class Reader extends BaseThread implements Observer   {
         assert(inputStream != null);
         bsize = 0;
         try {
-            PrintCtrl.PrintBUffer("开始阻塞读取数据 ", buffer, bsize);
             bsize = inputStream.read(buffer);
-
         } catch (IOException e) {
             e.printStackTrace();
         }
