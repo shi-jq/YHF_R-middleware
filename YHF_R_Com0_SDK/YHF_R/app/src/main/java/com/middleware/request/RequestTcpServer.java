@@ -63,26 +63,16 @@ public class RequestTcpServer extends IoHandlerAdapter  implements Observer
             mProc.GetFrameList(mRFrameList);
             for (int i = 0; i < mRFrameList.GetCount(); i++) {
                 RFrame pRFrame = mRFrameList.GetRFrame(i);
-                RFIDFrame rfidFrame = new RFIDFrame(pRFrame);
-                if (ConfigMngr.isConfigRFrame(pRFrame) == RFrame.SuccessHandler){
-                    try {
-
-                        RFrame pRecvRFrame =  mProc.createRecvRFrame(pRFrame, (byte) 0x00);
-                        rfidFrame.AddRevFrame(pRecvRFrame);
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                }
-                else{
+                if (ConfigMngr.camHandlerRFrame(pRFrame) == RFrame.FailHandler)
+                {
+                    RFIDFrame rfidFrame = new RFIDFrame(pRFrame);
                     toAndroid.dealFrame(rfidFrame);
                     if (mProc.isStartRead( pRFrame.GetRfidCommand()))
                     {
                         this.readTagSession = session;
                     }
+                    sendResultToPc(session, rfidFrame);
                 }
-
-                sendResultToPc(session, rfidFrame);
-
             }
             mRFrameList.ClearAll();
         }

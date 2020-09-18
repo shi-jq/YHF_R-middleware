@@ -4,19 +4,20 @@ import android.util.Log;
 
 import com.middleware.frame.ctrl.RfidCommand;
 import com.middleware.frame.data.DataProc;
+import com.middleware.frame.data.RFIDFrame;
 import com.middleware.frame.data.RFrame;
 import com.middleware.frame.data.Tools;
+import com.middleware.request.RequestMngr;
 import com.rfid_demo.ctrl.Util;
 
-public class ConfigMngr
-{
-   private static ConfigMngr configMngr = null;
+public class ConfigMngr {
+    private static ConfigMngr configMngr = null;
 
-   public ConfigClient client = null;
-   public ConfigPcSerial pcSerial = null;
-   public ConfigReaderSerial readerSerial = null;
-   public ConfigServer server = null;
-
+    public ConfigClient client = null;
+    public ConfigPcSerial pcSerial = null;
+    public ConfigReaderSerial readerSerial = null;
+    public ConfigServer server = null;
+    public static RFIDFrame responseRFIDFrame;
 
     public static ConfigMngr getInstance() {
         if (null == configMngr) {
@@ -29,8 +30,7 @@ public class ConfigMngr
         return configMngr;
     }
 
-    private ConfigMngr()
-    {
+    private ConfigMngr() {
         this.client = new ConfigClient();
         this.pcSerial = new ConfigPcSerial();
         this.readerSerial = new ConfigReaderSerial();
@@ -38,73 +38,88 @@ public class ConfigMngr
     }
 
 
-    public static  int isConfigRFrame(RFrame pRFrame)
-    {
+    public static int camHandlerRFrame(RFrame pRFrame) {
         int canHander = RFrame.FailHandler;
         byte byteCommand = pRFrame.GetRfidCommand();
         byte[] bytes = {byteCommand};
-        Log.i("Req", Tools.Bytes2HexString(bytes,1));
-        if (DataProc.isRestartApp(byteCommand))
-        {
-           canHander = RFrame.SuccessHandler;
+        Log.i("Req", Tools.Bytes2HexString(bytes, 1));
+        if (DataProc.isRestartApp(byteCommand)) {
+            canHander = RFrame.SuccessHandler;
 //           Util.restartApp();
         }
 
-        if (congfigLocalNet(byteCommand, pRFrame) == RFrame.SuccessHandler){
-            canHander = RFrame.SuccessHandler;;
+        if (congfigLocalNet(byteCommand, pRFrame) == RFrame.SuccessHandler) {
+            canHander = RFrame.SuccessHandler;
         }
 
-
-        if (configClientUpload(byteCommand, pRFrame) == RFrame.SuccessHandler){
-            canHander = RFrame.SuccessHandler;;
+        if (configClientUpload(byteCommand, pRFrame) == RFrame.SuccessHandler) {
+            canHander = RFrame.SuccessHandler;
         }
 
-        return  canHander;
-    }
+        if (canHander == RFrame.SuccessHandler) {
+            responseRFIDFrame = new RFIDFrame(pRFrame);
+            RFrame pRecvRFrame = new DataProc().createRecvRFrame(pRFrame, (byte) 0x00);
+        }
 
+        if (queryLocalNet(byteCommand, pRFrame) == RFrame.SuccessHandler) {
+            canHander = RFrame.SuccessHandler;
+        }
 
-    private static  int congfigLocalNet(byte byteCommand,RFrame pRFrame)
-    {
-        int canHander = RFrame.FailHandler;
+        if (queryClientUpload(byteCommand, pRFrame) == RFrame.SuccessHandler) {
+            canHander = RFrame.SuccessHandler;
+        }
 
-        //设置网口相关
-        if (DataProc.isConfingNetwork(byteCommand))
-        {
-            byte subByte = pRFrame.GetByte(5);
-            int count = pRFrame.GetRealBuffLen();
-
-            if (subByte == 0x02 && count >= 20)
-            {
-                byte[] ipBytes = pRFrame.GetBytes(6,9);
-                String ip =   Tools.HexBytes2TenStr(ipBytes,".");
-                saveVal(ConfigLocalNet.IP_KEY, ip);
-                Log.d("Req_msg congfigLocalNet ip", ip);
-
-                byte[] yanMaBytes = pRFrame.GetBytes(10,13);
-                String yanMa =   Tools.HexBytes2TenStr(yanMaBytes,".");
-                saveVal(ConfigLocalNet.IP_YANMA_KEY, yanMa);
-                Log.d("Req_msg congfigLocalNet yanMaBytes", yanMa);
-
-                byte[] wangGuanBytes = pRFrame.GetBytes(14,17);
-                String wangGuan =   Tools.HexBytes2TenStr(wangGuanBytes,".");
-               saveVal(ConfigLocalNet.IP_WANGGUAN_KEY, wangGuan);
-                Log.d("Req_msg congfigLocalNet wangGuan", wangGuan);
-
-                canHander = RFrame.SuccessHandler;;
+        if (responseRFIDFrame != null) {
+            try {
+                RequestMngr.getInstance().sendToPC(responseRFIDFrame);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }finally {
+                responseRFIDFrame = null;
             }
         }
 
-        return  canHander;
+        return canHander;
+    }
+
+
+    private static int congfigLocalNet(byte byteCommand, RFrame pRFrame) {
+        int canHander = RFrame.FailHandler;
+
+        //设置网口相关
+        if (DataProc.isConfingNetwork(byteCommand)) {
+            byte subByte = pRFrame.GetByte(5);
+            int count = pRFrame.GetRealBuffLen();
+
+            if (subByte == 0x02 && count >= 20) {
+                byte[] ipBytes = pRFrame.GetBytes(6, 9);
+                String ip = Tools.HexBytes2TenStr(ipBytes, ".");
+                saveVal(ConfigLocalNetWK.IP_KEY, ip);
+                Log.d("Req_msg congfigLocalNet ip", ip);
+
+                byte[] yanMaBytes = pRFrame.GetBytes(10, 13);
+                String yanMa = Tools.HexBytes2TenStr(yanMaBytes, ".");
+                saveVal(ConfigLocalNetWK.IP_YANMA_KEY, yanMa);
+                Log.d("Req_msg congfigLocalNet yanMaBytes", yanMa);
+
+                byte[] wangGuanBytes = pRFrame.GetBytes(14, 17);
+                String wangGuan = Tools.HexBytes2TenStr(wangGuanBytes, ".");
+                saveVal(ConfigLocalNetWK.IP_WANGGUAN_KEY, wangGuan);
+                Log.d("Req_msg congfigLocalNet wangGuan", wangGuan);
+
+                canHander = RFrame.SuccessHandler;
+            }
+        }
+
+        return canHander;
     }
 
     //设置上传网络相关
-    private static  int configClientUpload(byte byteCommand,RFrame pRFrame)
-    {
+    private static int configClientUpload(byte byteCommand, RFrame pRFrame) {
         int canHander = RFrame.FailHandler;
 
         //设置上传相关
-        if (DataProc.isConfingUpload(byteCommand))
-        {
+        if (DataProc.isConfingUpload(byteCommand)) {
             byte subByte = pRFrame.GetByte(5);
             byte subByte2 = pRFrame.GetByte(6);
             int count = pRFrame.GetRealBuffLen();
@@ -112,65 +127,160 @@ public class ConfigMngr
             Log.i("Req_count", String.valueOf(count));
 
             //设置上传网络
-            if (subByte == 0x01  && subByte2 == -6 && count >= 14)//subByte2 = FA
+            if (subByte == 0x01 && subByte2 == -6 && count >= 14)//subByte2 = FA
             {
-                byte[] ipBytes = pRFrame.GetBytes(8,11);
-                String ip =   Tools.HexBytes2TenStr(ipBytes,".");
+                byte[] ipBytes = pRFrame.GetBytes(8, 11);
+                String ip = Tools.HexBytes2TenStr(ipBytes, ".");
                 saveVal(ConfigClient.IP_KEY, ip);
                 Log.d("Req_msg configClientUpload ip", ip);
 
-                canHander = RFrame.SuccessHandler;;
+                canHander = RFrame.SuccessHandler;
             }
 
             //设置上传网络
             if (subByte == 0x01 && subByte2 == -2 && count >= 12)//subByte2 = FE
             {
-                byte[] ipBytes = pRFrame.GetBytes(8,9);
-                String hexPport =   Tools.HexBytesStr(ipBytes);
-                Integer port = Integer.parseInt(hexPport,16);
+                byte[] ipBytes = pRFrame.GetBytes(8, 9);
+                String hexPport = Tools.HexBytesStr(ipBytes);
+                Integer port = Integer.parseInt(hexPport, 16);
                 saveVal(ConfigClient.PORT_KEY, port);
                 Log.d("Req_msg configClientUpload port", String.valueOf(port));
-                canHander = RFrame.SuccessHandler;;
+                canHander = RFrame.SuccessHandler;
             }
 
-            if (subByte == 0x01  && count >= 11)
-            {
-                byte[] ipBytes = pRFrame.GetBytes(8,8);
-                String hexPport =   Tools.HexBytesStr(ipBytes);
-                Integer val = Integer.parseInt(hexPport,16);
+            if (subByte == 0x01 && count >= 11) {
+                byte[] ipBytes = pRFrame.GetBytes(8, 8);
+                String hexPport = Tools.HexBytesStr(ipBytes);
+                Integer val = Integer.parseInt(hexPport, 16);
 
                 //设置工作模式
-                if (subByte2 == 00)
-                {
+                if (subByte2 == 56) {
                     saveVal(ConfigUpload.WORK_MODE_KEY, val);
-                    Log.d("Req_msg configClientUpload port", String.valueOf(val));
-                    canHander = RFrame.SuccessHandler;;
+                    canHander = RFrame.SuccessHandler;
                 }
 
                 //设置设备类型
-                if (subByte2 == 01)
-                {
+                if (subByte2 == 54) {
                     saveVal(ConfigUpload.DEVICE_TYPE_KEY, val);
-                    Log.d("Req_msg configClientUpload port", String.valueOf(val));
-                    canHander = RFrame.SuccessHandler;;
+                    canHander = RFrame.SuccessHandler;
                 }
 
                 //设置数据是否上传
-                if (subByte2 == 01)
-                {
+                if (subByte2 == 55) {//F1
                     saveVal(ConfigUpload.DATA_PUSH_KEY, val);
-                    canHander = RFrame.SuccessHandler;;
+                    canHander = RFrame.SuccessHandler;
                 }
 
-                Log.d("Req_msg configClientUpload port", String.valueOf(val));
+                Log.d("Req_msg configClientUpload", String.valueOf(val));
             }
         }
 
-        return  canHander;
+        return canHander;
     }
 
-    public static void saveVal(String saveKey,Object obj)
-    {
+
+    //查询相关
+    private static int queryLocalNet(byte byteCommand, RFrame pRFrame) {
+        int canHander = RFrame.FailHandler;
+
+        //设置网口相关
+        if (DataProc.isConfingNetwork(byteCommand)) {
+            byte subByte = pRFrame.GetByte(5);
+            int count = pRFrame.GetRealBuffLen();
+
+            if (subByte == 0x02 && count >= 20) {
+                byte[] ipBytes = pRFrame.GetBytes(6, 9);
+                String ip = Tools.HexBytes2TenStr(ipBytes, ".");
+                saveVal(ConfigLocalNetWK.IP_KEY, ip);
+                Log.d("Req_msg congfigLocalNet ip", ip);
+
+                byte[] yanMaBytes = pRFrame.GetBytes(10, 13);
+                String yanMa = Tools.HexBytes2TenStr(yanMaBytes, ".");
+                saveVal(ConfigLocalNetWK.IP_YANMA_KEY, yanMa);
+                Log.d("Req_msg congfigLocalNet yanMaBytes", yanMa);
+
+                byte[] wangGuanBytes = pRFrame.GetBytes(14, 17);
+                String wangGuan = Tools.HexBytes2TenStr(wangGuanBytes, ".");
+                saveVal(ConfigLocalNetWK.IP_WANGGUAN_KEY, wangGuan);
+                Log.d("Req_msg congfigLocalNet wangGuan", wangGuan);
+
+                canHander = RFrame.SuccessHandler;
+            }
+        }
+
+        return canHander;
+    }
+
+    //查询上传网络相关
+    private static int queryClientUpload(byte byteCommand, RFrame pRFrame) {
+        int canHander = RFrame.FailHandler;
+
+        //设置上传相关
+        if (DataProc.isConfingUpload(byteCommand)) {
+            byte subByte = pRFrame.GetByte(5);
+            byte subByte2 = pRFrame.GetByte(6);
+            int count = pRFrame.GetRealBuffLen();
+
+            Log.i("Req_count", String.valueOf(count));
+
+            //设置上传网络
+            if (subByte == 0x02 && subByte2 == -6 && count >= 14)//subByte2 = FA
+            {
+                byte[] ipBytes = pRFrame.GetBytes(8, 11);
+                String ip = Tools.HexBytes2TenStr(ipBytes, ".");
+                saveVal(ConfigClient.IP_KEY, ip);
+                Log.d("query_msg configClientUpload ip", ip);
+
+                canHander = RFrame.SuccessHandler;
+            }
+
+            //设置上传网络
+            if (subByte == 0x02 && subByte2 == -2 && count >= 12)//subByte2 = FE
+            {
+                byte[] ipBytes = pRFrame.GetBytes(8, 9);
+                String hexPport = Tools.HexBytesStr(ipBytes);
+                Integer port = Integer.parseInt(hexPport, 16);
+                saveVal(ConfigClient.PORT_KEY, port);
+                Log.d("query_msg configClientUpload port", String.valueOf(port));
+                canHander = RFrame.SuccessHandler;
+            }
+
+            if (subByte == 0x02 && count >= 10) {
+                byte[] ipBytes = pRFrame.GetBytes(8, 8);
+                String hexPport = Tools.HexBytesStr(ipBytes);
+                Integer val = Integer.parseInt(hexPport, 16);
+
+                //设置工作模式
+                if (subByte2 == 56) {
+                    saveVal(ConfigUpload.WORK_MODE_KEY, val);
+                    canHander = RFrame.SuccessHandler;
+                }
+
+                //设置设备类型
+                if (subByte2 == 54) {
+                    saveVal(ConfigUpload.DEVICE_TYPE_KEY, val);
+                    canHander = RFrame.SuccessHandler;
+                }
+
+                //设置数据是否上传
+                if (subByte2 == 55) {//F1
+                    saveVal(ConfigUpload.DATA_PUSH_KEY, val);
+                    canHander = RFrame.SuccessHandler;
+                }
+
+                Log.d("query_msg configClientUpload", String.valueOf(val));
+            }
+        }
+
+        return canHander;
+    }
+
+    public static void saveVal(String key, Object obj) {
 //        Util.dtSave(saveKey,obj);
+    }
+
+    public static Object getValue(String key, Object defObj)
+    {
+        return Util.dtGet(key, defObj);
     }
 }

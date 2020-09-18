@@ -1,5 +1,4 @@
 package com.middleware.config;
-
 import com.rfid_demo.ctrl.Util;
 
 //客户端转发的配置 连接配置

@@ -14,17 +14,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@android:style/Theme.Light.NoTitleBar">
-        <activity
-            android:name="com.rfid_demo.main.MainActivity"
-            android:label="@string/app_name">
-            <intent-filter  android:priority="1000">
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-            </intent-filter>
-        </activity>
+
         <receiver
             android:name="com.rfid_demo.service.BootReceiver"
             android:enabled="true"
@@ -44,6 +34,18 @@
                 </data>
             </intent-filter>
         </receiver>
+
+        <activity
+            android:name="com.rfid_demo.main.MainActivity"
+            android:label="@string/app_name">
+            <intent-filter  android:priority="1000">
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

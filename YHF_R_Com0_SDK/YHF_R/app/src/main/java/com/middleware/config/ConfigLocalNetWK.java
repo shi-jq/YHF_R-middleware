@@ -1,10 +1,7 @@
 package com.middleware.config;
-
 import com.rfid_demo.ctrl.Util;
 
-//客户端转发的配置 连接配置
-public class ConfigLocalNet
-{
+public class ConfigLocalNetWK {
     public static final String PORT_KEY = "ConfigLocalNet_PORT_KEY";
     public static final String IP_KEY = "ConfigLocalNet_IP_KEY";
     public static final String IP_YANMA_KEY = "ConfigLocalNet_IP_YANMA_KEY";
@@ -12,8 +9,7 @@ public class ConfigLocalNet
     public static final String ADD_TIME_KEY = "ConfigLocalNet_ADD_TIME_KEY";
     public static final String CLIENT_TYPE_KEY = "ConfigLocalNet_CLIENT_TYPE_KEY";
 
-    public enum ClientType
-    {
+    public enum ClientType {
         NONE,//不转发,原路返回
         UDP,
         TCP
@@ -26,13 +22,13 @@ public class ConfigLocalNet
     public int port = 60001;//转发的端口
     public boolean isAddTime = true;//是否加上时间戳
 
-    public ConfigLocalNet()
-    {
-        this.ipAddr = (String) Util.dtGet(IP_KEY,"127.0.0.1");
-        this.ipYanma = (String) Util.dtGet(IP_YANMA_KEY,"255.255.255.0");
-        this.ipWangGuan = (String) Util.dtGet(IP_WANGGUAN_KEY,"192.168.1.1");
-        this.port = (int) Util.dtGet(PORT_KEY,60001);
-        this.isAddTime = (boolean) Util.dtGet(ADD_TIME_KEY,true);
-        this.type = (ClientType) Util.dtGet(CLIENT_TYPE_KEY,ClientType.NONE);
+    public ConfigLocalNetWK() {
+        this.ipAddr = (String) Util.dtGet(IP_KEY, "127.0.0.1");
+        this.ipYanma = (String) Util.dtGet(IP_YANMA_KEY, "255.255.255.0");
+        this.ipWangGuan = (String) Util.dtGet(IP_WANGGUAN_KEY, "192.168.1.1");
+        this.port = (int) Util.dtGet(PORT_KEY, 60001);
+        this.isAddTime = (boolean) Util.dtGet(ADD_TIME_KEY, true);
+        this.type = (ClientType) Util.dtGet(CLIENT_TYPE_KEY, ClientType.NONE);
     }
 }
+
