@@ -130,22 +130,14 @@ public class ConfigMngr {
             //设置上传网络
             if (subByte == 0x01 && subByte2 == -6 && count >= 14)//subByte2 = FA
             {
-                byte[] ipBytes = pRFrame.GetBytes(8, 11);
-                String ip = Tools.HexBytes2TenStr(ipBytes, ".");
-                saveVal(ConfigClient.IP_KEY, ip);
-                Log.d("Req_msg configClientUpload ip", ip);
-
+                ConfigClient.configIPWithRFrame(pRFrame);
                 canHander = RequestModel.SuccessHandler;
             }
 
             //设置上传网络
             if (subByte == 0x01 && subByte2 == -2 && count >= 12)//subByte2 = FE
             {
-                byte[] ipBytes = pRFrame.GetBytes(8, 9);
-                String hexPport = Tools.HexBytesStr(ipBytes);
-                Integer port = Integer.parseInt(hexPport, 16);
-                saveVal(ConfigClient.PORT_KEY, port);
-                Log.d("Req_msg configClientUpload port", String.valueOf(port));
+                ConfigClient.configPortWithRFrame(pRFrame);
                 canHander = RequestModel.SuccessHandler;
             }
 
@@ -222,54 +214,59 @@ public class ConfigMngr {
             byte subByte2 = pRFrame.GetByte(6);
             int count = pRFrame.GetRealBuffLen();
 
+            Log.i("subByte", String.valueOf(subByte));
+            Log.i("subByte2", String.valueOf(subByte2));
             Log.i("Req_count", String.valueOf(count));
 
-            //设置上传网络
-            if (subByte == 0x02 && subByte2 == -6 && count >= 14)//subByte2 = FA
-            {
-                byte[] ipBytes = pRFrame.GetBytes(8, 11);
-                String ip = Tools.HexBytes2TenStr(ipBytes, ".");
-                saveVal(ConfigClient.IP_KEY, ip);
-                Log.d("query_msg configClientUpload ip", ip);
+            if (subByte == 0x02){
 
-                canHander = RequestModel.SuccessHandler;
-            }
+                //设置上传网络
+                if (subByte2 == -6 && count >= 10)
+                {
+                    byte[] ipBytes = pRFrame.GetBytes(8, 11);
+                    String ip = Tools.HexBytes2TenStr(ipBytes, ".");
+                    saveVal(ConfigClient.IP_KEY, ip);
+                    Log.d("query_msg configClientUpload ip", ip);
 
-            //设置上传网络
-            if (subByte == 0x02 && subByte2 == -2 && count >= 12)//subByte2 = FE
-            {
-                byte[] ipBytes = pRFrame.GetBytes(8, 9);
-                String hexPport = Tools.HexBytesStr(ipBytes);
-                Integer port = Integer.parseInt(hexPport, 16);
-                saveVal(ConfigClient.PORT_KEY, port);
-                Log.d("query_msg configClientUpload port", String.valueOf(port));
-                canHander = RequestModel.SuccessHandler;
-            }
-
-            if (subByte == 0x02 && count >= 10) {
-                byte[] ipBytes = pRFrame.GetBytes(8, 8);
-                String hexPport = Tools.HexBytesStr(ipBytes);
-                Integer val = Integer.parseInt(hexPport, 16);
-
-                //设置工作模式
-                if (subByte2 == 56) {
-                    saveVal(ConfigUpload.WORK_MODE_KEY, val);
                     canHander = RequestModel.SuccessHandler;
                 }
 
-                //设置设备类型
-                if (subByte2 == 54) {
-                    saveVal(ConfigUpload.DEVICE_TYPE_KEY, val);
+                //设置上传网络
+                if (subByte2 == -2 && count >= 12)//subByte2 = FE
+                {
+                    byte[] ipBytes = pRFrame.GetBytes(8, 9);
+                    String hexPport = Tools.HexBytesStr(ipBytes);
+                    Integer port = Integer.parseInt(hexPport, 16);
+                    saveVal(ConfigClient.PORT_KEY, port);
+                    Log.d("query_msg configClientUpload port", String.valueOf(port));
                     canHander = RequestModel.SuccessHandler;
                 }
 
-                //设置数据是否上传
-                if (subByte2 == 55) {//F1
-                    saveVal(ConfigUpload.DATA_PUSH_KEY, val);
-                    canHander = RequestModel.SuccessHandler;
-                }
+                if (count >= 10) {
+                    byte[] ipBytes = pRFrame.GetBytes(8, 8);
+                    String hexPport = Tools.HexBytesStr(ipBytes);
+                    Integer val = Integer.parseInt(hexPport, 16);
 
-                Log.d("query_msg configClientUpload", String.valueOf(val));
+                    //设置工作模式
+                    if (subByte2 == 56) {
+                        saveVal(ConfigUpload.WORK_MODE_KEY, val);
+                        canHander = RequestModel.SuccessHandler;
+                    }
+
+                    //设置设备类型
+                    if (subByte2 == 54) {
+                        saveVal(ConfigUpload.DEVICE_TYPE_KEY, val);
+                        canHander = RequestModel.SuccessHandler;
+                    }
+
+                    //设置数据是否上传
+                    if (subByte2 == 55) {//F1
+                        saveVal(ConfigUpload.DATA_PUSH_KEY, val);
+                        canHander = RequestModel.SuccessHandler;
+                    }
+
+                    Log.d("query_msg configClientUpload", String.valueOf(val));
+                }
             }
         }
 

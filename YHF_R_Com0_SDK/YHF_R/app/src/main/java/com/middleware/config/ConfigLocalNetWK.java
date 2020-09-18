@@ -1,7 +1,11 @@
 package com.middleware.config;
+import android.util.Log;
+
+import com.middleware.frame.data.RFrame;
+import com.middleware.frame.data.Tools;
 import com.rfid_demo.ctrl.Util;
 
-public class ConfigLocalNetWK {
+public class ConfigLocalNetWK  {
     public static final String PORT_KEY = "ConfigLocalNet_PORT_KEY";
     public static final String IP_KEY = "ConfigLocalNet_IP_KEY";
     public static final String IP_YANMA_KEY = "ConfigLocalNet_IP_YANMA_KEY";
@@ -30,5 +34,23 @@ public class ConfigLocalNetWK {
         this.isAddTime = (boolean) Util.dtGet(ADD_TIME_KEY, true);
         this.type = (ClientType) Util.dtGet(CLIENT_TYPE_KEY, ClientType.NONE);
     }
+
+    public static void configWithRFrame(RFrame pRFrame) {
+        byte[] ipBytes = pRFrame.GetBytes(6, 9);
+        String ip = Tools.HexBytes2TenStr(ipBytes, ".");
+        Util.dtSave(ConfigLocalNetWK.IP_KEY, ip);
+        Log.d("Req_msg congfigLocalNet ip", ip);
+
+        byte[] yanMaBytes = pRFrame.GetBytes(10, 13);
+        String yanMa = Tools.HexBytes2TenStr(yanMaBytes, ".");
+        Util.dtSave(ConfigLocalNetWK.IP_YANMA_KEY, yanMa);
+        Log.d("Req_msg congfigLocalNet yanMaBytes", yanMa);
+
+        byte[] wangGuanBytes = pRFrame.GetBytes(14, 17);
+        String wangGuan = Tools.HexBytes2TenStr(wangGuanBytes, ".");
+        Util.dtSave(ConfigLocalNetWK.IP_WANGGUAN_KEY, wangGuan);
+        Log.d("Req_msg congfigLocalNet wangGuan", wangGuan);
+    }
+
 }
 

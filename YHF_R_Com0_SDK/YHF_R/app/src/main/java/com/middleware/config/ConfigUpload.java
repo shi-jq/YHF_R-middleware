@@ -1,4 +1,5 @@
 package com.middleware.config;
+import com.middleware.frame.data.RFrame;
 import com.rfid_demo.ctrl.Util;
 
 //客户端转发的配置 连接配置
@@ -49,4 +50,5 @@ public class ConfigUpload
         }
 
     }
+
 }

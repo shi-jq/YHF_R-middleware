@@ -8,7 +8,6 @@ public class INT8U {
         this.value = 0;
     }
 
-
     INT8U(byte value) {
         this.value = (byte) (value & 0xFF);
     }

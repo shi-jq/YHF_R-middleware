@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.uart.R;
 import com.middleware.config.ConfigMngr;
+import com.middleware.frame.common.INT16U;
 import com.middleware.main.MiddlewareService;
 import com.rfid_demo.ctrl.ApiCtrl;
 import com.rfid_demo.ctrl.AppCfg;
@@ -60,6 +61,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         //保活
         Cactus.getInstance().isDebug(true).setCrashRestartUIEnabled(true);
+
     }
 
     private void initView() {
