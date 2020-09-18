@@ -2,8 +2,6 @@ package com.middleware.frame.data;
 
 
 public class RFrame {
-    public static final int SuccessHandler = 0;
-    public static final int FailHandler = -1;
     public static final int HEAD_LEN = 5;
     public static final int COMMAND_LEN = 1;
     public static final int ANSWER_LEN = 1;

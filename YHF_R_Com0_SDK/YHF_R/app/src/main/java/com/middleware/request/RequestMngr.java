@@ -41,23 +41,28 @@ public class RequestMngr extends BaseThread {
         super("RequestMngr", false);
     }
 
-    public void sendToPC(RFIDFrame rfidFrame) {
+    public void sendToPC(RFIDFrame rfidFrame, RequestModel.ReqType type) {
         try {
-            if (mTcpClient != null) {
+            if (mTcpServer != null && type ==  RequestModel.ReqType.SERVER) {
+                mTcpServer.sendToPC(rfidFrame);
+            }
+
+            if (mTcpClient != null && type ==  RequestModel.ReqType.CLIENT) {
                 mTcpClient.sendToPC(rfidFrame);
             }
 
-            if (mSerialRequest != null) {
+            if (mSerialRequest != null && type ==  RequestModel.ReqType.SERIAL) {
                 mSerialRequest.sendToPC(rfidFrame);
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void sendToPC(RFrame rFrame) {
+    public void sendToPC(RFrame rFrame,  RequestModel.ReqType  to) {
         RFIDFrame rfidFrame = new RFIDFrame(rFrame);
-        this.sendToPC(rfidFrame);
+        this.sendToPC(rfidFrame, to);
     }
 
     @Override

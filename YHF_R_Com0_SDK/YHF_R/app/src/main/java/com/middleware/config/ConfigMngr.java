@@ -7,6 +7,7 @@ import com.middleware.frame.data.RFIDFrame;
 import com.middleware.frame.data.RFrame;
 import com.middleware.frame.data.Tools;
 import com.middleware.request.RequestMngr;
+import com.middleware.request.RequestModel;
 import com.rfid_demo.ctrl.Util;
 
 
@@ -37,41 +38,41 @@ public class ConfigMngr {
         this.server = new ConfigServer();
     }
 
-
-    public static int camHandlerRFrame(RFrame pRFrame) {
-        int canHander = RFrame.FailHandler;
+    public static int camHandlerReqModel(RequestModel model) {
+        int canHander = RequestModel.FailHandler;
+        RFrame pRFrame = model.pFrame;
         byte byteCommand = pRFrame.GetRfidCommand();
         byte[] bytes = {byteCommand};
         Log.i("Req", Tools.Bytes2HexString(bytes, 1));
         if (DataProc.isRestartApp(byteCommand)) {
-            canHander = RFrame.SuccessHandler;
+            canHander = RequestModel.SuccessHandler;
 //           Util.restartApp();
         }
 
-        if (congfigLocalNet(byteCommand, pRFrame) == RFrame.SuccessHandler) {
-            canHander = RFrame.SuccessHandler;
+        if (congfigLocalNet(byteCommand, pRFrame) == RequestModel.SuccessHandler) {
+            canHander = RequestModel.SuccessHandler;
         }
 
-        if (configClientUpload(byteCommand, pRFrame) == RFrame.SuccessHandler) {
-            canHander = RFrame.SuccessHandler;
+        if (configClientUpload(byteCommand, pRFrame) == RequestModel.SuccessHandler) {
+            canHander = RequestModel.SuccessHandler;
         }
 
-        if (canHander == RFrame.SuccessHandler) {
-            responseRFIDFrame = new RFIDFrame(pRFrame);
-            RFrame pRecvRFrame = new DataProc().createRecvRFrame(pRFrame, (byte) 0x00);
+        //提前处理设置的响应
+        if (canHander == RequestModel.SuccessHandler) {
+            responseRFIDFrame = model.settingResFrame();
         }
 
-        if (queryLocalNet(byteCommand, pRFrame) == RFrame.SuccessHandler) {
-            canHander = RFrame.SuccessHandler;
+        if (queryLocalNet(byteCommand, pRFrame) == RequestModel.SuccessHandler) {
+            canHander = RequestModel.SuccessHandler;
         }
 
-        if (queryClientUpload(byteCommand, pRFrame) == RFrame.SuccessHandler) {
-            canHander = RFrame.SuccessHandler;
+        if (queryClientUpload(byteCommand, pRFrame) == RequestModel.SuccessHandler) {
+            canHander = RequestModel.SuccessHandler;
         }
 
         if (responseRFIDFrame != null) {
             try {
-                RequestMngr.getInstance().sendToPC(responseRFIDFrame);
+                RequestMngr.getInstance().sendToPC(responseRFIDFrame, model.type);
             } catch (Exception e) {
                 e.printStackTrace();
             }finally {
@@ -84,7 +85,7 @@ public class ConfigMngr {
 
 
     private static int congfigLocalNet(byte byteCommand, RFrame pRFrame) {
-        int canHander = RFrame.FailHandler;
+        int canHander = RequestModel.FailHandler;
 
         //设置网口相关
         if (DataProc.isConfingNetwork(byteCommand)) {
@@ -107,7 +108,7 @@ public class ConfigMngr {
                 saveVal(ConfigLocalNetWK.IP_WANGGUAN_KEY, wangGuan);
                 Log.d("Req_msg congfigLocalNet wangGuan", wangGuan);
 
-                canHander = RFrame.SuccessHandler;
+                canHander = RequestModel.SuccessHandler;
             }
         }
 
@@ -116,7 +117,7 @@ public class ConfigMngr {
 
     //设置上传网络相关
     private static int configClientUpload(byte byteCommand, RFrame pRFrame) {
-        int canHander = RFrame.FailHandler;
+        int canHander = RequestModel.FailHandler;
 
         //设置上传相关
         if (DataProc.isConfingUpload(byteCommand)) {
@@ -134,7 +135,7 @@ public class ConfigMngr {
                 saveVal(ConfigClient.IP_KEY, ip);
                 Log.d("Req_msg configClientUpload ip", ip);
 
-                canHander = RFrame.SuccessHandler;
+                canHander = RequestModel.SuccessHandler;
             }
 
             //设置上传网络
@@ -145,7 +146,7 @@ public class ConfigMngr {
                 Integer port = Integer.parseInt(hexPport, 16);
                 saveVal(ConfigClient.PORT_KEY, port);
                 Log.d("Req_msg configClientUpload port", String.valueOf(port));
-                canHander = RFrame.SuccessHandler;
+                canHander = RequestModel.SuccessHandler;
             }
 
             if (subByte == 0x01 && count >= 11) {
@@ -156,19 +157,19 @@ public class ConfigMngr {
                 //设置工作模式
                 if (subByte2 == 56) {
                     saveVal(ConfigUpload.WORK_MODE_KEY, val);
-                    canHander = RFrame.SuccessHandler;
+                    canHander = RequestModel.SuccessHandler;
                 }
 
                 //设置设备类型
                 if (subByte2 == 54) {
                     saveVal(ConfigUpload.DEVICE_TYPE_KEY, val);
-                    canHander = RFrame.SuccessHandler;
+                    canHander = RequestModel.SuccessHandler;
                 }
 
                 //设置数据是否上传
                 if (subByte2 == 55) {//F1
                     saveVal(ConfigUpload.DATA_PUSH_KEY, val);
-                    canHander = RFrame.SuccessHandler;
+                    canHander = RequestModel.SuccessHandler;
                 }
 
                 Log.d("Req_msg configClientUpload", String.valueOf(val));
@@ -181,7 +182,7 @@ public class ConfigMngr {
 
     //查询相关
     private static int queryLocalNet(byte byteCommand, RFrame pRFrame) {
-        int canHander = RFrame.FailHandler;
+        int canHander = RequestModel.FailHandler;
 
         //设置网口相关
         if (DataProc.isConfingNetwork(byteCommand)) {
@@ -204,7 +205,7 @@ public class ConfigMngr {
                 saveVal(ConfigLocalNetWK.IP_WANGGUAN_KEY, wangGuan);
                 Log.d("Req_msg congfigLocalNet wangGuan", wangGuan);
 
-                canHander = RFrame.SuccessHandler;
+                canHander = RequestModel.SuccessHandler;
             }
         }
 
@@ -213,7 +214,7 @@ public class ConfigMngr {
 
     //查询上传网络相关
     private static int queryClientUpload(byte byteCommand, RFrame pRFrame) {
-        int canHander = RFrame.FailHandler;
+        int canHander = RequestModel.FailHandler;
 
         //设置上传相关
         if (DataProc.isConfingUpload(byteCommand)) {
@@ -231,7 +232,7 @@ public class ConfigMngr {
                 saveVal(ConfigClient.IP_KEY, ip);
                 Log.d("query_msg configClientUpload ip", ip);
 
-                canHander = RFrame.SuccessHandler;
+                canHander = RequestModel.SuccessHandler;
             }
 
             //设置上传网络
@@ -242,7 +243,7 @@ public class ConfigMngr {
                 Integer port = Integer.parseInt(hexPport, 16);
                 saveVal(ConfigClient.PORT_KEY, port);
                 Log.d("query_msg configClientUpload port", String.valueOf(port));
-                canHander = RFrame.SuccessHandler;
+                canHander = RequestModel.SuccessHandler;
             }
 
             if (subByte == 0x02 && count >= 10) {
@@ -253,19 +254,19 @@ public class ConfigMngr {
                 //设置工作模式
                 if (subByte2 == 56) {
                     saveVal(ConfigUpload.WORK_MODE_KEY, val);
-                    canHander = RFrame.SuccessHandler;
+                    canHander = RequestModel.SuccessHandler;
                 }
 
                 //设置设备类型
                 if (subByte2 == 54) {
                     saveVal(ConfigUpload.DEVICE_TYPE_KEY, val);
-                    canHander = RFrame.SuccessHandler;
+                    canHander = RequestModel.SuccessHandler;
                 }
 
                 //设置数据是否上传
                 if (subByte2 == 55) {//F1
                     saveVal(ConfigUpload.DATA_PUSH_KEY, val);
-                    canHander = RFrame.SuccessHandler;
+                    canHander = RequestModel.SuccessHandler;
                 }
 
                 Log.d("query_msg configClientUpload", String.valueOf(val));

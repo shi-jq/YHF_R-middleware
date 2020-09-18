@@ -34,6 +34,7 @@ public class RequestTcpServer extends IoHandlerAdapter  implements Observer
     private RFrameList mRFrameList = new RFrameList();
     private FrameMsgObervable toAndroid  = MsgMngr.PcToAndroidMsgObv;
     private static IoSession readTagSession = null;
+    private IoSession session;
 
     public RequestTcpServer(int port) throws IOException {
         NioSocketAcceptor acceptor = new NioSocketAcceptor();
@@ -50,6 +51,7 @@ public class RequestTcpServer extends IoHandlerAdapter  implements Observer
     public void messageReceived(IoSession session, Object message)
             throws Exception
     {
+        this.session = session;
         IoBuffer bbuf = (IoBuffer) message;
         byte[] buffer = new byte[bbuf.limit()];
         int bsize = bbuf.limit();
@@ -63,7 +65,9 @@ public class RequestTcpServer extends IoHandlerAdapter  implements Observer
             mProc.GetFrameList(mRFrameList);
             for (int i = 0; i < mRFrameList.GetCount(); i++) {
                 RFrame pRFrame = mRFrameList.GetRFrame(i);
-                if (ConfigMngr.camHandlerRFrame(pRFrame) == RFrame.FailHandler)
+
+                RequestModel reqModel = new RequestModel(pRFrame,mProc,RequestModel.ReqType.SERVER);
+                if (ConfigMngr.camHandlerReqModel(reqModel) == RequestModel.FailHandler)
                 {
                     RFIDFrame rfidFrame = new RFIDFrame(pRFrame);
                     toAndroid.dealFrame(rfidFrame);
@@ -76,6 +80,19 @@ public class RequestTcpServer extends IoHandlerAdapter  implements Observer
             }
             mRFrameList.ClearAll();
         }
+        this.session = null;
+    }
+
+    public void sendToPC(RFIDFrame rfidFrame)
+    {
+
+        if (this.session == null || this.session.isClosing())
+        {
+            Log.i("sendResultToPc","Iosession invaild");
+            return;
+        }
+
+        sendResultToPc(this.session,rfidFrame);
     }
 
 
