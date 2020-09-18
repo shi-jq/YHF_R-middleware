@@ -13,7 +13,6 @@ import com.middleware.frame.data.RFrame;
 import com.middleware.frame.data.RFrameList;
 import com.middleware.frame.main.FrameTagObervable;
 import com.middleware.frame.main.MsgMngr;
-import com.middleware.request.RequestMngr;
 
 import java.io.File;
 import java.io.IOException;
@@ -129,7 +128,7 @@ public class Reader extends BaseThread implements Observer   {
         assert(inputStream != null);
         bsize = 0;
         try {
-
+            PrintCtrl.PrintBUffer("开始阻塞读取数据 ", buffer, bsize);
             bsize = inputStream.read(buffer);
 
         } catch (IOException e) {
