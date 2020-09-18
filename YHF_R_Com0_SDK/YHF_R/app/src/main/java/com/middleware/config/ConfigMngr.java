@@ -38,7 +38,7 @@ public class ConfigMngr {
         this.server = new ConfigServer();
     }
 
-    public static int camHandlerReqModel(RequestModel model) {
+    public static int canHandlerReqModel(RequestModel model) {
         int canHander = RequestModel.FailHandler;
         RFrame pRFrame = model.pFrame;
         byte byteCommand = pRFrame.GetRfidCommand();

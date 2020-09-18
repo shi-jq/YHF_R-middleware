@@ -24,9 +24,26 @@ public class RequestModel{
         this.type = type;
     }
 
-
     public RFIDFrame settingResFrame()
     {
+       return settingResFrame((byte)0x00);
+    }
+
+    public RFIDFrame settingResFrame(byte resVal)
+    {
+        RFIDFrame rfidFrame = new RFIDFrame(this.pFrame);
+        RFrame pRecvRFrame = this.mProc.createRecvRFrame(this.pFrame,  resVal);
+        rfidFrame.AddRevFrame(pRecvRFrame);
+        return rfidFrame;
+    }
+
+    public RFIDFrame queryResFrame(byte[] data)
+    {
+        if (data.length > 0){
+
+        }else {
+
+        }
         RFIDFrame rfidFrame = new RFIDFrame(this.pFrame);
         RFrame pRecvRFrame = this.mProc.createRecvRFrame(this.pFrame, (byte) 0x00);
         rfidFrame.AddRevFrame(pRecvRFrame);

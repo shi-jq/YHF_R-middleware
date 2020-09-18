@@ -54,9 +54,8 @@ public class RequestMngr extends BaseThread {
             if (mSerialRequest != null && type ==  RequestModel.ReqType.SERIAL) {
                 mSerialRequest.sendToPC(rfidFrame);
             }
-
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("sendToPC", e.toString());
         }
     }
 
