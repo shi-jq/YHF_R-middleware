@@ -1,4 +1,5 @@
 package com.middleware.config;
+import com.middleware.frame.common.INT16U;
 import com.middleware.frame.data.RFrame;
 import com.rfid_demo.ctrl.Util;
 
@@ -6,49 +7,25 @@ import com.rfid_demo.ctrl.Util;
 public class ConfigUpload
 {
     public static final String WORK_MODE_KEY = "ConfigUpload_WORK_MODE_KEY";
-    public static final String DEVICE_TYPE_KEY = "ConfigUpload_DEVICE_TYPE_KEY";
-    public static final String DATA_PUSH_KEY = "ConfigUpload_DATA_PUSH_KEY";
+    public static final String DATA_PORT_KEY = "ConfigUpload_DATA_PORT_KEY";
 
-    public  enum WorkMode{
-        WorkModeDefault(0),
-        WorkModeRound(0),
-        WorkModeAuto(1);
-
-        private final int value;
-        WorkMode( int val){
-            this.value = val;
-        }
-    }
-
-    public  enum DataPush{
-        DataPusAll(0),
-        DataPushInvaild(1);
-
-        private final int value;
-        DataPush( int val){
-            this.value = val;
-        }
-    }
-
-
-    public WorkMode workMode =  WorkMode.WorkModeDefault;//客户端连接的类型
-    public  DataPush dataPush = DataPush.DataPushInvaild;
+    public int  workMode =  0;//客户端连接的类型
+    public int  dataPush = 0;
     public ConfigUpload()
     {
-        int workModenum = (int) Util.dtGet(WORK_MODE_KEY,0);
-        if (workModenum == WorkMode.WorkModeAuto.value) {
-            this.workMode = WorkMode.WorkModeAuto;
-        }else {
-            this.workMode =WorkMode.WorkModeDefault;
-        }
-
-        int dataPushNum = (int) Util.dtGet(DATA_PUSH_KEY,0);
-        if (dataPushNum == DataPush.DataPusAll.value) {
-            this.dataPush  = DataPush.DataPusAll;
-        }else {
-            this.dataPush = DataPush.DataPushInvaild;
-        }
-
+        this.workMode = (int) Util.dtGet(WORK_MODE_KEY,0);
+        this.dataPush = (int) Util.dtGet(DATA_PORT_KEY,0);
     }
 
+    public  static byte[] workModeBytes()
+    {
+        int model = (int) Util.dtGet(WORK_MODE_KEY,0);
+        return new byte[]{(byte) model};
+    }
+
+    public static byte[] dataPortBytes()
+    {
+        int port = (int) Util.dtGet(WORK_MODE_KEY,0);
+        return new byte[]{(byte) port};
+    }
 }

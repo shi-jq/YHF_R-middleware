@@ -61,7 +61,7 @@ public class ConfigClient
         return ret;
     }
 
-    public static byte[] PortBytes()
+    public static byte[] portBytes()
     {
         int port = (int) Util.dtGet(PORT_KEY,60001);
         INT16U b = new INT16U(port);

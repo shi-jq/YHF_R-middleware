@@ -294,6 +294,11 @@ public class DataProc {
         return createRecvRFrame(pSendRFrame.GetRfidCommand(),pSendRFrame.GetByte(1),status,recvData,0);
     }
 
+    public RFrame createRecvRFrame(RFrame pSendRFrame,byte[] recvData, byte status)
+    {
+        return createRecvRFrame(pSendRFrame.GetRfidCommand(),pSendRFrame.GetByte(1),status,recvData,0);
+    }
+
     public RFrame createRecvRFrame(RFrame pSendRFrame, byte status,byte[] recvData, int recvLen)
     {
         return createRecvRFrame(pSendRFrame.GetRfidCommand(),pSendRFrame.GetByte(1),status,recvData,recvLen);
