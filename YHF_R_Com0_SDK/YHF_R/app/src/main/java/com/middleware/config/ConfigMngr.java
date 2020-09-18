@@ -2,13 +2,13 @@ package com.middleware.config;
 
 import android.util.Log;
 
-import com.middleware.frame.ctrl.RfidCommand;
 import com.middleware.frame.data.DataProc;
 import com.middleware.frame.data.RFIDFrame;
 import com.middleware.frame.data.RFrame;
 import com.middleware.frame.data.Tools;
 import com.middleware.request.RequestMngr;
 import com.rfid_demo.ctrl.Util;
+
 
 public class ConfigMngr {
     private static ConfigMngr configMngr = null;

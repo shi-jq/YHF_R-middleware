@@ -276,6 +276,9 @@ public class DataProc {
                 this.mValidFrameList.AddRFrame(pRFrame);
                 this.mWaitFrameList.RemoveRFrame();
             }
+            else{
+                break;
+            }
         }
     }
 
