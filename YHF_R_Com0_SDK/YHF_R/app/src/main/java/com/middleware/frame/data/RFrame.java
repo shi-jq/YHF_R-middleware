@@ -5,6 +5,7 @@ public class RFrame {
     public static final int HEAD_LEN = 5;
     public static final int COMMAND_LEN = 1;
     public static final int ANSWER_LEN = 1;
+    public static final int CRC_LEN = 2;
     public static final int CMD_DATA_BUFFER = DataProc.SEND_FRAME_MAXBUFF-HEAD_LEN;
     private byte[] bHead = new byte[5];
     private byte[] bData = new byte[CMD_DATA_BUFFER];
@@ -30,6 +31,10 @@ public class RFrame {
 
     public int GetLength() {
         return this.bHead[3];
+    }
+
+    public int GetMustLength() {
+        return this.bHead[3]+HEAD_LEN+CRC_LEN-COMMAND_LEN;
     }
 
 
