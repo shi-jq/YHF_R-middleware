@@ -172,6 +172,7 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
             mProc.PackMsg(pForSend,totalFrameSize, frame);
 
             IoBuffer buffer = IoBuffer.allocate(10);
+            buffer.setAutoExpand(true);
             buffer.put(pForSend,0,totalFrameSize.GetValue());
             buffer.flip();
             session.write(buffer);
