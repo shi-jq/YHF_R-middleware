@@ -285,18 +285,18 @@ public class DataProc {
     public RFrame createRecvRFrame(byte RfidCommand, byte status)
     {
         byte[] recvData = new byte[0];
-        return createRecvRFrame(RfidCommand, (byte) 0,status,recvData,0);
+        return createRecvRFrame(RfidCommand, (byte) 0,status,recvData,recvData.length);
     }
 
     public RFrame createRecvRFrame(RFrame pSendRFrame, byte status)
     {
         byte[] recvData = new byte[0];
-        return createRecvRFrame(pSendRFrame.GetRfidCommand(),pSendRFrame.GetByte(1),status,recvData,0);
+        return createRecvRFrame(pSendRFrame.GetRfidCommand(),pSendRFrame.GetByte(1),status,recvData,recvData.length);
     }
 
     public RFrame createRecvRFrame(RFrame pSendRFrame,byte[] recvData, byte status)
     {
-        return createRecvRFrame(pSendRFrame.GetRfidCommand(),pSendRFrame.GetByte(1),status,recvData,0);
+        return createRecvRFrame(pSendRFrame.GetRfidCommand(),pSendRFrame.GetByte(1),status,recvData,recvData.length);
     }
 
     public RFrame createRecvRFrame(RFrame pSendRFrame, byte status,byte[] recvData, int recvLen)

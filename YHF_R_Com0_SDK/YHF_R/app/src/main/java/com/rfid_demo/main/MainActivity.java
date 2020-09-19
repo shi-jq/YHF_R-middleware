@@ -166,6 +166,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             }
             mFragmentCurrent = to;
         }
+
     }
 
     @Override

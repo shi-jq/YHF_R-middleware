@@ -3,6 +3,7 @@ package com.middleware.config;
 import android.util.Log;
 
 import com.middleware.frame.common.INT16U;
+import com.middleware.frame.common.INT8U;
 import com.middleware.frame.data.RFrame;
 import com.middleware.frame.data.Tools;
 import com.rfid_demo.ctrl.Util;
@@ -52,11 +53,12 @@ public class ConfigClient
     public  static byte[] ipBytes()
     {
         String ip = (String) Util.dtGet(IP_KEY,"127.0.0.1");
-        String[] strs = ip.trim().split(".");
+        String[] strs = ip.trim().split("\\.");
         byte[] ret = new byte[4];
         for (int i = 0; i < strs.length; i++)
         {
-            ret[i] = (byte) Integer.parseInt(strs[i],16);
+            int val = Integer.parseInt(strs[i]);
+            ret[i] = new INT8U(val).GetValue();
         }
         return ret;
     }

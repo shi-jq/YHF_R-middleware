@@ -41,7 +41,6 @@ public class Reader extends BaseThread implements Observer   {
 
         try {
             //读写器模块启动需要先上电
-
             File file = new File(path);
             this.mSerialPort = new SerialPort(file,config.baudrate, 0);
 

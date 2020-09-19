@@ -235,7 +235,7 @@ public class ConfigMngr {
                 }
 
                 //设置上传网络
-                if (subByte2 == -2 && count >= 12)//subByte2 = FE
+                if (subByte2 == -2 && count >= 10)//subByte2 = FE
                 {
                     responseRFIDFrame = reqModel.queryResFrame(ConfigClient.portBytes());
                     canHander = RequestModel.SuccessHandler;
@@ -253,13 +253,13 @@ public class ConfigMngr {
                     }
 
                     //设置设备类型
-                    if (subByte2 == 54) {
+                    if (subByte2 == 63) {
                         responseRFIDFrame = reqModel.queryResFrame(ConfigUpload.dataPortBytes());
                         canHander = RequestModel.SuccessHandler;
                     }
 
                     //设置数据是否上传
-                    if (subByte2 == 55) {//F1
+                    if (subByte2 == 63) {//F1
                         responseRFIDFrame = reqModel.queryResFrame(ConfigUpload.dataPortBytes());
                         canHander = RequestModel.SuccessHandler;
                     }
@@ -273,7 +273,7 @@ public class ConfigMngr {
     }
 
     public static void saveVal(String key, Object obj) {
-//        Util.dtSave(saveKey,obj);
+        Util.dtSave(key,obj);
     }
 
     public static Object getValue(String key, Object defObj)

@@ -40,7 +40,7 @@ public class RequestModel{
     public RFIDFrame queryResFrame(byte[] data)
     {
         RFIDFrame rfidFrame = new RFIDFrame(this.pFrame);
-        RFrame pRecvRFrame = this.mProc.createRecvRFrame(this.pFrame, (byte)0x00);
+        RFrame pRecvRFrame = this.mProc.createRecvRFrame(this.pFrame, data, (byte)0x00);
         rfidFrame.AddRevFrame(pRecvRFrame);
         return rfidFrame;
     }
@@ -48,7 +48,7 @@ public class RequestModel{
     public RFIDFrame queryResFrame(byte[] data, byte resVal)
     {
         RFIDFrame rfidFrame = new RFIDFrame(this.pFrame);
-        RFrame pRecvRFrame = this.mProc.createRecvRFrame(this.pFrame,  resVal);
+        RFrame pRecvRFrame = this.mProc.createRecvRFrame(this.pFrame, data,  resVal);
         rfidFrame.AddRevFrame(pRecvRFrame);
         return rfidFrame;
     }

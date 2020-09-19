@@ -80,18 +80,18 @@ public class Util {
     }
 
     public static Object dtGet( String key, Object defaultObj) {
-//        SharedPreferences sp = dtContext.getSharedPreferences(DATA_FILE_NAME, dtContext.MODE_PRIVATE);
-//        if (defaultObj instanceof Boolean) {
-//            return sp.getBoolean(key, (Boolean) defaultObj);
-//        } else if (defaultObj instanceof Float) {
-//            return sp.getFloat(key, (Float) defaultObj);
-//        } else if (defaultObj instanceof Integer) {
-//            return sp.getInt(key, (Integer) defaultObj);
-//        } else if (defaultObj instanceof Long) {
-//            return sp.getLong(key, (Long) defaultObj);
-//        } else if (defaultObj instanceof String) {
-//            return sp.getString(key, (String) defaultObj);
-//        }
+        SharedPreferences sp = dtContext.getSharedPreferences(DATA_FILE_NAME, dtContext.MODE_PRIVATE);
+        if (defaultObj instanceof Boolean) {
+            return sp.getBoolean(key, (Boolean) defaultObj);
+        } else if (defaultObj instanceof Float) {
+            return sp.getFloat(key, (Float) defaultObj);
+        } else if (defaultObj instanceof Integer) {
+            return sp.getInt(key, (Integer) defaultObj);
+        } else if (defaultObj instanceof Long) {
+            return sp.getLong(key, (Long) defaultObj);
+        } else if (defaultObj instanceof String) {
+            return sp.getString(key, (String) defaultObj);
+        }
         return defaultObj;
     }
 
