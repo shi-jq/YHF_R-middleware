@@ -275,8 +275,25 @@ public class DataProc {
             if (CheckRFrame(pRFrame)) {
                 this.mValidFrameList.AddRFrame(pRFrame);
                 this.mWaitFrameList.RemoveRFrame();
+                continue;
             }
-            else{
+
+            if(this.mWaitFrameList.GetCount() > 1)
+            {
+                if (pRFrame.GetLength() == 0)
+                {
+                    this.mWaitFrameList.RemoveRFrame();
+                    continue;
+                }
+
+                if (pRFrame.GetMustLength() != pRFrame.GetRealBuffLen())
+                {
+                    this.mWaitFrameList.RemoveRFrame();
+                    continue;
+                }
+            }
+            else
+            {
                 break;
             }
         }
