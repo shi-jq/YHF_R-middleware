@@ -162,9 +162,13 @@ public class RequestSerial extends BaseThread implements Observer {
             mProc.GetFrameList(mRFrameList);
             for (int i = 0; i < mRFrameList.GetCount(); i++) {
                 RFrame pRFrame = mRFrameList.GetRFrame(i);
-                RFIDFrame rfidFrame = new RFIDFrame(pRFrame);
-                toAndroid.dealFrame(rfidFrame);
-                sendResultToPc(rfidFrame);
+                RequestModel reqModel = new RequestModel(pRFrame, mProc, RequestModel.ReqType.SERIAL);
+                if (ConfigMngr.canHandlerReqModel(reqModel) == RequestModel.FailHandler)
+                {
+                    RFIDFrame rfidFrame = new RFIDFrame(pRFrame);
+                    toAndroid.dealFrame(rfidFrame);
+                    sendResultToPc(rfidFrame);
+                }
             }
             mRFrameList.ClearAll();
             return  true;

@@ -2,6 +2,7 @@ package com.middleware.request;
 
 import android.util.Log;
 
+import com.middleware.config.ConfigMngr;
 import com.middleware.frame.common.INT32U;
 import com.middleware.frame.common.PrintCtrl;
 import com.middleware.frame.data.DataProc;
@@ -69,9 +70,13 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
             mProc.GetFrameList(mRFrameList);
             for (int i = 0; i < mRFrameList.GetCount(); i++) {
                 RFrame pRFrame = mRFrameList.GetRFrame(i);
-                RFIDFrame rfidFrame = new RFIDFrame(pRFrame);
-                toAndroid.dealFrame(rfidFrame);
-                sendResultToPc(iosession,rfidFrame);
+                RequestModel reqModel = new RequestModel(pRFrame, mProc, RequestModel.ReqType.CLIENT);
+                if (ConfigMngr.canHandlerReqModel(reqModel) == RequestModel.FailHandler)
+                {
+                    RFIDFrame rfidFrame = new RFIDFrame(pRFrame);
+                    toAndroid.dealFrame(rfidFrame);
+                    sendResultToPc(iosession,rfidFrame);
+                }
             }
             mRFrameList.ClearAll();
         }
