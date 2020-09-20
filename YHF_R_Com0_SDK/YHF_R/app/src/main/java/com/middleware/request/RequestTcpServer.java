@@ -39,6 +39,7 @@ public class RequestTcpServer extends IoHandlerAdapter  implements Observer
     public RequestTcpServer(int port) throws IOException {
         NioSocketAcceptor acceptor = new NioSocketAcceptor();
         acceptor.setHandler(this);
+        acceptor.setReuseAddress(true);
         acceptor.bind(new InetSocketAddress(port));
         acceptor.getSessionConfig().setKeepAlive(true);
 

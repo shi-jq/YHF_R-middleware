@@ -75,15 +75,15 @@ public class RequestMngr extends BaseThread {
             }
         }
 
-//        if (mTcpClient == null) {
-//            try {
-//                mTcpClient = new RequestTcpClient(ConfigMngr.getInstance().client.ipAddr, ConfigMngr.getInstance().client.port);
-//            } catch (Exception e) {
-//                Log.i("Req Manager","TCP Sever invaild");
-//                e.printStackTrace();
-//            }
-//
-//        }
+        if (mTcpClient == null && !ConfigMngr.getInstance().client.ipAddr.startsWith("127")) {
+            try {
+                mTcpClient = new RequestTcpClient(ConfigMngr.getInstance().client.ipAddr, ConfigMngr.getInstance().client.port);
+            } catch (Exception e) {
+                Log.i("Req Manager","TCP Sever invaild");
+                e.printStackTrace();
+            }
+
+        }
 
         if (mSerialRequest == null) {
             try {
