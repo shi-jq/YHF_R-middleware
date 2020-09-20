@@ -2,7 +2,6 @@ package com.middleware.request;
 
 import android.util.Log;
 
-import com.middleware.config.ConfigClient;
 import com.middleware.config.ConfigMngr;
 import com.middleware.frame.common.BaseThread;
 import com.middleware.frame.data.RFIDFrame;
@@ -94,6 +93,6 @@ public class RequestMngr extends BaseThread {
             }
         }
 
-        return true;
+        return false;
     }
 }
