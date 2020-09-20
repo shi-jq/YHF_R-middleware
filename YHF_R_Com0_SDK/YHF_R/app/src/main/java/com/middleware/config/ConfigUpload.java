@@ -25,7 +25,7 @@ public class ConfigUpload
 
     public static byte[] dataPortBytes()
     {
-        int port = (int) Util.dtGet(WORK_MODE_KEY,0);
+        int port = (int) Util.dtGet(DATA_PORT_KEY,0);
         return new byte[]{(byte) port};
     }
 }

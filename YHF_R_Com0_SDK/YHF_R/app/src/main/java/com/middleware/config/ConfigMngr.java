@@ -2,6 +2,7 @@ package com.middleware.config;
 
 import android.util.Log;
 
+import com.example.uart.R;
 import com.middleware.frame.data.DataProc;
 import com.middleware.frame.data.RFIDFrame;
 import com.middleware.frame.data.RFrame;
@@ -9,6 +10,7 @@ import com.middleware.frame.data.Tools;
 import com.middleware.request.RequestMngr;
 import com.middleware.request.RequestModel;
 import com.rfid_demo.ctrl.Util;
+import com.rfid_demo.service.RFIDCMD;
 
 
 public class ConfigMngr {
@@ -49,7 +51,7 @@ public class ConfigMngr {
         Log.i("Req", Tools.Bytes2HexString(bytes, 1));
         if (DataProc.isRestartApp(byteCommand)) {
             canHander = RequestModel.SuccessHandler;
-//           Util.restartApp();
+            RFIDCMD.reboot();
         }
 
         if (congfigLocalNet(byteCommand, pRFrame) == RequestModel.SuccessHandler) {
@@ -248,7 +250,7 @@ public class ConfigMngr {
 
                     //设置工作模式
                     if (subByte2 == 56) {
-                        responseRFIDFrame = reqModel.queryResFrame(ConfigUpload.dataPortBytes());
+                        responseRFIDFrame = reqModel.queryResFrame(ConfigUpload.workModeBytes());
                         canHander = RequestModel.SuccessHandler;
                     }
 

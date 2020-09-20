@@ -24,12 +24,12 @@ public class ConfigClient
 
     public ClientType type = ClientType.NONE;//客户端连接的类型
     public String ipAddr = "127.0.0.1";//转发的ip
-    public int port = 60001;//转发的端口
+    public int port = 60002;//转发的端口
 
     public ConfigClient()
     {
-      this.ipAddr = (String) Util.dtGet(IP_KEY,"127.0.0.1");
-      this.port = (int) Util.dtGet(PORT_KEY,60001);
+      this.ipAddr = (String) Util.dtGet(IP_KEY,"126.0.0.1");
+      this.port = (int) Util.dtGet(PORT_KEY,60002);
       this.type = (ClientType) Util.dtGet(CLIENT_TYPE_KEY,ClientType.NONE);
     }
 

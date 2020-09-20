@@ -70,6 +70,7 @@ public class RequestMngr extends BaseThread {
             try {
                 mTcpServer = new RequestTcpServer(ConfigMngr.getInstance().server.port);
             } catch (IOException e) {
+                mTcpServer = null;
                 Log.i("Req Manager","TCP Sever invaild");
                 e.printStackTrace();
             }
@@ -79,7 +80,8 @@ public class RequestMngr extends BaseThread {
             try {
                 mTcpClient = new RequestTcpClient(ConfigMngr.getInstance().client.ipAddr, ConfigMngr.getInstance().client.port);
             } catch (Exception e) {
-                Log.i("Req Manager","TCP Sever invaild");
+                mTcpClient = null;
+                Log.i("Req Manager","TCP Client invaild");
                 e.printStackTrace();
             }
 
@@ -89,6 +91,7 @@ public class RequestMngr extends BaseThread {
             try {
                 mSerialRequest = new RequestSerial();
             } catch (Exception e) {
+                mSerialRequest = null;
                 Log.i("Req Manager","RequestSerial invaild");
                 e.printStackTrace();
             }
