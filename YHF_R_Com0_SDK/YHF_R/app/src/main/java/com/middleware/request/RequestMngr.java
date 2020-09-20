@@ -3,6 +3,7 @@ package com.middleware.request;
 import android.util.Log;
 
 import com.middleware.config.ConfigMngr;
+import com.middleware.config.ConfigUpload;
 import com.middleware.frame.common.BaseThread;
 import com.middleware.frame.data.RFIDFrame;
 import com.middleware.frame.data.RFrame;
@@ -75,7 +76,9 @@ public class RequestMngr extends BaseThread {
             }
         }
 
-        if (mTcpClient == null && !ConfigMngr.getInstance().client.ipAddr.startsWith("127")) {
+        int dataPush = ConfigMngr.getInstance().upload.dataPush;
+        //配置  4 WIFI传输  5 4G传输
+        if (mTcpClient == null && !ConfigMngr.getInstance().client.ipAddr.startsWith("127") && (dataPush == 4 || dataPush == 5)) {
             try {
                 mTcpClient = new RequestTcpClient(ConfigMngr.getInstance().client.ipAddr, ConfigMngr.getInstance().client.port);
             } catch (Exception e) {
@@ -83,7 +86,6 @@ public class RequestMngr extends BaseThread {
                 Log.i("Req Manager","TCP Client invaild");
                 e.printStackTrace();
             }
-
         }
 
         if (mSerialRequest == null) {

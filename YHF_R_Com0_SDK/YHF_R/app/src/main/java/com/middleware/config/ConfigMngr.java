@@ -20,6 +20,8 @@ public class ConfigMngr {
     public ConfigPcSerial pcSerial = null;
     public ConfigReaderSerial readerSerial = null;
     public ConfigServer server = null;
+    public ConfigUpload upload = null;
+
     public static RFIDFrame responseRFIDFrame;
     public static RequestModel reqModel;
 
@@ -39,6 +41,7 @@ public class ConfigMngr {
         this.pcSerial = new ConfigPcSerial();
         this.readerSerial = new ConfigReaderSerial();
         this.server = new ConfigServer();
+        this.upload = new ConfigUpload();
     }
 
     public static int canHandlerReqModel(RequestModel model)
