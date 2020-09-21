@@ -12,7 +12,8 @@ public class BootReceiver extends BroadcastReceiver
     @Override
     public void onReceive(Context context, Intent intent)
     {
-        if (!isBoot){
+        if (!isBoot && intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED))
+        {
             Intent newIntent = new Intent(context, MainActivity.class);
             newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(newIntent);

@@ -54,7 +54,13 @@ public class ConfigMngr {
         Log.i("Req", Tools.Bytes2HexString(bytes, 1));
         if (DataProc.isRestartApp(byteCommand)) {
             canHander = RequestModel.SuccessHandler;
-            RFIDCMD.reboot();
+            RequestMngr.getInstance().sendToPC(model.settingResFrame(), model.type);
+            try {
+                Thread.sleep(1000);
+                RFIDCMD.reboot();
+            }catch (Exception e){
+
+            }
         }
 
         if (congfigLocalNet(byteCommand, pRFrame) == RequestModel.SuccessHandler) {

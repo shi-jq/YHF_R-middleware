@@ -24,13 +24,9 @@ public class RFIDCMD
 
     public static void reboot()
     {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Intent intent = new Intent("reboot.zysd.now");
-                MyApplication.contxt.sendBroadcast(intent);
-            }
-        }, 2000);
+
+        Intent intent = new Intent("reboot.zysd.now");
+        MyApplication.contxt.sendBroadcast(intent);
     }
 
     public static void shutdown() {
@@ -43,7 +39,7 @@ public class RFIDCMD
     public static void setTime(long time) {
         try {
             Date date = new Date(time);
-            Intent intent = new Intent("zysj.set.system.clock");
+            Intent intent = new Intent(" zysj.set.system.clock");
             intent.putExtra("time",dateFormat.format(date)+""+timeFormat.format(date));//时间
             MyApplication.contxt.sendBroadcast(intent);
         } catch (Exception e) {
