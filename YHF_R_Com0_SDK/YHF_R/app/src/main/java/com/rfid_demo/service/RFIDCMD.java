@@ -39,7 +39,7 @@ public class RFIDCMD
     public static void setTime(long time) {
         try {
             Date date = new Date(time);
-            Intent intent = new Intent(" ysj.set.system.clock");
+            Intent intent = new Intent("ysj.set.system.clock");
             intent.putExtra("time",dateFormat.format(date)+""+timeFormat.format(date));//时间
             MyApplication.contxt.sendBroadcast(intent);
         } catch (Exception e) {
