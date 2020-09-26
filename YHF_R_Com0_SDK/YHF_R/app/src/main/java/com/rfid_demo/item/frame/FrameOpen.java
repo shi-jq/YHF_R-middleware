@@ -10,7 +10,6 @@ import android.widget.Button;
 import androidx.fragment.app.Fragment;
 
 import com.example.uart.R;
-import com.middleware.main.MiddlewareService;
 import com.rfid_demo.ctrl.ApiCtrl;
 import com.rfid_demo.ctrl.AppCfg;
 
@@ -33,7 +32,6 @@ public class FrameOpen extends Fragment {
 
     }
 
-    MiddlewareService mServer = new MiddlewareService();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

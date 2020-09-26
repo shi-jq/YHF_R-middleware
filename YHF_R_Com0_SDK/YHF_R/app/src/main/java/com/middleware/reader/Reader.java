@@ -36,7 +36,19 @@ public class Reader extends BaseThread implements Observer   {
 
     String path = new String("/dev/ttyS1");
 
-    public Reader() throws IOException {
+    private static Reader reader = null;
+    public static Reader getInstance() {
+        if (null == reader) {
+            synchronized (Reader.class) {
+                if (null == reader) {
+                    reader = new Reader();
+                }
+            }
+        }
+        return reader;
+    }
+
+    public Reader() {
         super("Reader",true);
 
         try {
@@ -45,11 +57,11 @@ public class Reader extends BaseThread implements Observer   {
             this.mSerialPort = new SerialPort(file,config.baudrate, 0);
 
         } catch (IOException e) {
-
             this.mSerialPort = null;
             this.isNeedStop = true;
             this.resume();
-            throw  e;
+            e.printStackTrace();
+            return;
         }
 
         MsgMngr.AndroidToModelMsgObv.addObserver(this);

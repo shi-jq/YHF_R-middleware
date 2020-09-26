@@ -1,5 +1,6 @@
 package com.middleware.executor;
 
+import com.middleware.config.ConfigMngr;
 import com.middleware.frame.common.BaseThread;
 import com.middleware.frame.ctrl.ReaderState;
 import com.middleware.frame.data.DataProc;
@@ -9,6 +10,7 @@ import com.middleware.frame.data.RFrameList;
 import com.middleware.frame.main.FrameMsgObervable;
 import com.middleware.frame.main.FrameTagObervable;
 import com.middleware.frame.main.MsgMngr;
+import com.middleware.reader.Reader;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -23,6 +25,19 @@ public class Executor  extends BaseThread implements Observer {
     FrameMsgObervable toPc = null;
     FrameMsgObervable toModel = MsgMngr.AndroidToModelMsgObv;
     FrameTagObervable toPcTag = MsgMngr.AndroidToPcTagObv;
+
+    private static Executor reader = null;
+    public static Executor getInstance() {
+        if (null == reader) {
+            synchronized (Executor.class) {
+                if (null == reader) {
+                    reader = new Executor();
+                }
+            }
+        }
+        return reader;
+    }
+
     public Executor()
     {
         super("Executor",true);

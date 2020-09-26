@@ -56,7 +56,7 @@ public class ConfigLocalNetWK  {
         String ipYanma_Real = RFIDCMD.getIpAddrMaskForInterfaces("eth0");
         String ipWangGuan_Real = RFIDCMD.getGateWay();
 
-        if (ipAddr_Real != ipAddr || ipYanma_Real != ipYanma || ipWangGuan_Real != ipWangGuan)
+        if (ipAddr_Real != ipAddr || ipWangGuan_Real != ipWangGuan)
         {
             RFIDCMD.setNetIp(ipAddr,ipYanma,ipWangGuan,ipWangGuan,"0.0.0.0");
         }
