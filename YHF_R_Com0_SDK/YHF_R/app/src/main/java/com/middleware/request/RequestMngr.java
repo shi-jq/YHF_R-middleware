@@ -67,7 +67,7 @@ public class RequestMngr extends BaseThread {
     public boolean threadProcess() throws InterruptedException {
         if (mTcpServer == null) {
             try {
-                mTcpServer = new RequestTcpServer(ConfigMngr.getInstance().server.port);
+                mTcpServer = new RequestTcpServer(ConfigMngr.getInstance().server.tcp_port);
             } catch (IOException e) {
                 mTcpServer = null;
                 Log.i("Req Manager","TCP Sever invaild");

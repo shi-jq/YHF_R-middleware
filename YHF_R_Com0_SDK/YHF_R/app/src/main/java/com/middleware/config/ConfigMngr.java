@@ -19,7 +19,7 @@ public class ConfigMngr {
     public ConfigClient client = null;
     public ConfigPcSerial pcSerial = null;
     public ConfigReaderSerial readerSerial = null;
-    public ConfigServer server = null;
+    public ConfigLocalNetWK server = null;
     public ConfigUpload upload = null;
 
     public static RFIDFrame responseRFIDFrame;
@@ -40,7 +40,7 @@ public class ConfigMngr {
         this.client = new ConfigClient();
         this.pcSerial = new ConfigPcSerial();
         this.readerSerial = new ConfigReaderSerial();
-        this.server = new ConfigServer();
+        this.server = new ConfigLocalNetWK();
         this.upload = new ConfigUpload();
     }
 
