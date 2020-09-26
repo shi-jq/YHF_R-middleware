@@ -3,7 +3,6 @@ package com.middleware.request;
 import android.util.Log;
 
 import com.middleware.config.ConfigMngr;
-import com.middleware.config.ConfigUpload;
 import com.middleware.frame.common.BaseThread;
 import com.middleware.frame.data.RFIDFrame;
 import com.middleware.frame.data.RFrame;
@@ -84,7 +83,7 @@ public class RequestMngr extends BaseThread {
             } catch (Exception e) {
                 mTcpClient = null;
                 Log.i("Req Manager","TCP Client invaild");
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         }
 
