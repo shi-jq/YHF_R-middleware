@@ -6,6 +6,7 @@ import com.middleware.frame.common.INT8U;
 import com.middleware.frame.data.RFrame;
 import com.middleware.frame.data.Tools;
 import com.rfid_demo.ctrl.Util;
+import com.rfid_demo.service.RFIDCMD;
 
 public class ConfigLocalNetWK  {
     public static final String TCP_PORT_KEY = "ConfigLocalNet_TCP_PORT_KEY";
@@ -19,9 +20,9 @@ public class ConfigLocalNetWK  {
 
     public static final int TCP_PORT_DEFAULT = 7086;
     public static final int UDP_PORT_DEFAULT = 7088;
-    public static final String IP_DEFAULT = "127.0.0.1";
+    public static final String IP_DEFAULT = "192.168.1.168";
     public static final String IP_YANMA_DEFAULT = "255.255.255.0";
-    public static final String IP_WANGGUAN_DEFAULT = "127.0.0.1";
+    public static final String IP_WANGGUAN_DEFAULT = "192.168.1.1";
     public static final boolean ADD_TIME_DEFAULT = true;
     public static final ClientType CLIENT_TYPE_DEFAULT = ClientType.NONE;
     public static final String MAC_DEFAULT = "98-E7-F4-4E-7D-5B";
@@ -41,14 +42,24 @@ public class ConfigLocalNetWK  {
     public String mac = MAC_DEFAULT;//转发的ip
 
     public ConfigLocalNetWK() {
-        this.ipAddr = (String) Util.dtGet(IP_KEY, IP_DEFAULT);
-        this.ipYanma = (String) Util.dtGet(IP_YANMA_KEY, IP_YANMA_DEFAULT);
-        this.ipWangGuan = (String) Util.dtGet(IP_WANGGUAN_KEY, IP_WANGGUAN_DEFAULT);
+
         this.tcp_port = (int) Util.dtGet(TCP_PORT_KEY, TCP_PORT_DEFAULT);
         this.udp_port = (int) Util.dtGet(UDP_PORT_KEY, UDP_PORT_DEFAULT);
         this.isAddTime = (boolean) Util.dtGet(ADD_TIME_KEY, ADD_TIME_DEFAULT);
         this.type = (ClientType) Util.dtGet(CLIENT_TYPE_KEY, CLIENT_TYPE_DEFAULT);
         this.mac = (String) Util.dtGet(MAC_KEY, MAC_DEFAULT);
+
+        this.ipAddr= (String) Util.dtGet(IP_KEY, IP_DEFAULT);
+        this.ipYanma = (String) Util.dtGet(IP_YANMA_KEY, IP_YANMA_DEFAULT);
+        this.ipWangGuan = (String) Util.dtGet(IP_WANGGUAN_KEY, IP_WANGGUAN_DEFAULT);
+        String ipAddr_Real  = RFIDCMD.getIpAddrForInterfaces("eth0");
+        String ipYanma_Real = RFIDCMD.getIpAddrMaskForInterfaces("eth0");
+        String ipWangGuan_Real = RFIDCMD.getGateWay();
+
+        if (ipAddr_Real != ipAddr || ipYanma_Real != ipYanma || ipWangGuan_Real != ipWangGuan)
+        {
+            RFIDCMD.setNetIp(ipAddr,ipYanma,ipWangGuan,ipWangGuan,"0.0.0.0");
+        }
     }
 
     public static boolean configWithRFrame(RFrame pRFrame) {
