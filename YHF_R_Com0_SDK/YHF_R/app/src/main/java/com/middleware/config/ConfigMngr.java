@@ -2,7 +2,7 @@ package com.middleware.config;
 
 import android.util.Log;
 
-import com.example.uart.R;
+import com.middleware.frame.ctrl.RfidCommand;
 import com.middleware.frame.data.DataProc;
 import com.middleware.frame.data.RFIDFrame;
 import com.middleware.frame.data.RFrame;
@@ -66,8 +66,10 @@ public class ConfigMngr {
         if (congfigLocalNet(byteCommand, pRFrame) == RequestModel.SuccessHandler) {
             canHander = RequestModel.SuccessHandler;
         }
-
-        if (configClientUpload(byteCommand, pRFrame) == RequestModel.SuccessHandler) {
+        else if (configClientUpload(byteCommand, pRFrame) == RequestModel.SuccessHandler) {
+            canHander = RequestModel.SuccessHandler;
+        }
+        else if (configClientUpload(byteCommand, pRFrame) == RequestModel.SuccessHandler) {
             canHander = RequestModel.SuccessHandler;
         }
 
@@ -78,6 +80,10 @@ public class ConfigMngr {
 
         if (canHander == RequestModel.FailHandler)
         {
+            if (queryLocalNetWK(byteCommand, pRFrame) == RequestModel.SuccessHandler) {
+                canHander = RequestModel.SuccessHandler;
+            }
+
             if (queryLocalNet(byteCommand, pRFrame) == RequestModel.SuccessHandler) {
                 canHander = RequestModel.SuccessHandler;
             }
@@ -106,30 +112,19 @@ public class ConfigMngr {
         int canHander = RequestModel.FailHandler;
 
         //设置网口相关
-        if (DataProc.isConfingNetwork(byteCommand)) {
-            byte subByte = pRFrame.GetByte(5);
-            int count = pRFrame.GetRealBuffLen();
+        if (byteCommand == RfidCommand.COM_NETPARA_SET.GetValue()) {
 
-            if (subByte == 0x02 && count >= 20) {
-                byte[] ipBytes = pRFrame.GetBytes(6, 9);
-                String ip = Tools.HexBytes2TenStr(ipBytes, ".");
-                saveVal(ConfigLocalNetWK.IP_KEY, ip);
-                Log.d("Req_msg congfigLocalNet ip", ip);
-
-                byte[] yanMaBytes = pRFrame.GetBytes(10, 13);
-                String yanMa = Tools.HexBytes2TenStr(yanMaBytes, ".");
-                saveVal(ConfigLocalNetWK.IP_YANMA_KEY, yanMa);
-                Log.d("Req_msg congfigLocalNet yanMaBytes", yanMa);
-
-                byte[] wangGuanBytes = pRFrame.GetBytes(14, 17);
-                String wangGuan = Tools.HexBytes2TenStr(wangGuanBytes, ".");
-                saveVal(ConfigLocalNetWK.IP_WANGGUAN_KEY, wangGuan);
-                Log.d("Req_msg congfigLocalNet wangGuan", wangGuan);
-
+            if(ConfigLocalNetWK.configWithRFrame(pRFrame))
+            {
+                responseRFIDFrame = reqModel.resFrame((byte)0x00);
+                canHander = RequestModel.SuccessHandler;
+            }
+            else
+            {
+                responseRFIDFrame = reqModel.resFrame((byte)0x01);
                 canHander = RequestModel.SuccessHandler;
             }
         }
-
         return canHander;
     }
 
@@ -219,13 +214,82 @@ public class ConfigMngr {
             }
         }
 
+
         return canHander;
     }
 
+    private static int setLocalNetWK(byte byteCommand, RFrame pRFrame) {
+        int canHander = RequestModel.FailHandler;
+        if (byteCommand == RfidCommand.COM_NETPARA_SET.GetValue())
+        {
+            byte subByte = pRFrame.GetByte(5);
+            if (subByte == 0x01)
+            {
+                responseRFIDFrame = reqModel.queryResFrame(ConfigLocalNetWK.macBytes());
+                canHander = RequestModel.SuccessHandler;
+            }
+            else if (subByte == 0x02)
+            {
+                responseRFIDFrame = reqModel.queryResFrame(ConfigLocalNetWK.ipBytes());
+                canHander = RequestModel.SuccessHandler;
+            }
+            else if (subByte == 0x03)
+            {
+                responseRFIDFrame = reqModel.queryResFrame(ConfigLocalNetWK.tcpPortBytes());
+                canHander = RequestModel.SuccessHandler;
+            }
+            else if (subByte == 0x04)
+            {
+                responseRFIDFrame = reqModel.queryResFrame(ConfigLocalNetWK.udpPortBytes());
+                canHander = RequestModel.SuccessHandler;
+            }
+            else
+            {
+                responseRFIDFrame = reqModel.resFrame((byte)0x01);
+                canHander = RequestModel.SuccessHandler;
+            }
+        }
+
+        return canHander;
+    }
+
+    private static int queryLocalNetWK(byte byteCommand, RFrame pRFrame) {
+        int canHander = RequestModel.FailHandler;
+        if (byteCommand == RfidCommand.COM_NETPARA_QUERY.GetValue())
+        {
+            byte subByte = pRFrame.GetByte(5);
+            if (subByte == 0x01)
+            {
+                responseRFIDFrame = reqModel.queryResFrame(ConfigLocalNetWK.macBytes());
+                canHander = RequestModel.SuccessHandler;
+            }
+            else if (subByte == 0x02)
+            {
+                responseRFIDFrame = reqModel.queryResFrame(ConfigLocalNetWK.ipBytes());
+                canHander = RequestModel.SuccessHandler;
+            }
+            else if (subByte == 0x03)
+            {
+                responseRFIDFrame = reqModel.queryResFrame(ConfigLocalNetWK.tcpPortBytes());
+                canHander = RequestModel.SuccessHandler;
+            }
+            else if (subByte == 0x04)
+            {
+                responseRFIDFrame = reqModel.queryResFrame(ConfigLocalNetWK.udpPortBytes());
+                canHander = RequestModel.SuccessHandler;
+            }
+            else
+            {
+                responseRFIDFrame = reqModel.resFrame((byte)0x01);
+                canHander = RequestModel.SuccessHandler;
+            }
+        }
+
+        return canHander;
+    }
     //查询上传网络相关
     private static int queryClientUpload(byte byteCommand, RFrame pRFrame) {
         int canHander = RequestModel.FailHandler;
-
         //设置上传相关
         if (DataProc.isConfingUpload(byteCommand)) {
             byte subByte = pRFrame.GetByte(5);

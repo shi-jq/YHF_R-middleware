@@ -45,6 +45,14 @@ public class RequestModel{
         return rfidFrame;
     }
 
+    public RFIDFrame resFrame(byte failedCode)
+    {
+        RFIDFrame rfidFrame = new RFIDFrame(this.pFrame);
+        RFrame pRecvRFrame = this.mProc.createRecvRFrame(this.pFrame, (byte)failedCode);
+        rfidFrame.AddRevFrame(pRecvRFrame);
+        return rfidFrame;
+    }
+
     public RFIDFrame queryResFrame(byte[] data, byte resVal)
     {
         RFIDFrame rfidFrame = new RFIDFrame(this.pFrame);

@@ -19,6 +19,7 @@ public class RFrame {
     }
 
 
+
     public byte GetRfidCommand() {
         return this.bHead[4];
     }
@@ -31,6 +32,10 @@ public class RFrame {
 
     public int GetLength() {
         return this.bHead[3];
+    }
+
+    public int GetDataLength() {
+        return this.bHead[3]-COMMAND_LEN;
     }
 
     public int GetMustLength() {

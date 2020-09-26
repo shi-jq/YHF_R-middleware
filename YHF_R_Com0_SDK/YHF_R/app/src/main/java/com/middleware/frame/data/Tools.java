@@ -57,6 +57,20 @@ public class Tools {
         return addr;
     }
 
+    public static String HexBytes216Str(byte[] hexBytes, String split){
+        String hexStr =   Bytes2HexString(hexBytes,0,hexBytes.length);
+        String ret = "";
+        String[] strs = hexStr.trim().split(" ");
+        for (int i = 0; i < strs.length; i++) {
+            String hex = Integer.toHexString(Integer.parseInt(strs[i], 16));
+            ret += hex;
+            if (i != strs.length -1){
+                ret+= split;
+            }
+        }
+        return ret;
+    }
+
     public static String HexBytes2TenStr(byte[] hexBytes, String split){
         String hexStr =   Bytes2HexString(hexBytes,0,hexBytes.length);
         String ret = "";
