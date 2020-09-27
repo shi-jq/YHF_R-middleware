@@ -70,10 +70,14 @@ public class ConfigMngr {
             canHander = RequestModel.SuccessHandler;
         }
 
-
         //提前处理设置的响应
         if (canHander == RequestModel.SuccessHandler) {
             responseRFIDFrame = model.settingResFrame();
+        }
+
+        if (configPCSerial(byteCommand, pRFrame) == RequestModel.SuccessHandler)
+        {
+            canHander = RequestModel.SuccessHandler;
         }
 
         if (canHander == RequestModel.FailHandler)
@@ -122,6 +126,26 @@ public class ConfigMngr {
                 responseRFIDFrame = reqModel.resFrame((byte)0x01);
                 canHander = RequestModel.SuccessHandler;
             }
+        }
+        return canHander;
+    }
+
+    private static int configPCSerial(byte byteCommand, RFrame pRFrame) {
+        int canHander = RequestModel.FailHandler;
+        if (byteCommand == RfidCommand.COM_COMMUNI_SET.GetValue()) {
+            if (ConfigPcSerial.configWithRFrame(pRFrame))
+            {
+                responseRFIDFrame = reqModel.resFrame((byte)0x00);
+            }
+            else{
+                responseRFIDFrame = reqModel.resFrame((byte)0x01);
+            }
+            canHander = RequestModel.SuccessHandler;
+        }
+        else if (byteCommand == RfidCommand.COM_COMMUNI_QUERY.GetValue())
+        {
+            responseRFIDFrame = reqModel.queryResFrame(ConfigPcSerial.baudRateBytes());
+            canHander = RequestModel.SuccessHandler;
         }
         return canHander;
     }
