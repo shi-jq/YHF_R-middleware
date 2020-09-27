@@ -3,6 +3,7 @@ package com.middleware.request;
 import android.util.Log;
 
 import com.middleware.config.ConfigMngr;
+import com.middleware.config.ConfigUpload;
 import com.middleware.frame.common.BaseThread;
 import com.middleware.frame.data.RFIDFrame;
 import com.middleware.frame.data.RFrame;
@@ -76,8 +77,9 @@ public class RequestMngr extends BaseThread {
         }
 
         int dataPush = ConfigMngr.getInstance().upload.dataPush;
-        //配置  4 WIFI传输  5 4G传输
-        if (mTcpClient == null && !ConfigMngr.getInstance().client.ipAddr.startsWith("127") && (dataPush == 4 || dataPush == 5)) {
+
+        if (mTcpClient == null && !ConfigMngr.getInstance().client.ipAddr.startsWith("127")
+                && (dataPush == ConfigUpload.PORT_TYPE.PORT_TYPE_TCP.GetValue())) {
             try {
                 mTcpClient = new RequestTcpClient(ConfigMngr.getInstance().client.ipAddr, ConfigMngr.getInstance().client.port);
             } catch (Exception e) {
@@ -87,7 +89,8 @@ public class RequestMngr extends BaseThread {
             }
         }
 
-        if (mSerialRequest == null) {
+        if (mSerialRequest == null
+                && dataPush == ConfigUpload.PORT_TYPE.PORT_TYPE_RS232.GetValue()) {
             try {
                 mSerialRequest = new RequestSerial();
             } catch (Exception e) {

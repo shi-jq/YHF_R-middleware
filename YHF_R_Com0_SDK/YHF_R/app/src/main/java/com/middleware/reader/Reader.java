@@ -2,6 +2,7 @@ package com.middleware.reader;
 
 import com.middleware.config.ConfigMngr;
 import com.middleware.config.ConfigReaderSerial;
+import com.middleware.config.ConfigUpload;
 import com.middleware.frame.common.BaseThread;
 import com.middleware.frame.common.INT32U;
 import com.middleware.frame.common.PrintCtrl;
@@ -36,7 +37,19 @@ public class Reader extends BaseThread implements Observer   {
 
     String path = new String("/dev/ttyS1");
 
-    public Reader() throws IOException {
+    private static Reader reader = null;
+    public static Reader getInstance() {
+        if (null == reader) {
+            synchronized (Reader.class) {
+                if (null == reader) {
+                    reader = new Reader();
+                }
+            }
+        }
+        return reader;
+    }
+
+    public Reader() {
         super("Reader",true);
 
         try {
@@ -45,15 +58,21 @@ public class Reader extends BaseThread implements Observer   {
             this.mSerialPort = new SerialPort(file,config.baudrate, 0);
 
         } catch (IOException e) {
-
             this.mSerialPort = null;
             this.isNeedStop = true;
             this.resume();
-            throw  e;
+            e.printStackTrace();
+            return;
         }
 
         MsgMngr.AndroidToModelMsgObv.addObserver(this);
         this.resume();
+
+        if (ConfigMngr.getInstance().upload.workMode
+                == ConfigUpload.WORK_MODE_TYPE.WORK_MODE_AUTO.GetValue())
+        {
+            sendFrameToSer(ConfigMngr.getInstance().upload.autoComandFrame);
+        }
     }
 
     @Override
@@ -62,32 +81,38 @@ public class Reader extends BaseThread implements Observer   {
         super.onDestory();
     }
 
-    //普通命令是
-    @Override
-    public void update(Observable o, Object arg) {
-        RFIDFrame rfidFrame = (RFIDFrame) arg;
-        assert  (rfidFrame != null);
+    public void sendFrameToSer(RFrame sendFrame)
+    {
         OutputStream ouputStream =  mSerialPort.getOutputStream();
         assert(ouputStream != null);
         try {
 
             byte[] pForSend = new byte[DataProc.SEND_FRAME_MAXBUFF];
             INT32U totalFrameSize = new INT32U(DataProc.SEND_FRAME_MAXBUFF);
-            RFrame sendFrame =  rfidFrame.GetSendFrame();
             mProc.PackMsg(pForSend,totalFrameSize, sendFrame);
             ouputStream.write(pForSend,0,totalFrameSize.GetValue());
             PrintCtrl.PrintBUffer("数据发送到模块 ", pForSend, totalFrameSize.GetValue());
 
-            if (mProc.isStartRead(sendFrame.GetRfidCommand()))
-            {
-            }
-            else{
-                //会等待超时
-                RFrame pRFrame =  waitRecvFrame(rfidFrame.GetSendFrame(),3000);
-                rfidFrame.AddRevFrame(pRFrame);
-            }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    //普通命令是
+    @Override
+    public void update(Observable o, Object arg) {
+        RFIDFrame rfidFrame = (RFIDFrame) arg;
+        assert  (rfidFrame != null);
+        RFrame sendFrame =  rfidFrame.GetSendFrame();
+        sendFrameToSer(sendFrame);
+
+        if (mProc.isStartRead(sendFrame.GetRfidCommand()))
+        {
+        }
+        else{
+            //会等待超时
+            RFrame pRFrame =  waitRecvFrame(rfidFrame.GetSendFrame(),3000);
+            rfidFrame.AddRevFrame(pRFrame);
         }
     }
 

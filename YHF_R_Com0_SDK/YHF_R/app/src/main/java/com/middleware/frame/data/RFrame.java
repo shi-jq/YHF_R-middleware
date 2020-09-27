@@ -133,4 +133,16 @@ public class RFrame {
         System.arraycopy(data, 0, this.bData, 0, datalen);
         this.mRealDataLen = datalen;
     }
+
+    public void InitHeadAndData(byte[] data, int datalen) {
+        if (datalen<HEAD_LEN)
+        {
+            return;
+        }
+
+        System.arraycopy(data, 0, this.bHead, 0, HEAD_LEN);
+        System.arraycopy(data, HEAD_LEN, this.bData, 0, datalen-HEAD_LEN);
+        mRealHeadLen = 5;
+        mRealDataLen = datalen;
+    }
 }

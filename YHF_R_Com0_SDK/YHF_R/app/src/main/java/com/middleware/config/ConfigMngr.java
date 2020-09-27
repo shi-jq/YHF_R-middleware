@@ -69,13 +69,15 @@ public class ConfigMngr {
         else if (configClientUpload(byteCommand, pRFrame) == RequestModel.SuccessHandler) {
             canHander = RequestModel.SuccessHandler;
         }
-        else if (configClientUpload(byteCommand, pRFrame) == RequestModel.SuccessHandler) {
-            canHander = RequestModel.SuccessHandler;
-        }
 
         //提前处理设置的响应
         if (canHander == RequestModel.SuccessHandler) {
             responseRFIDFrame = model.settingResFrame();
+        }
+
+        if (configPCSerial(byteCommand, pRFrame) == RequestModel.SuccessHandler)
+        {
+            canHander = RequestModel.SuccessHandler;
         }
 
         if (canHander == RequestModel.FailHandler)
@@ -128,6 +130,26 @@ public class ConfigMngr {
         return canHander;
     }
 
+    private static int configPCSerial(byte byteCommand, RFrame pRFrame) {
+        int canHander = RequestModel.FailHandler;
+        if (byteCommand == RfidCommand.COM_COMMUNI_SET.GetValue()) {
+            if (ConfigPcSerial.configWithRFrame(pRFrame))
+            {
+                responseRFIDFrame = reqModel.resFrame((byte)0x00);
+            }
+            else{
+                responseRFIDFrame = reqModel.resFrame((byte)0x01);
+            }
+            canHander = RequestModel.SuccessHandler;
+        }
+        else if (byteCommand == RfidCommand.COM_COMMUNI_QUERY.GetValue())
+        {
+            responseRFIDFrame = reqModel.queryResFrame(ConfigPcSerial.baudRateBytes());
+            canHander = RequestModel.SuccessHandler;
+        }
+        return canHander;
+    }
+
     //设置上传网络相关
     private static int configClientUpload(byte byteCommand, RFrame pRFrame) {
         int canHander = RequestModel.FailHandler;
@@ -165,14 +187,8 @@ public class ConfigMngr {
                     canHander = RequestModel.SuccessHandler;
                 }
 
-                //设置设备类型
-                if (subByte2 == 54) {
-                    saveVal(ConfigUpload.DATA_PORT_KEY, val);
-                    canHander = RequestModel.SuccessHandler;
-                }
-
                 //设置数据是否上传
-                if (subByte2 == 55) {//F1
+                if (subByte2 == 63) {//F1
                     saveVal(ConfigUpload.DATA_PORT_KEY, val);
                     canHander = RequestModel.SuccessHandler;
                 }
@@ -324,12 +340,6 @@ public class ConfigMngr {
                     //设置工作模式
                     if (subByte2 == 56) {
                         responseRFIDFrame = reqModel.queryResFrame(ConfigUpload.workModeBytes());
-                        canHander = RequestModel.SuccessHandler;
-                    }
-
-                    //设置设备类型
-                    if (subByte2 == 63) {
-                        responseRFIDFrame = reqModel.queryResFrame(ConfigUpload.dataPortBytes());
                         canHander = RequestModel.SuccessHandler;
                     }
 

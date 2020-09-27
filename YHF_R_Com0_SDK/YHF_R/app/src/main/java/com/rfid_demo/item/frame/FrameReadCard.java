@@ -51,7 +51,7 @@ public class FrameReadCard extends Fragment {
     private Button mStartBtn = null;
     private Button mStopBtn = null;
 
-    private MiddlewareService mServer = null;
+    private MiddlewareService mServer = new MiddlewareService();
     /*
      * 消息响应操作
      */
