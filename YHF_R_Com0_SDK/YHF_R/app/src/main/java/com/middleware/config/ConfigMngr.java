@@ -2,6 +2,7 @@ package com.middleware.config;
 
 import android.util.Log;
 
+import com.middleware.frame.common.INT8U;
 import com.middleware.frame.ctrl.RfidCommand;
 import com.middleware.frame.data.DataProc;
 import com.middleware.frame.data.RFIDFrame;
@@ -11,6 +12,10 @@ import com.middleware.request.RequestMngr;
 import com.middleware.request.RequestModel;
 import com.rfid_demo.ctrl.Util;
 import com.rfid_demo.service.RFIDCMD;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 
 public class ConfigMngr {
@@ -44,9 +49,8 @@ public class ConfigMngr {
         this.upload = new ConfigUpload();
     }
 
-    public static int canHandlerReqModel(RequestModel model)
-    {
-        reqModel= model;
+    public static int canHandlerReqModel(RequestModel model) {
+        reqModel = model;
         int canHander = RequestModel.FailHandler;
         RFrame pRFrame = model.pFrame;
         byte byteCommand = pRFrame.GetRfidCommand();
@@ -58,30 +62,29 @@ public class ConfigMngr {
             try {
                 Thread.sleep(1000);
                 RFIDCMD.reboot();
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
         }
 
         if (congfigLocalNet(byteCommand, pRFrame) == RequestModel.SuccessHandler) {
             canHander = RequestModel.SuccessHandler;
-        }
-        else if (configClientUpload(byteCommand, pRFrame) == RequestModel.SuccessHandler) {
+        } else if (configClientUpload(byteCommand, pRFrame) == RequestModel.SuccessHandler) {
             canHander = RequestModel.SuccessHandler;
         }
 
-        //提前处理设置的响应
-        if (canHander == RequestModel.SuccessHandler) {
-            responseRFIDFrame = model.settingResFrame();
-        }
-
-        if (configPCSerial(byteCommand, pRFrame) == RequestModel.SuccessHandler)
-        {
+        if (configPCSerial(byteCommand, pRFrame) == RequestModel.SuccessHandler) {
             canHander = RequestModel.SuccessHandler;
         }
 
-        if (canHander == RequestModel.FailHandler)
-        {
+        //查询设置时间
+        if (canHander == RequestModel.FailHandler) {
+            if (configOrQueryDate(byteCommand, pRFrame) == RequestModel.SuccessHandler) {
+                canHander = RequestModel.SuccessHandler;
+            }
+        }
+
+        if (canHander == RequestModel.FailHandler) {
             if (queryLocalNetWK(byteCommand, pRFrame) == RequestModel.SuccessHandler) {
                 canHander = RequestModel.SuccessHandler;
             }
@@ -95,12 +98,17 @@ public class ConfigMngr {
             }
         }
 
+        //提前处理设置的响应
+        if (canHander == RequestModel.SuccessHandler &&  responseRFIDFrame == null) {
+            responseRFIDFrame = model.settingResFrame();
+        }
+
         if (responseRFIDFrame != null) {
             try {
                 RequestMngr.getInstance().sendToPC(responseRFIDFrame, model.type);
             } catch (Exception e) {
                 e.printStackTrace();
-            }finally {
+            } finally {
                 responseRFIDFrame = null;
                 reqModel = null;
             }
@@ -116,14 +124,11 @@ public class ConfigMngr {
         //设置网口相关
         if (byteCommand == RfidCommand.COM_NETPARA_SET.GetValue()) {
 
-            if(ConfigLocalNetWK.configWithRFrame(pRFrame))
-            {
-                responseRFIDFrame = reqModel.resFrame((byte)0x00);
+            if (ConfigLocalNetWK.configWithRFrame(pRFrame)) {
+                responseRFIDFrame = reqModel.resFrame((byte) 0x00);
                 canHander = RequestModel.SuccessHandler;
-            }
-            else
-            {
-                responseRFIDFrame = reqModel.resFrame((byte)0x01);
+            } else {
+                responseRFIDFrame = reqModel.resFrame((byte) 0x01);
                 canHander = RequestModel.SuccessHandler;
             }
         }
@@ -133,17 +138,13 @@ public class ConfigMngr {
     private static int configPCSerial(byte byteCommand, RFrame pRFrame) {
         int canHander = RequestModel.FailHandler;
         if (byteCommand == RfidCommand.COM_COMMUNI_SET.GetValue()) {
-            if (ConfigPcSerial.configWithRFrame(pRFrame))
-            {
-                responseRFIDFrame = reqModel.resFrame((byte)0x00);
-            }
-            else{
-                responseRFIDFrame = reqModel.resFrame((byte)0x01);
+            if (ConfigPcSerial.configWithRFrame(pRFrame)) {
+                responseRFIDFrame = reqModel.resFrame((byte) 0x00);
+            } else {
+                responseRFIDFrame = reqModel.resFrame((byte) 0x01);
             }
             canHander = RequestModel.SuccessHandler;
-        }
-        else if (byteCommand == RfidCommand.COM_COMMUNI_QUERY.GetValue())
-        {
+        } else if (byteCommand == RfidCommand.COM_COMMUNI_QUERY.GetValue()) {
             responseRFIDFrame = reqModel.queryResFrame(ConfigPcSerial.baudRateBytes());
             canHander = RequestModel.SuccessHandler;
         }
@@ -200,6 +201,88 @@ public class ConfigMngr {
         return canHander;
     }
 
+    //查询或者设置时间
+    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    private static int configOrQueryDate(byte byteCommand, RFrame pRFrame) {
+        int canHander = RequestModel.FailHandler;
+        if (byteCommand == RfidCommand.COM_DATE_SET.GetValue()) {
+            int count = pRFrame.GetRealBuffLen();
+            if (count >= 14) {
+                String secondStr = String.format("%02x",pRFrame.GetBytes(5, 5)[0]);
+                int second = Integer.parseInt(secondStr);
+
+                String minuteStr = String.format("%02x",pRFrame.GetBytes(6, 6)[0]);
+                int minute = Integer.parseInt(minuteStr);
+
+                String hourStr = String.format("%02x",pRFrame.GetBytes(7, 7)[0]);
+                int hour = Integer.parseInt(hourStr);
+
+                String dayOfWeekStr = String.format("%02x",pRFrame.GetBytes(8, 8)[0]);
+                int dayOfWeek =Integer.parseInt( dayOfWeekStr);
+
+                String dayStr = String.format("%02x",pRFrame.GetBytes(9, 9)[0]);
+                int day = Integer.parseInt(dayStr);
+
+                String monthStr = String.format("%02x",pRFrame.GetBytes(10, 10)[0]);
+                int month = Integer.parseInt(monthStr);
+
+                String yearStr = String.format("%02x",pRFrame.GetBytes(11, 11)[0]);
+                int year = Integer.parseInt(yearStr);
+
+                String dateStr = String.format("20%02d", year) + "-" +
+                        String.format("%02d", month) + "-" +
+                        String.format("%02d", day) + " " +
+                        String.format("%02d", hour) + ":" +
+                        String.format("%02d", minute) + ":" +
+                        String.format("%02d", second);
+                Date date = null;
+                try {
+                    date = sdf.parse(dateStr);
+                    RFIDCMD.setTime(date);
+                    canHander = RequestModel.SuccessHandler;
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        if (byteCommand == RfidCommand.COM_DATE_QUERY.GetValue()) {
+            int count = pRFrame.GetRealBuffLen();
+            if (count >= 7) {
+                Calendar now = Calendar.getInstance();
+
+                byte[] dateBytes = new byte[7];
+
+                byte second = Util.tenShow16StrByte(now.get(Calendar.SECOND));
+                dateBytes[0] = second;
+
+                byte minute = Util.tenShow16StrByte(now.get(Calendar.MINUTE));
+                dateBytes[1] = minute;
+
+                byte hour = Util.tenShow16StrByte(now.get(Calendar.HOUR));
+                dateBytes[2] = hour;
+
+                byte dayOfWeek = Util.tenShow16StrByte(now.get(Calendar.DAY_OF_WEEK));
+                dateBytes[3] = dayOfWeek;
+
+                byte day = Util.tenShow16StrByte(now.get(Calendar.DAY_OF_MONTH));
+                dateBytes[4] = day;
+
+                byte month = Util.tenShow16StrByte(now.get(Calendar.MONTH) + 1);
+                dateBytes[5] = month;
+
+                byte year = Util.tenShow16StrByte(now.get(Calendar.YEAR)%100);
+                dateBytes[6] = year;
+
+                responseRFIDFrame = reqModel.queryResFrame(dateBytes);
+                canHander = RequestModel.SuccessHandler;
+            }
+        }
+
+        return canHander;
+    }
+
 
     //查询相关
     private static int queryLocalNet(byte byteCommand, RFrame pRFrame) {
@@ -236,32 +319,22 @@ public class ConfigMngr {
 
     private static int setLocalNetWK(byte byteCommand, RFrame pRFrame) {
         int canHander = RequestModel.FailHandler;
-        if (byteCommand == RfidCommand.COM_NETPARA_SET.GetValue())
-        {
+        if (byteCommand == RfidCommand.COM_NETPARA_SET.GetValue()) {
             byte subByte = pRFrame.GetByte(5);
-            if (subByte == 0x01)
-            {
+            if (subByte == 0x01) {
                 responseRFIDFrame = reqModel.queryResFrame(ConfigLocalNetWK.macBytes());
                 canHander = RequestModel.SuccessHandler;
-            }
-            else if (subByte == 0x02)
-            {
+            } else if (subByte == 0x02) {
                 responseRFIDFrame = reqModel.queryResFrame(ConfigLocalNetWK.ipBytes());
                 canHander = RequestModel.SuccessHandler;
-            }
-            else if (subByte == 0x03)
-            {
+            } else if (subByte == 0x03) {
                 responseRFIDFrame = reqModel.queryResFrame(ConfigLocalNetWK.tcpPortBytes());
                 canHander = RequestModel.SuccessHandler;
-            }
-            else if (subByte == 0x04)
-            {
+            } else if (subByte == 0x04) {
                 responseRFIDFrame = reqModel.queryResFrame(ConfigLocalNetWK.udpPortBytes());
                 canHander = RequestModel.SuccessHandler;
-            }
-            else
-            {
-                responseRFIDFrame = reqModel.resFrame((byte)0x01);
+            } else {
+                responseRFIDFrame = reqModel.resFrame((byte) 0x01);
                 canHander = RequestModel.SuccessHandler;
             }
         }
@@ -271,38 +344,29 @@ public class ConfigMngr {
 
     private static int queryLocalNetWK(byte byteCommand, RFrame pRFrame) {
         int canHander = RequestModel.FailHandler;
-        if (byteCommand == RfidCommand.COM_NETPARA_QUERY.GetValue())
-        {
+        if (byteCommand == RfidCommand.COM_NETPARA_QUERY.GetValue()) {
             byte subByte = pRFrame.GetByte(5);
-            if (subByte == 0x01)
-            {
+            if (subByte == 0x01) {
                 responseRFIDFrame = reqModel.queryResFrame(ConfigLocalNetWK.macBytes());
                 canHander = RequestModel.SuccessHandler;
-            }
-            else if (subByte == 0x02)
-            {
+            } else if (subByte == 0x02) {
                 responseRFIDFrame = reqModel.queryResFrame(ConfigLocalNetWK.ipBytes());
                 canHander = RequestModel.SuccessHandler;
-            }
-            else if (subByte == 0x03)
-            {
+            } else if (subByte == 0x03) {
                 responseRFIDFrame = reqModel.queryResFrame(ConfigLocalNetWK.tcpPortBytes());
                 canHander = RequestModel.SuccessHandler;
-            }
-            else if (subByte == 0x04)
-            {
+            } else if (subByte == 0x04) {
                 responseRFIDFrame = reqModel.queryResFrame(ConfigLocalNetWK.udpPortBytes());
                 canHander = RequestModel.SuccessHandler;
-            }
-            else
-            {
-                responseRFIDFrame = reqModel.resFrame((byte)0x01);
+            } else {
+                responseRFIDFrame = reqModel.resFrame((byte) 0x01);
                 canHander = RequestModel.SuccessHandler;
             }
         }
 
         return canHander;
     }
+
     //查询上传网络相关
     private static int queryClientUpload(byte byteCommand, RFrame pRFrame) {
         int canHander = RequestModel.FailHandler;
@@ -316,11 +380,10 @@ public class ConfigMngr {
             Log.i("subByte2", String.valueOf(subByte2));
             Log.i("Req_count", String.valueOf(count));
 
-            if (subByte == 0x02){
+            if (subByte == 0x02) {
 
                 //设置上传网络
-                if (subByte2 == -6 && count >= 10)
-                {
+                if (subByte2 == -6 && count >= 10) {
                     responseRFIDFrame = reqModel.queryResFrame(ConfigClient.ipBytes());
                     canHander = RequestModel.SuccessHandler;
                 }
@@ -358,11 +421,10 @@ public class ConfigMngr {
     }
 
     public static void saveVal(String key, Object obj) {
-        Util.dtSave(key,obj);
+        Util.dtSave(key, obj);
     }
 
-    public static Object getValue(String key, Object defObj)
-    {
+    public static Object getValue(String key, Object defObj) {
         return Util.dtGet(key, defObj);
     }
 }

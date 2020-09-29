@@ -1,6 +1,8 @@
 package com.middleware.frame.common;
 
 
+import android.util.Log;
+
 public class INT8U {
     private byte value;
 

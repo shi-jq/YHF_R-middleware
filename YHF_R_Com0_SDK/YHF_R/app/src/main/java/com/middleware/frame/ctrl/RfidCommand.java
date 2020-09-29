@@ -108,6 +108,8 @@ public enum RfidCommand {
     COM_RECV_TRANS(198),
     COM_MODULE_REBOOT(199),
      */
+    COM_DATE_SET(0xB0),
+    COM_DATE_QUERY(0xB1),
     COM_DEVICE_REBOOT(0x2A);
 
 

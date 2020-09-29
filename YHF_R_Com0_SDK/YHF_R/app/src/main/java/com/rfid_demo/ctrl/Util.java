@@ -5,13 +5,12 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Process;
-import android.util.Log;
 
 import com.example.uart.R;
+import com.middleware.frame.common.INT8U;
 import com.rfid_demo.main.MainActivity;
 import com.rfid_demo.main.MyApplication;
 
@@ -95,6 +94,11 @@ public class Util {
         return defaultObj;
     }
 
+    public static byte tenShow16StrByte (int num){
+            String  secondStr = String.format("%02d",num);
+            Integer s = Integer.parseInt(secondStr,16);
+            return new INT8U(s).GetValue() ;
+        }
 
     public static Object dtGet( String key) {
       return dtGet(key,null);
