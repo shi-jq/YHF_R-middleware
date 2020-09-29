@@ -192,16 +192,6 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
     @Override
     public void update(Observable o, Object arg) {
         //如果已经断开了, 就把数据丢了
-        synchronized(RequestTcpClient.class) {
-            if (session == null) {
-                return;
-            }
-
-            if (!session.isConnected()) {
-                return;
-            }
-        }
-
         if ( MsgMngr.AndroidToPcTagObv == o)
         {
             RFrame frame = (RFrame) arg;
@@ -218,6 +208,12 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
             buffer.flip();
 
             synchronized(RequestTcpClient.class) {
+                if (session == null) {
+                    return;
+                }
+                if (!session.isConnected()) {
+                    return;
+                }
                 session.write(buffer);
             }
 
