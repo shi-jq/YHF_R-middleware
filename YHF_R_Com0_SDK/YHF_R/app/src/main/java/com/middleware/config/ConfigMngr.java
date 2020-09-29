@@ -260,7 +260,7 @@ public class ConfigMngr {
                 byte minute = Util.tenShow16StrByte(now.get(Calendar.MINUTE));
                 dateBytes[1] = minute;
 
-                byte hour = Util.tenShow16StrByte(now.get(Calendar.HOUR));
+                byte hour = Util.tenShow16StrByte(now.get(Calendar.HOUR_OF_DAY));
                 dateBytes[2] = hour;
 
                 byte dayOfWeek = Util.tenShow16StrByte(now.get(Calendar.DAY_OF_WEEK));
