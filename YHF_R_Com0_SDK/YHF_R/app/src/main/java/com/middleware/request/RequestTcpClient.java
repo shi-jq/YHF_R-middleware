@@ -38,7 +38,6 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
             connector = new NioSocketConnector();
             connector.setHandler(this);
             ConnectFuture connFuture = connector.connect(new InetSocketAddress(ipAddr, port));
-            connFuture.awaitUninterruptibly();
             session = connFuture.getSession();
             System.out.println("TCP 客户端启动");
         }catch (Exception e){
