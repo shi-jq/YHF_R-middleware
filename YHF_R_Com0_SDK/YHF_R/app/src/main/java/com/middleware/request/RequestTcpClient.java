@@ -38,7 +38,8 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
             connector = new NioSocketConnector();
             connector.setHandler(this);
             ConnectFuture connFuture = connector.connect(new InetSocketAddress(ipAddr, port));
-            session = connFuture.getSession();
+            connFuture.getSession();
+            MsgMngr.AndroidToPcTagObv.addObserver(this);
             System.out.println("TCP 客户端启动");
         }catch (Exception e){
             if (session.isConnected()){
@@ -48,8 +49,6 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
             connector.dispose();
             throw e;
         }
-
-        MsgMngr.AndroidToPcTagObv.addObserver(this);
     }
 
     @Override
@@ -121,23 +120,29 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
     public void exceptionCaught(IoSession session, Throwable cause)
             throws Exception {
         System.out.println("客户端异常");
+        session = null;
         super.exceptionCaught(session, cause);
     }
     @Override
     public void messageSent(IoSession iosession, Object obj) throws Exception {
-        System.out.println("客户端消息发送");
+        //System.out.println("客户端消息发送");
         super.messageSent(iosession, obj);
     }
     @Override
     public void sessionClosed(IoSession iosession) throws Exception {
         System.out.println("客户端会话关闭");
-        session.closeNow();
+        if(session != null)
+        {
+            session.closeNow();
+            session = null;
+        }
         super.sessionClosed(iosession);
     }
     @Override
     public void sessionCreated(IoSession iosession) throws Exception {
         System.out.println("客户端会话创建");
         super.sessionCreated(iosession);
+        session = iosession;
     }
     @Override
     public void sessionIdle(IoSession iosession, IdleStatus idlestatus)
