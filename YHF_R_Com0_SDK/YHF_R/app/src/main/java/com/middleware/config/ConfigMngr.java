@@ -2,7 +2,6 @@ package com.middleware.config;
 
 import android.util.Log;
 
-import com.middleware.frame.common.INT8U;
 import com.middleware.frame.ctrl.RfidCommand;
 import com.middleware.frame.data.DataProc;
 import com.middleware.frame.data.RFIDFrame;
@@ -13,7 +12,6 @@ import com.middleware.request.RequestModel;
 import com.rfid_demo.ctrl.Util;
 import com.rfid_demo.service.RFIDCMD;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -138,14 +136,28 @@ public class ConfigMngr {
     private static int configPCSerial(byte byteCommand, RFrame pRFrame) {
         int canHander = RequestModel.FailHandler;
         if (byteCommand == RfidCommand.COM_COMMUNI_SET.GetValue()) {
-            if (ConfigPcSerial.configWithRFrame(pRFrame)) {
+            byte subcomm = pRFrame.GetData()[0];
+            if (subcomm == 0x10 && ConfigPcSerial.configBaudRateWithRFrame(pRFrame)) {
                 responseRFIDFrame = reqModel.resFrame((byte) 0x00);
-            } else {
+            }
+            else if (subcomm == 0x00 && ConfigPcSerial.configBusAddrWithRFrame(pRFrame)) {
+                responseRFIDFrame = reqModel.resFrame((byte) 0x00);
+            }
+            else {
                 responseRFIDFrame = reqModel.resFrame((byte) 0x01);
             }
             canHander = RequestModel.SuccessHandler;
         } else if (byteCommand == RfidCommand.COM_COMMUNI_QUERY.GetValue()) {
-            responseRFIDFrame = reqModel.queryResFrame(ConfigPcSerial.baudRateBytes());
+            byte subcomm = pRFrame.GetData()[0];
+            if (subcomm == 0x10 ) {
+                responseRFIDFrame = reqModel.queryResFrame(ConfigPcSerial.baudRateBytes());
+            }
+            else  if (subcomm == 0x00 ) {
+                responseRFIDFrame = reqModel.queryResFrame(ConfigPcSerial.busaddrBytes());
+            }
+            else {
+                responseRFIDFrame = reqModel.resFrame((byte) 0x01);
+            }
             canHander = RequestModel.SuccessHandler;
         }
         return canHander;

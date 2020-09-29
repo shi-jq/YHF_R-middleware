@@ -92,11 +92,11 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
 
         if (bsize > 0)
         {
-
             mProc.UnPackMsg(buffer,bsize);
             mProc.GetFrameList(mRFrameList);
             for (int i = 0; i < mRFrameList.GetCount(); i++) {
                 RFrame pRFrame = mRFrameList.GetRFrame(i);
+                mProc.mBusAddr = pRFrame.GetBusAddr();
                 RequestModel reqModel = new RequestModel(pRFrame, mProc, RequestModel.ReqType.CLIENT);
                 if (ConfigMngr.canHandlerReqModel(reqModel) == RequestModel.FailHandler)
                 {

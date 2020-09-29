@@ -1,6 +1,7 @@
 package com.middleware.frame.data;
 
 
+import com.middleware.config.ConfigMngr;
 import com.middleware.frame.common.INT32U;
 import com.middleware.frame.ctrl.RfidCommand;
 
@@ -49,7 +50,7 @@ public class DataProc {
     private int mFrameBuzzer = 0;
     private int mFramePriority = 0;
     private int mFrameAnswer = 0;
-    private byte mBusAddr = 0;
+    public byte mBusAddr = (byte) ConfigMngr.getInstance().pcSerial.busadddr;
     private RFrameList mWaitFrameList  = new RFrameList();
     private RFrameList mValidFrameList  = new RFrameList();
 

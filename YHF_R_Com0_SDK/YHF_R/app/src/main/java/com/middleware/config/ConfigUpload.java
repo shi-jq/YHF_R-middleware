@@ -1,4 +1,5 @@
 package com.middleware.config;
+import com.middleware.frame.data.DataProc;
 import com.middleware.frame.data.RFrame;
 import com.rfid_demo.ctrl.Util;
 
@@ -51,6 +52,10 @@ public class ConfigUpload
         this.dataPush = (int) Util.dtGet(DATA_PORT_KEY,PORT_TYPE.PORT_TYPE_RS232.GetValue());
         autoComandFrame = new RFrame();
         autoComandFrame.InitHeadAndData(AutoCommand,AutoCommand.length);
+
+        int busadddr = (int) Util.dtGet(ConfigPcSerial.BUS_RATE_KEY, ConfigPcSerial.BUS_ADDR_DEFAULT);
+        autoComandFrame.SetBusAddr((byte) busadddr);
+        DataProc.ResetFrameCrc(autoComandFrame);
     }
 
     public  static byte[] workModeBytes()
