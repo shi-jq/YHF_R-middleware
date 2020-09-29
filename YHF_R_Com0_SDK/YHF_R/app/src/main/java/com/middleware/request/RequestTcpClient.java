@@ -44,6 +44,7 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
         connector.setHandler(this);
         connector.setConnectTimeoutMillis(3000);
         connector.setDefaultRemoteAddress(new InetSocketAddress(ipAddr, port));
+        MsgMngr.AndroidToPcTagObv.addObserver(this);
     }
 
     public boolean connect() {
@@ -69,7 +70,6 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
             return false;
         }
 
-        MsgMngr.AndroidToPcTagObv.addObserver(this);
         System.out.println("TCP 客户端启动");
         return  true;
     }
