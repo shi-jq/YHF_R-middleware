@@ -50,6 +50,7 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
     public boolean connect() {
         try {
             ConnectFuture connFuture = connector.connect();
+            connFuture.awaitUninterruptibly();
             synchronized(RequestTcpClient.class) {
                 session = connFuture.getSession();
                 if (session == null) {
