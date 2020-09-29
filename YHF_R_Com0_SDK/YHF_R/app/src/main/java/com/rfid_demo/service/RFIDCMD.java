@@ -155,13 +155,12 @@ public class RFIDCMD {
     }
 
 
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    private static SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+    public static final SimpleDateFormat kDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public static void setTime(Date date) {
         try {
             Intent intent = new Intent("zysj.set.system.clock");
-            intent.putExtra("time", dateFormat.format(date) + " " + timeFormat.format(date));//时间
+            intent.putExtra("time", kDateFormat.format(date));//时间
             MyApplication.contxt.sendBroadcast(intent);
         } catch (Exception e) {
             e.printStackTrace();
