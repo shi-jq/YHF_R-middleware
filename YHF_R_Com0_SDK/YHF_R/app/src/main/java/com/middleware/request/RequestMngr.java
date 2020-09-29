@@ -78,15 +78,18 @@ public class RequestMngr extends BaseThread {
 
         int dataPush = ConfigMngr.getInstance().upload.dataPush;
 
-        if (mTcpClient == null && !ConfigMngr.getInstance().client.ipAddr.startsWith("127")
+        if (!ConfigMngr.getInstance().client.ipAddr.startsWith("127")
                 && (dataPush == ConfigUpload.PORT_TYPE.PORT_TYPE_TCP.GetValue())) {
-            try {
+
+            if (mTcpClient == null)
+            {
                 mTcpClient = new RequestTcpClient(ConfigMngr.getInstance().client.ipAddr, ConfigMngr.getInstance().client.port);
                 Log.i("Req Manager","TCP Client success");
-            } catch (Exception e) {
-                mTcpClient = null;
-                //Log.i("Req Manager","TCP Client invaild");
-                //e.printStackTrace();
+            }
+
+            if (!mTcpClient.isConnect())
+            {
+                mTcpClient.connect();
             }
         }
 

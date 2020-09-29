@@ -27,27 +27,58 @@ import java.util.Observer;
 public class RequestTcpClient extends IoHandlerAdapter implements Observer
 {
     private IoConnector connector;
-    private IoSession session;
+
+    private IoSession session = null;
 
     private DataProc mProc = new DataProc();
     private RFrameList mRFrameList = new RFrameList();
     private FrameMsgObervable toAndroid  = MsgMngr.PcToAndroidMsgObv;
+    private String ipAddr;
+    private int port;
 
-    public RequestTcpClient(String ipAddr, int port) {
+    public RequestTcpClient(String ipAddr, int port)  {
+        this.ipAddr = ipAddr;
+        this.port = port;
+
+        connector = new NioSocketConnector();
+        connector.setHandler(this);
+        connector.setConnectTimeoutMillis(3000);
+        connector.setDefaultRemoteAddress(new InetSocketAddress(ipAddr, port));
+    }
+
+    public boolean connect() {
         try {
-            connector = new NioSocketConnector();
-            connector.setHandler(this);
-            ConnectFuture connFuture = connector.connect(new InetSocketAddress(ipAddr, port));
-            connFuture.getSession();
-            MsgMngr.AndroidToPcTagObv.addObserver(this);
-            System.out.println("TCP 客户端启动");
-        }catch (Exception e){
-            if (session.isConnected()){
-                session.closeNow();
-                session.getCloseFuture().awaitUninterruptibly();
+            ConnectFuture connFuture = connector.connect();
+            connFuture.awaitUninterruptibly();
+            synchronized(session) {
+                session = connFuture.getSession();
+                if (session == null) {
+                    return false;
+                }
             }
-            connector.dispose();
-            throw e;
+
+        }catch (Exception e){
+
+            synchronized(session) {
+                if (session != null && session.isConnected()) {
+                    session.closeNow();
+                    session.getCloseFuture().awaitUninterruptibly();
+                }
+                session = null;
+            }
+            return false;
+        }
+
+        MsgMngr.AndroidToPcTagObv.addObserver(this);
+        System.out.println("TCP 客户端启动");
+        return  true;
+    }
+
+    public  boolean isConnect()
+    {
+        synchronized(session)
+        {
+            return  session!= null;
         }
     }
 
@@ -106,7 +137,6 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
 
     public void sendToPC(RFIDFrame rfidFrame)
     {
-
         if (this.session == null || this.session.isClosing())
         {
             Log.i("sendResultToPc","Iosession invaild");
@@ -117,11 +147,15 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
     }
 
     @Override
-    public void exceptionCaught(IoSession session, Throwable cause)
+    public void exceptionCaught(IoSession iosession, Throwable cause)
             throws Exception {
         System.out.println("客户端异常");
-        session = null;
-        super.exceptionCaught(session, cause);
+        synchronized(session) {
+            if (iosession == session) {
+                session = null;
+            }
+        }
+        super.exceptionCaught(iosession, cause);
     }
     @Override
     public void messageSent(IoSession iosession, Object obj) throws Exception {
@@ -131,10 +165,11 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
     @Override
     public void sessionClosed(IoSession iosession) throws Exception {
         System.out.println("客户端会话关闭");
-        if(session != null)
-        {
-            session.closeNow();
-            session = null;
+        synchronized(session) {
+            if (session == iosession) {
+                session.closeNow();
+                session = null;
+            }
         }
         super.sessionClosed(iosession);
     }
@@ -142,7 +177,6 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
     public void sessionCreated(IoSession iosession) throws Exception {
         System.out.println("客户端会话创建");
         super.sessionCreated(iosession);
-        session = iosession;
     }
     @Override
     public void sessionIdle(IoSession iosession, IdleStatus idlestatus)
@@ -160,15 +194,15 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
     @Override
     public void update(Observable o, Object arg) {
         //如果已经断开了, 就把数据丢了
-       if (session == null)
-       {
-           return;
-       }
+        synchronized(session) {
+            if (session == null) {
+                return;
+            }
 
-       if (!session.isConnected())
-       {
-           return;
-       }
+            if (!session.isConnected()) {
+                return;
+            }
+        }
 
         if ( MsgMngr.AndroidToPcTagObv == o)
         {
@@ -184,7 +218,10 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
             buffer.setAutoExpand(true);
             buffer.put(pForSend,0,totalFrameSize.GetValue());
             buffer.flip();
-            session.write(buffer);
+
+            synchronized(session) {
+                session.write(buffer);
+            }
 
             PrintCtrl.PrintBUffer("标签数据发送到PC TCP-Client:", pForSend, totalFrameSize.GetValue());
         }
