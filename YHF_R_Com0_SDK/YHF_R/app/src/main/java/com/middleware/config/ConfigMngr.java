@@ -202,8 +202,6 @@ public class ConfigMngr {
     }
 
     //查询或者设置时间
-    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
     private static int configOrQueryDate(byte byteCommand, RFrame pRFrame) {
         int canHander = RequestModel.FailHandler;
         if (byteCommand == RfidCommand.COM_DATE_SET.GetValue()) {
@@ -238,7 +236,7 @@ public class ConfigMngr {
                         String.format("%02d", second);
                 Date date = null;
                 try {
-                    date = sdf.parse(dateStr);
+                    date = RFIDCMD.kDateFormat.parse(dateStr);
                     RFIDCMD.setTime(date);
                     canHander = RequestModel.SuccessHandler;
                 }catch (Exception e){
