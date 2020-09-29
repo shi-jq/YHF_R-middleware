@@ -50,8 +50,7 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
     public boolean connect() {
         try {
             ConnectFuture connFuture = connector.connect();
-            connFuture.awaitUninterruptibly();
-            synchronized(session) {
+            synchronized(RequestTcpClient.class) {
                 session = connFuture.getSession();
                 if (session == null) {
                     return false;
@@ -59,11 +58,9 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
             }
 
         }catch (Exception e){
-
-            synchronized(session) {
+            synchronized(RequestTcpClient.class) {
                 if (session != null && session.isConnected()) {
                     session.closeNow();
-                    session.getCloseFuture().awaitUninterruptibly();
                 }
                 session = null;
             }
@@ -76,7 +73,7 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
 
     public  boolean isConnect()
     {
-        synchronized(session)
+        synchronized(RequestTcpClient.class)
         {
             return  session!= null;
         }
@@ -150,7 +147,7 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
     public void exceptionCaught(IoSession iosession, Throwable cause)
             throws Exception {
         System.out.println("客户端异常");
-        synchronized(session) {
+        synchronized(RequestTcpClient.class) {
             if (iosession == session) {
                 session = null;
             }
@@ -165,7 +162,7 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
     @Override
     public void sessionClosed(IoSession iosession) throws Exception {
         System.out.println("客户端会话关闭");
-        synchronized(session) {
+        synchronized(RequestTcpClient.class) {
             if (session == iosession) {
                 session.closeNow();
                 session = null;
@@ -194,7 +191,7 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
     @Override
     public void update(Observable o, Object arg) {
         //如果已经断开了, 就把数据丢了
-        synchronized(session) {
+        synchronized(RequestTcpClient.class) {
             if (session == null) {
                 return;
             }
@@ -219,7 +216,7 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
             buffer.put(pForSend,0,totalFrameSize.GetValue());
             buffer.flip();
 
-            synchronized(session) {
+            synchronized(RequestTcpClient.class) {
                 session.write(buffer);
             }
 
