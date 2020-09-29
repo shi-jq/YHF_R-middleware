@@ -82,9 +82,10 @@ public class RequestMngr extends BaseThread {
                 && (dataPush == ConfigUpload.PORT_TYPE.PORT_TYPE_TCP.GetValue())) {
             try {
                 mTcpClient = new RequestTcpClient(ConfigMngr.getInstance().client.ipAddr, ConfigMngr.getInstance().client.port);
+                Log.i("Req Manager","TCP Client success");
             } catch (Exception e) {
                 mTcpClient = null;
-                Log.i("Req Manager","TCP Client invaild");
+                //Log.i("Req Manager","TCP Client invaild");
                 //e.printStackTrace();
             }
         }
