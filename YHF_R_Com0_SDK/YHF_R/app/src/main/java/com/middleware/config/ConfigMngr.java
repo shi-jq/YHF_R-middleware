@@ -168,7 +168,7 @@ public class ConfigMngr {
         int canHander = RequestModel.FailHandler;
 
         //设置上传相关
-        if (DataProc.isConfingUpload(byteCommand)) {
+        if (byteCommand == RfidCommand.COM_UPLOAD_PARA_SET.GetValue()) {
             byte subByte = pRFrame.GetByte(5);
             byte subByte2 = pRFrame.GetByte(6);
             int count = pRFrame.GetRealBuffLen();
@@ -179,6 +179,20 @@ public class ConfigMngr {
             if (subByte == 0x01 && subByte2 == -6 && count >= 14)//subByte2 = FA
             {
                 ConfigClient.configIPWithRFrame(pRFrame);
+                canHander = RequestModel.SuccessHandler;
+            }
+
+            //韦根起始地址
+            if (subByte == 0x01 && subByte2 == 0x50 && count >= 11)
+            {
+                ConfigUpload.configWeiGenStartWithRFrame(pRFrame);
+                canHander = RequestModel.SuccessHandler;
+            }
+
+            //韦根长度
+            if (subByte == 0x01 && subByte2 == 0x51 && count >= 11)
+            {
+                ConfigUpload.configWeiGenLenWithRFrame(pRFrame);
                 canHander = RequestModel.SuccessHandler;
             }
 
@@ -381,16 +395,26 @@ public class ConfigMngr {
     private static int queryClientUpload(byte byteCommand, RFrame pRFrame) {
         int canHander = RequestModel.FailHandler;
         //设置上传相关
-        if (DataProc.isConfingUpload(byteCommand)) {
+        if (byteCommand == RfidCommand.COM_UPLOAD_PARA_SET.GetValue()) {
             byte subByte = pRFrame.GetByte(5);
             byte subByte2 = pRFrame.GetByte(6);
             int count = pRFrame.GetRealBuffLen();
 
-            Log.i("subByte", String.valueOf(subByte));
-            Log.i("subByte2", String.valueOf(subByte2));
-            Log.i("Req_count", String.valueOf(count));
+            if (subByte == 0x02)
+            {
+                //韦根起始地址
+                if (subByte2 == 0x50 && count >= 10)
+                {
+                    responseRFIDFrame = reqModel.queryResFrame(ConfigUpload.weiGenStartBytes());
+                    canHander = RequestModel.SuccessHandler;
+                }
 
-            if (subByte == 0x02) {
+                //韦根长度
+                if (subByte2 == 0x51 && count >= 10)
+                {
+                    responseRFIDFrame = reqModel.queryResFrame(ConfigUpload.weiGenLenBytes());
+                    canHander = RequestModel.SuccessHandler;
+                }
 
                 //设置上传网络
                 if (subByte2 == -6 && count >= 10) {
