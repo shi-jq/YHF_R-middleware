@@ -2,6 +2,7 @@ package com.middleware.request;
 
 import com.middleware.config.ConfigMngr;
 import com.middleware.config.ConfigPcSerial;
+import com.middleware.config.ConfigUpload;
 import com.middleware.frame.common.BaseThread;
 import com.middleware.frame.common.INT32U;
 import com.middleware.frame.common.PrintCtrl;
@@ -50,7 +51,11 @@ public class RequestSerial extends BaseThread implements Observer {
             throw  e;
         }
 
-        MsgMngr.AndroidToPcTagObv.addObserver(this);
+        int dataPush = ConfigMngr.getInstance().upload.dataPush;
+        if(dataPush == ConfigUpload.PORT_TYPE.PORT_TYPE_RS232.GetValue())
+        {
+            MsgMngr.AndroidToPcTagObv.addObserver(this);
+        }
     }
 
     public void setNeedTimeTagFrame(boolean need)

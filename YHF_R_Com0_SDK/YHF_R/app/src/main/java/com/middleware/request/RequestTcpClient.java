@@ -11,6 +11,7 @@ import com.middleware.frame.data.RFrame;
 import com.middleware.frame.data.RFrameList;
 import com.middleware.frame.main.FrameMsgObervable;
 import com.middleware.frame.main.MsgMngr;
+import com.rfid_demo.ctrl.Util;
 
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.future.ConnectFuture;
@@ -21,6 +22,7 @@ import org.apache.mina.core.session.IoSession;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 
 import java.net.InetSocketAddress;
+import java.util.Calendar;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -196,6 +198,35 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
         {
             RFrame frame = (RFrame) arg;
             assert  (frame != null);
+            //*
+            int realLen = frame.GetRealBuffLen();
+            Calendar now = Calendar.getInstance();
+            byte second = Util.tenShow16StrByte(now.get(Calendar.SECOND));
+            byte minute = Util.tenShow16StrByte(now.get(Calendar.MINUTE));
+            byte hour = Util.tenShow16StrByte(now.get(Calendar.HOUR_OF_DAY));
+            byte dayOfWeek = Util.tenShow16StrByte(now.get(Calendar.DAY_OF_WEEK));
+            byte day = Util.tenShow16StrByte(now.get(Calendar.DAY_OF_MONTH));
+            byte month = Util.tenShow16StrByte(now.get(Calendar.MONTH) + 1);
+            byte year = Util.tenShow16StrByte(now.get(Calendar.YEAR)%100);
+            realLen -= RFrame.CRC_LEN;
+            frame.SetByte(realLen,second);
+            realLen++;
+            frame.SetByte(realLen,minute);
+            realLen++;
+            frame.SetByte(realLen,hour);
+            realLen++;
+            frame.SetByte(realLen,dayOfWeek);
+            realLen++;
+            frame.SetByte(realLen,day);
+            realLen++;
+            frame.SetByte(realLen,month);
+            realLen++;
+            frame.SetByte(realLen,year);
+            realLen++;
+            frame.resetDataLen(realLen-RFrame.CRC_LEN);
+            frame.bHead[3] = (byte) (realLen-RFrame.HEAD_LEN+RFrame.COMMAND_LEN) ;
+            mProc.updateFrameCrc(frame);
+            //*/
 
             byte[] pForSend = new byte[DataProc.SEND_FRAME_MAXBUFF];
             INT32U totalFrameSize = new INT32U(DataProc.SEND_FRAME_MAXBUFF);
