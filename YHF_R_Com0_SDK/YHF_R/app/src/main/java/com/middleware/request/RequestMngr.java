@@ -93,8 +93,7 @@ public class RequestMngr extends BaseThread {
             }
         }
 
-        if (mSerialRequest == null
-                && dataPush == ConfigUpload.PORT_TYPE.PORT_TYPE_RS232.GetValue()) {
+        if (mSerialRequest == null) {
             try {
                 mSerialRequest = new RequestSerial();
             } catch (Exception e) {
