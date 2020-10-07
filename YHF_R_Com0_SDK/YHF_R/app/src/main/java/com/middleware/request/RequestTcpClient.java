@@ -196,7 +196,14 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
         //如果已经断开了, 就把数据丢了
         if ( MsgMngr.AndroidToPcTagObv == o)
         {
-            RFrame frame = (RFrame) arg;
+            RFrame dataframe = (RFrame) arg;
+            RFrame frame = null;
+            try {
+                frame = (RFrame) dataframe.clone();
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+                return;
+            }
             assert  (frame != null);
             //*
             int realLen = frame.GetRealBuffLen();
@@ -237,7 +244,7 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
             buffer.setAutoExpand(true);
             buffer.put(pForSend,0,totalFrameSize.GetValue());
             buffer.flip();
-
+            PrintCtrl.PrintBUffer("标签数据发送到PC -TCP-Client -begin", pForSend, totalFrameSize.GetValue());
             synchronized(RequestTcpClient.class) {
                 if (session == null) {
                     return;

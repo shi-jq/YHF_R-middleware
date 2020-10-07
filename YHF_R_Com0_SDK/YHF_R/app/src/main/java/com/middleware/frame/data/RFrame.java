@@ -1,7 +1,7 @@
 package com.middleware.frame.data;
 
 
-public class RFrame {
+public class RFrame implements Cloneable {
     public static final int HEAD_LEN = 5;
     public static final int COMMAND_LEN = 1;
     public static final int ANSWER_LEN = 1;
@@ -12,6 +12,15 @@ public class RFrame {
 
     private int mRealHeadLen = 0;
     private int mRealDataLen = 0;
+
+    public RFrame clone() throws CloneNotSupportedException {
+        RFrame ret = (RFrame) super.clone();
+        ret.bHead = this.bHead.clone();
+        ret.bData = this.bData.clone();
+        ret.mRealHeadLen = this.mRealHeadLen;
+        ret.mRealDataLen = this.mRealDataLen;
+        return ret;
+    }
 
 
     public int GetRealBuffLen() {

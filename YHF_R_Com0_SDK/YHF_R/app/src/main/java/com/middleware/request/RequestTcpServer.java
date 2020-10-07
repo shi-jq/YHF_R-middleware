@@ -209,7 +209,7 @@ public class RequestTcpServer extends IoHandlerAdapter  implements Observer
             INT32U totalFrameSize = new INT32U(DataProc.SEND_FRAME_MAXBUFF);
 
             mProc.PackMsg(pForSend,totalFrameSize, frame);
-
+            PrintCtrl.PrintBUffer("标签数据发送到PC -TCP-Server -begin", pForSend, totalFrameSize.GetValue());
             if (readTagSession != null)
             {
                 IoBuffer buffer = IoBuffer.allocate(10);
