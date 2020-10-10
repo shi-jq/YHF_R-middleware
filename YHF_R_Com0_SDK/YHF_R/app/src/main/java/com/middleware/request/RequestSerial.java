@@ -56,6 +56,8 @@ public class RequestSerial extends BaseThread implements Observer {
         {
             MsgMngr.AndroidToPcTagObv.addObserver(this);
         }
+
+        this.resume();
     }
 
     public void setNeedTimeTagFrame(boolean need)
