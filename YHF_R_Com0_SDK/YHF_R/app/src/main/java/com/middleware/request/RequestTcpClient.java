@@ -78,8 +78,12 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
     {
         synchronized(RequestTcpClient.class)
         {
-            return  session!= null;
+            if (session != null )
+            {
+                return session.isConnected();
+            }
         }
+        return false;
     }
 
     @Override
@@ -129,6 +133,7 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
         mProc.PackMsg(pForSend,totalFrameSize, recvFrame);
 
         IoBuffer buffer = IoBuffer.allocate(10);
+        buffer.setAutoExpand(true);
         buffer.put(pForSend,0,totalFrameSize.GetValue());
         buffer.flip();
         iosession.write(buffer);
@@ -150,11 +155,6 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
     public void exceptionCaught(IoSession iosession, Throwable cause)
             throws Exception {
         System.out.println("客户端异常");
-        synchronized(RequestTcpClient.class) {
-            if (iosession == session) {
-                session = null;
-            }
-        }
         super.exceptionCaught(iosession, cause);
     }
     @Override
@@ -188,6 +188,10 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
     public void sessionOpened(IoSession iosession) throws Exception {
         System.out.println("客户端会话打开");
         super.sessionOpened(iosession);
+        synchronized(RequestTcpClient.class)
+        {
+           session = iosession;
+        }
     }
 
 
@@ -250,12 +254,13 @@ public class RequestTcpClient extends IoHandlerAdapter implements Observer
                     return;
                 }
                 if (!session.isConnected()) {
+                    session.closeNow();
+                    session = null;
                     return;
                 }
                 session.write(buffer);
+                PrintCtrl.PrintBUffer("标签数据发送到PC TCP-Client:", pForSend, totalFrameSize.GetValue());
             }
-
-            PrintCtrl.PrintBUffer("标签数据发送到PC TCP-Client:", pForSend, totalFrameSize.GetValue());
         }
     }
 }

@@ -65,6 +65,11 @@ public class ConfigMngr {
             }
         }
 
+        if (recvWirelessAck (byteCommand, pRFrame) == RequestModel.SuccessHandler )
+        {
+            canHander = RequestModel.SuccessHandler;
+        }
+
         if (congfigLocalNet(byteCommand, pRFrame) == RequestModel.SuccessHandler) {
             canHander = RequestModel.SuccessHandler;
         } else if (configClientUpload(byteCommand, pRFrame) == RequestModel.SuccessHandler) {
@@ -115,6 +120,15 @@ public class ConfigMngr {
         return canHander;
     }
 
+    private static int recvWirelessAck(byte byteCommand, RFrame pRFrame) {
+        int canHander = RequestModel.FailHandler;
+
+        if (byteCommand == RfidCommand.WIRELESS_RFID_ACK.GetValue()) {
+            responseRFIDFrame = reqModel.resFrame((byte) 0x00);
+            canHander = RequestModel.SuccessHandler;
+        }
+        return canHander;
+    }
 
     private static int congfigLocalNet(byte byteCommand, RFrame pRFrame) {
         int canHander = RequestModel.FailHandler;

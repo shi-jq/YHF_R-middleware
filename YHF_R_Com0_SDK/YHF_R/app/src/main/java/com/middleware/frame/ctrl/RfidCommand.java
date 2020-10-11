@@ -110,8 +110,9 @@ public enum RfidCommand {
      */
     COM_DATE_SET(0xB0),
     COM_DATE_QUERY(0xB1),
-    COM_DEVICE_REBOOT(0x2A);
-
+    COM_DEVICE_REBOOT(0x2A),
+    WIRELESS_RFID_ACK(0xd0),//无线接收ack包
+    WIRELESS_RFID_ACK_2(0xd1);//无线接收数据回复包
 
     private final int value;
 
