@@ -51,7 +51,7 @@ public class FrameReadCard extends Fragment {
     private Button mStartBtn = null;
     private Button mStopBtn = null;
 
-    private MiddlewareService mServer = new MiddlewareService();
+    private MiddlewareService mServer ;
     /*
      * 消息响应操作
      */
@@ -258,6 +258,8 @@ public class FrameReadCard extends Fragment {
                     mReadCardCtrl.setBuzzer(isChecked);
                 }
             });
+
+            mServer = new MiddlewareService();
         }
 
 

@@ -392,13 +392,6 @@ public class DataProc {
         return  pSendCommand == RfidCommand.COM_NETPARA_SET.GetValue();
     }
 
-    //配置上传相关
-    public static boolean isConfingUpload(byte pSendCommand)
-    {
-        return  pSendCommand == RfidCommand.COM_UPLOAD_PARA_SET.GetValue();
-    }
-
-
 }
 
 

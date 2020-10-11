@@ -8,12 +8,14 @@ import com.middleware.frame.common.INT32U;
 import com.middleware.frame.common.PrintCtrl;
 import com.middleware.frame.common.RftserW32;
 import com.middleware.frame.ctrl.ReaderState;
+import com.middleware.frame.ctrl.RfidCommand;
 import com.middleware.frame.data.DataProc;
 import com.middleware.frame.data.RFIDFrame;
 import com.middleware.frame.data.RFrame;
 import com.middleware.frame.data.RFrameList;
 import com.middleware.frame.main.FrameTagObervable;
 import com.middleware.frame.main.MsgMngr;
+import com.rfid_demo.ctrl.Util;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,6 +36,7 @@ public class Reader extends BaseThread implements Observer   {
     private SerialPort mSerialPort = null;
     ConfigReaderSerial config  = ConfigMngr.getInstance().readerSerial;
     FrameTagObervable toAndroidTag = MsgMngr.ModelToAndroidTagObv;
+    boolean m_isBuzzer = true;
 
     String path = new String("/dev/ttyS1");
 
@@ -167,6 +170,10 @@ public class Reader extends BaseThread implements Observer   {
                 byte byteCommand = pRFrame.GetRfidCommand();
                 if (mProc.isReportCommand(byteCommand))
                 {
+                    if (ConfigMngr.getInstance().client.soundEnable == 1
+                            && byteCommand == RfidCommand.COM_YMAKE_TAGUPLOAD.GetValue()) {
+                        Util.play(1, 0, 1, 1);
+                    }
                     //pRFrame.SetByte(6, (byte) 0x01);
                     //mProc.ResetFrameCrc(pRFrame);
                     toAndroidTag.sendTag(pRFrame);

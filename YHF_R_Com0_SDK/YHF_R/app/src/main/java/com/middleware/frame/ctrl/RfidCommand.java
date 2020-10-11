@@ -8,10 +8,9 @@ public enum RfidCommand {
     COM_WORKMOD_CFG(2),
     COM_WORKMOD_QUERY(3),
     COM_TEST_CONTROL(10),
-    COM_PARA_OP(16),
     */
 
-    COM_UPLOAD_PARA_SET(0x10),
+    COM_PARA_OP(0x10),
     COM_ANTENNA_SET(0x11),
     COM_ANTENNA_QUERY(0x12),
     COM_CARRYWAVE_SET(0x13),

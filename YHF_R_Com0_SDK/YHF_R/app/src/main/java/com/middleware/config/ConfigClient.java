@@ -14,7 +14,7 @@ public class ConfigClient
     public static final String PORT_KEY = "ConfigClient_PORT_KEY";
     public static final String IP_KEY = "ConfigClient_IP_KEY";
     public static final String CLIENT_TYPE_KEY = "ConfigClient_CLIENT_TYPE_KEY";
-
+    public static final String SOUND_ENABLE_KEY = "ConfigClient_SOUND_ENABLE_KEY";
     public enum ClientType
     {
         NONE,//不转发,原路返回
@@ -25,12 +25,20 @@ public class ConfigClient
     public ClientType type = ClientType.NONE;//客户端连接的类型
     public String ipAddr = "127.0.0.1";//转发的ip
     public int port = 60002;//转发的端口
+    public int soundEnable = 1;
 
     public ConfigClient()
     {
       this.ipAddr = (String) Util.dtGet(IP_KEY,"126.0.0.1");
       this.port = (int) Util.dtGet(PORT_KEY,60002);
       this.type = (ClientType) Util.dtGet(CLIENT_TYPE_KEY,ClientType.NONE);
+      this.soundEnable = (int) Util.dtGet(SOUND_ENABLE_KEY,1);
+    }
+
+    public static  void configSoundWithRFrame(RFrame pRFrame)
+    {
+        int val = pRFrame.GetBytes(8, 8)[0];
+        Util.dtSave(SOUND_ENABLE_KEY, val);
     }
 
     public static  void configIPWithRFrame(RFrame pRFrame)
@@ -69,5 +77,11 @@ public class ConfigClient
         INT16U b = new INT16U(port);
 
         return new byte[]{b.GetByte1(),b.GetByte2()};
+    }
+
+    public static byte[] soundEnableBytes()
+    {
+        int enable = (int) Util.dtGet(SOUND_ENABLE_KEY,1);
+        return new byte[]{new INT8U(enable).GetValue()};
     }
 }
