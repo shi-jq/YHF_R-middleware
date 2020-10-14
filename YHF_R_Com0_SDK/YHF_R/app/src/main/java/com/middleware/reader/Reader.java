@@ -76,6 +76,11 @@ public class Reader extends BaseThread implements Observer   {
         {
             sendFrameToSer(ConfigMngr.getInstance().upload.autoComandFrame);
         }
+
+        if (ConfigMngr.getInstance().client.soundEnable == 1)
+        {
+            Util.play(1, 0, 1, 1);
+        }
     }
 
     @Override

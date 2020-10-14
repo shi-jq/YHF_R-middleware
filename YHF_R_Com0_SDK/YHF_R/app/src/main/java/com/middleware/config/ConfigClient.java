@@ -38,6 +38,11 @@ public class ConfigClient
     public static  void configSoundWithRFrame(RFrame pRFrame)
     {
         int val = pRFrame.GetBytes(8, 8)[0];
+        ConfigMngr.getInstance().client.soundEnable = val;
+        if(val == 1)
+        {
+            Util.play(1, 0, 1, 1);
+        }
         Util.dtSave(SOUND_ENABLE_KEY, val);
     }
 

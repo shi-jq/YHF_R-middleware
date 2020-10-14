@@ -28,9 +28,9 @@ public class Util {
     //
     public static void initSoundPool(Context context){
         Util.context = context;
-        sp = new SoundPool(1, AudioManager.STREAM_MUSIC, 1);
+        sp = new SoundPool(1, AudioManager.STREAM_RING, 1);
         suondMap = new HashMap<Integer, Integer>();
-        suondMap.put(1, sp.load(context, R.raw.beep2, 1));
+        suondMap.put(1, sp.load(context, R.raw.beep51, 1));
     }
 
     //
