@@ -23,13 +23,13 @@ public class ConfigClient
     }
 
     public ClientType type = ClientType.NONE;//客户端连接的类型
-    public String ipAddr = "127.0.0.1";//转发的ip
+    public String ipAddr = "192.168.1.169";//转发的ip
     public int port = 60002;//转发的端口
     public int soundEnable = 1;
 
     public ConfigClient()
     {
-      this.ipAddr = (String) Util.dtGet(IP_KEY,"126.0.0.1");
+      this.ipAddr = (String) Util.dtGet(IP_KEY,"192.168.1.169");
       this.port = (int) Util.dtGet(PORT_KEY,60002);
       this.type = (ClientType) Util.dtGet(CLIENT_TYPE_KEY,ClientType.NONE);
       this.soundEnable = (int) Util.dtGet(SOUND_ENABLE_KEY,1);
@@ -65,7 +65,7 @@ public class ConfigClient
 
     public  static byte[] ipBytes()
     {
-        String ip = (String) Util.dtGet(IP_KEY,"127.0.0.1");
+        String ip = (String) Util.dtGet(IP_KEY,"192.168.1.169");
         String[] strs = ip.trim().split("\\.");
         byte[] ret = new byte[4];
         for (int i = 0; i < strs.length; i++)
