@@ -55,6 +55,7 @@ public class FrameOpen extends Fragment {
             mStartBtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     if (ApiCtrl.Initialize() && ApiCtrl.Open()) {
                         AppCfg.ShowMsg(R.string.open_success, false);
                         mStartBtn.setEnabled(false);

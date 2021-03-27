@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.uart"
     android:installLocation="internalOnly"
     android:versionCode="1"
@@ -9,6 +10,11 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.WRITE_APN_SETTINGS">
+    </uses-permission>
 
     <application
         android:name="com.rfid_demo.main.MyApplication"
@@ -36,6 +42,7 @@
 
                 <data android:scheme="file"></data>
             </intent-filter>
+
         </receiver>
 
         <activity

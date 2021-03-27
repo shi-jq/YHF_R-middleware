@@ -2,7 +2,6 @@ package com.rfid_demo.service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import com.rfid_demo.ctrl.Util;
 
 import com.rfid_demo.main.MainActivity;
 
@@ -19,5 +18,7 @@ public class BootReceiver extends BroadcastReceiver
             context.startActivity(newIntent);
             isBoot = true;
         }
+
     }
+
 }

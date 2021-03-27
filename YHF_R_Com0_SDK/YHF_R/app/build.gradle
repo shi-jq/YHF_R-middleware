@@ -11,6 +11,23 @@ android {
 
     }
 
+    signingConfigs {
+        release {
+            storeFile file("../signAPK/SignDemo.jks")
+            storePassword '123456'
+            keyAlias 'SignDemo'
+            keyPassword '123456'
+        }
+
+        debug {
+            storeFile file("../signAPK/SignDemo.jks")
+            storePassword '123456'
+            keyAlias 'SignDemo'
+            keyPassword '123456'
+        }
+    }
+
+
     buildTypes {
         debug {
             minifyEnabled false

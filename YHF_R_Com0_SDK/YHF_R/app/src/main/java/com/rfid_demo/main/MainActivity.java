@@ -1,7 +1,6 @@
 package com.rfid_demo.main;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -12,18 +11,15 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.uart.R;
-import com.middleware.config.ConfigMngr;
-import com.middleware.frame.common.INT16U;
-import com.middleware.main.MiddlewareService;
+import com.gyf.cactus.Cactus;
 import com.rfid_demo.ctrl.ApiCtrl;
 import com.rfid_demo.ctrl.AppCfg;
 import com.rfid_demo.ctrl.Util;
 import com.rfid_demo.item.frame.FrameQuit;
 import com.rfid_demo.item.frame.FrameReadCard;
 import com.rfid_demo.item.frame.FrameSysInfo;
-import com.gyf.cactus.Cactus;
 
-public class MainActivity extends FragmentActivity implements View.OnClickListener {
+public class MainActivity extends FragmentActivity implements View.OnClickListener   {
 
     private MyApplication mapp;
 
@@ -46,7 +42,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     private Fragment mFragmentCurrent;
     private Toast mToast;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +56,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         //保活
         Cactus.getInstance().isDebug(true).setCrashRestartUIEnabled(true);
-
     }
 
     private void initView() {
@@ -189,4 +183,5 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             mToast.setText(info);
         mToast.show();
     }
+
 }

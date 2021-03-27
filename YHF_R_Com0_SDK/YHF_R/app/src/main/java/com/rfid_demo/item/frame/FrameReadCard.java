@@ -26,6 +26,7 @@ import com.middleware.main.MiddlewareService;
 import com.rfid_demo.ctrl.ApiCtrl;
 import com.rfid_demo.ctrl.AppCfg;
 import com.rfid_demo.ctrl.ReadCardCtrl;
+import com.rfid_demo.main.MainActivity;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -164,10 +165,7 @@ public class FrameReadCard extends Fragment {
                 @Override
                 public void onClick(View v) {
 
-                    if (!ApiCtrl.mIsOpen) {
-                        AppCfg.ShowMsg(R.string.info_openModule,true);
-                        return;
-                    }
+                    MainActivity activity =  (MainActivity)getActivity();
 
                     boolean retB = false;
                     if (mReadCardCtrl != null) {

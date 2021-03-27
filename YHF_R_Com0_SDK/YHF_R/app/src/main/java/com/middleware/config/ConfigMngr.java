@@ -24,6 +24,7 @@ public class ConfigMngr {
     public ConfigReaderSerial readerSerial = null;
     public ConfigLocalNetWK server = null;
     public ConfigUpload upload = null;
+    public ConfigGprs gprs = null;
 
     public static RFIDFrame responseRFIDFrame;
     public static RequestModel reqModel;
@@ -45,6 +46,7 @@ public class ConfigMngr {
         this.readerSerial = new ConfigReaderSerial();
         this.server = new ConfigLocalNetWK();
         this.upload = new ConfigUpload();
+        this.gprs = new ConfigGprs();
     }
 
     public static int canHandlerReqModel(RequestModel model) {
@@ -143,6 +145,7 @@ public class ConfigMngr {
         return canHander;
     }
 
+
     private static int configPCSerial(byte byteCommand, RFrame pRFrame) {
         int canHander = RequestModel.FailHandler;
         if (byteCommand == RfidCommand.COM_COMMUNI_SET.GetValue()) {
@@ -190,6 +193,27 @@ public class ConfigMngr {
                 if ( subByte2 == (byte) 0xF1)
                 {
                     ConfigClient.configSoundWithRFrame(pRFrame);
+                    canHander = RequestModel.SuccessHandler;
+                }
+
+                //APN设置
+                if  ( subByte2 == (byte) 0x7A)//122
+                {
+                    ConfigGprs.configApnWithRFrame(pRFrame);
+                    canHander = RequestModel.SuccessHandler;
+                }
+
+                //GPRS 账号
+                if  ( subByte2 == (byte) 0x7B)//123
+                {
+                    ConfigGprs.configGprsAccountWithRFrame(pRFrame);
+                    canHander = RequestModel.SuccessHandler;
+                }
+
+                //GPRS 密码
+                if  ( subByte2 == (byte) 0x7C)//124
+                {
+                    ConfigGprs.configGprsPwdWithRFrame(pRFrame);
                     canHander = RequestModel.SuccessHandler;
                 }
 
@@ -247,6 +271,27 @@ public class ConfigMngr {
                 if ( subByte2 == (byte)0xF1 )
                 {
                     responseRFIDFrame = reqModel.queryResFrame(ConfigClient.soundEnableBytes());
+                    canHander = RequestModel.SuccessHandler;
+                }
+
+                //APN设置
+                if  ( subByte2 == (byte) 0x7A)//122
+                {
+                    responseRFIDFrame = reqModel.queryResFrame(ConfigGprs.gprsApnBytes());
+                    canHander = RequestModel.SuccessHandler;
+                }
+
+                //GPRS 账号
+                if  ( subByte2 == (byte) 0x7B)//123
+                {
+                    responseRFIDFrame = reqModel.queryResFrame(ConfigGprs.gprsAccountBytes());
+                    canHander = RequestModel.SuccessHandler;
+                }
+
+                //GPRS 密码
+                if  ( subByte2 == (byte) 0x7C)//124
+                {
+                    responseRFIDFrame = reqModel.queryResFrame(ConfigGprs.gprsPwdBytes());
                     canHander = RequestModel.SuccessHandler;
                 }
 
